@@ -1,0 +1,67 @@
+# PDF-to-GraphRAG Configuration Template
+# Copy this to config.yaml and customize for your project
+
+project:
+  name: "your_project_name"
+  description: "Project description"
+
+paths:
+  data_dir: "./data"
+  pdfs_dir: "./data/pdfs"
+  processed_dir: "./data/processed"
+  models_dir: "./models"
+  logs_dir: "./logs"
+
+processing:
+  chunk_size: 1000
+  chunk_overlap: 200
+  min_chunk_size: 200
+  max_chunk_size: 1500
+
+training:
+  base_model: "BAAI/bge-large-en-v1.5"
+  epochs: 3
+  batch_size: 32
+  learning_rate: 0.00002  # 2e-5
+  warmup_steps: 100
+
+  # Pair generation confidence thresholds
+  pairs:
+    adjacent_confidence: 0.95
+    same_section_confidence: 0.80
+    cross_pdf_min_shared_terms: 2
+    cross_pdf_confidence: 0.70
+
+llm:
+  model: "llama3.1:70b"
+  api_base: "http://localhost:11434"
+  temperature: 0.3
+  max_tokens: 1000
+
+graph:
+  community_algorithm: "leiden"  # or "louvain"
+  max_traversal_hops: 2
+  min_entity_frequency: 2
+
+retrieval:
+  top_k: 5
+
+  # Score fusion weights (must sum to 1.0)
+  score_weights:
+    chunk_similarity: 0.4
+    entity_match: 0.3
+    community_relevance: 0.2
+    graph_proximity: 0.1
+
+database:
+  # Vector database
+  vector:
+    type: "chromadb"  # Options: chromadb, qdrant, neo4j
+    path: "./chroma_data"
+
+  # Graph database
+  graph:
+    type: "neo4j"  # Options: neo4j, networkx
+    uri: "bolt://localhost:7687"
+    user: "neo4j"
+    password: "your-secure-password"  # Change this!

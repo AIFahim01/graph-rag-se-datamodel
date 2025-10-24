@@ -1,0 +1,58 @@
+# Core ML/AI
+torch>=2.0.0
+torchvision>=0.15.0
+sentence-transformers>=2.2.0
+transformers>=4.30.0
+accelerate>=0.20.0
+
+# PDF Processing
+pymupdf>=1.23.0
+pdfplumber>=0.10.0
+
+# Vector Databases (install based on your choice)
+chromadb>=0.4.0
+# qdrant-client>=1.7.0  # Uncomment if using Qdrant
+
+# Graph
+neo4j>=5.0.0
+networkx>=3.0.0
+python-louvain>=0.16
+# python-igraph>=0.11.0  # Alternative for faster community detection
+
+# LLM Integration
+ollama-python>=0.1.0
+openai>=1.0.0  # For OpenAI-compatible API clients
+
+# API Framework
+fastapi>=0.100.0
+uvicorn[standard]>=0.23.0
+pydantic>=2.0.0
+pydantic-settings>=2.0.0
+
+# Utilities
+python-dotenv>=1.0.0
+pyyaml>=6.0.0
+tqdm>=4.65.0
+numpy>=1.24.0
+scipy>=1.10.0
+pandas>=2.0.0
+
+# Monitoring & Logging
+prometheus-client>=0.17.0
+loguru>=0.7.0
+
+# Development (optional)
+pytest>=7.4.0
+pytest-asyncio>=0.21.0
+black>=23.0.0
+flake8>=6.0.0
+mypy>=1.4.0
+
+# Experiment Tracking (optional)
+# wandb>=0.15.0  # Uncomment if using Weights & Biases
+# tensorboard>=2.13.0  # Uncomment if using TensorBoard
+
+# Model Optimization (optional)
+# optimum>=1.12.0  # For model quantization
+# onnx>=1.14.0  # For ONNX export
+# onnxruntime-gpu>=1.15.0  # For ONNX inference

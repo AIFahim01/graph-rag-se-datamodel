@@ -1,0 +1,106 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual environments
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Data files (don't commit large files)
+data/pdfs/**/*.pdf
+data/raw/
+data/extracted/
+data/processed/
+
+# Models (too large for git)
+models/custom_*/
+models/bge-large-en-v1.5/
+models/*.bin
+models/*.safetensors
+models/*.onnx
+*.pt
+*.pth
+*.ckpt
+
+# Databases
+chroma_data/
+qdrant_data/
+neo4j_data/
+*.db
+*.sqlite
+*.sqlite3
+
+# Logs
+logs/
+*.log
+*.log.*
+
+# Environment and secrets
+.env
+.env.local
+.env.*
+config/config.yaml
+config/*_secret.yaml
+*.key
+*.pem
+credentials.json
+
+# Training artifacts
+runs/
+wandb/
+tensorboard/
+mlruns/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.cache
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Pytest
+.pytest_cache/
+.coverage
+htmlcov/
+
+# MyPy
+.mypy_cache/
+.dmypy.json
+dmypy.json
