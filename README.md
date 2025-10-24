@@ -1,4 +1,4 @@
-# SE- Datamodel GraphRAG: Domain-Specific Document Intelligence for SE Datamodel
+# SE- Datamodel GraphRAG: Domain-Specific Document Intelligence
 
 Train custom embeddings from PDFs using contrastive learning and build knowledge graphs for intelligent document retrieval with local LLMs.
 
@@ -175,6 +175,7 @@ Built on excellent open-source work:
 - [Neo4j](https://neo4j.com/) for graph database
 
 Special thanks to the research teams at Princeton NLP, BAAI, and Microsoft Research.
+
 
 
 
