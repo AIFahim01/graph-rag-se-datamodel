@@ -158,17 +158,6 @@ Contributions welcome! Please:
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
-## Citation
-
-If you use this in your research, please cite:
-
-```bibtex
-@software{pdf_to_graphrag_2025,
-  title={PDF-to-GraphRAG: Domain-Specific Document Intelligence},
-  author={Your Name},
-  year={2025},
-  url={https://github.com/your-org/pdf-to-graphrag}
-}
 ```
 
 And please cite the foundational research:
@@ -186,4 +175,5 @@ Built on excellent open-source work:
 - [Neo4j](https://neo4j.com/) for graph database
 
 Special thanks to the research teams at Princeton NLP, BAAI, and Microsoft Research.
+
 
