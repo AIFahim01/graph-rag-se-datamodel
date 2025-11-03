@@ -61,6 +61,16 @@ pdf-to-graphrag/
 │   ├── config.yaml.example            ✓ Main config template
 │   └── .env.example                   ✓ Environment variables template
 │
+├── data/                              📁 Data Processing
+│   └── preprocess/                    🔄 Data preprocessing pipeline
+│       ├── README.md                  ✓ Preprocessing documentation
+│       ├── preprocess.py              ✓ Main orchestrator and entry point
+│       └── processors/                📦 Processing classes package
+│           ├── __init__.py            ✓ Package initialization
+│           ├── file_filter.py         ✓ File filtering and categorization
+│           ├── document_processor.py  ✓ Document to Markdown processing
+│           └── output_manager.py      ✓ Output management with rigid structure
+│
 ├── tests/                             🧪 Tests (empty - add as you develop)
 └── notebooks/                         📓 Jupyter notebooks (empty)
 ```
