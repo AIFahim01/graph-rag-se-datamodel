@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 from pathlib import Path
+import time
 from processors import FileFilter, DocumentProcessor, OutputManager
 
 class DataPreprocessingOrchestrator:
@@ -34,6 +35,7 @@ class DataPreprocessingOrchestrator:
         return processed_count > 0
     
     def _process_single_offer(self, offer_folder: Path) -> bool:
+        start_time = time.perf_counter()
         offer_name = offer_folder.name
         
         if self.output_manager.is_offer_processed(offer_name):
@@ -44,13 +46,13 @@ class DataPreprocessingOrchestrator:
         if not supported_files:
             print(f"No supported files in: {offer_name}")
             return False
-        
+
         files_content = []
         for file_path in supported_files:
             content, success = self.document_processor.process_file(file_path)
             files_content.append((file_path, content, success))
         
-        success = self.output_manager.save_offer_documents(offer_name, files_content)
+        success = self.output_manager.save_offer_documents(offer_name, start_time, files_content)
         if success:
             print(f"Processed: {offer_name} ({len(supported_files)} files)")
         

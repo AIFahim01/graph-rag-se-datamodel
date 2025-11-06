@@ -1,6 +1,8 @@
 import json
+import time
+from datetime import datetime
 from pathlib import Path
-from typing import List, Set
+from typing import List, Dict, Any
 
 class OutputManager:
     def __init__(self, output_base_path: Path):
@@ -11,22 +13,31 @@ class OutputManager:
     def is_offer_processed(self, offer_name: str) -> bool:
         return offer_name in self.processed_offers
     
-    def save_offer_documents(self, offer_name: str, files_content: List[tuple[Path, str, bool]]) -> bool:
+    def save_offer_documents(self, offer_name: str, start_time: float, files_content: List[tuple[Path, str, bool]]) -> bool:
         """Save documents for an offer. Returns success status."""
         offer_folder = self._create_offer_structure(offer_name)
         
         success_count = 0
+        processed_files: List[str] = []
+
         for file_path, content, success in files_content:
             if success and content:
                 output_file = offer_folder / f"{file_path.stem}.md"
                 try:
                     output_file.write_text(content, encoding='utf-8')
                     success_count += 1
+                    processed_files.append(file_path.name)
                 except Exception:
                     pass
         
         if success_count > 0:
-            self.processed_offers.add(offer_name)
+            duration = time.perf_counter() - start_time
+            self.processed_offers[offer_name] = {
+                "last_processed": datetime.now().isoformat(),
+                "duration_seconds": round(duration, 3),
+                "file_count": success_count,
+                "files": processed_files,
+            }
             self._save_processed_offers()
             return True
         
@@ -37,19 +48,20 @@ class OutputManager:
         offer_folder.mkdir(parents=True, exist_ok=True)
         return offer_folder
     
-    def _load_processed_offers(self) -> Set[str]:
+    def _load_processed_offers(self) -> Dict[str, Any]:
         if self.processed_offers_file.exists():
             try:
                 with open(self.processed_offers_file, 'r') as f:
-                    return set(json.load(f))
+                    data = json.load(f)
+                    return data
             except Exception:
                 pass
-        return set()
+        return {}
     
     def _save_processed_offers(self):
         try:
             self.output_base_path.mkdir(parents=True, exist_ok=True)
             with open(self.processed_offers_file, 'w') as f:
-                json.dump(list(self.processed_offers), f)
+                json.dump(self.processed_offers, f, indent=2)
         except Exception:
             pass
