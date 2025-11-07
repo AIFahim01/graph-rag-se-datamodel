@@ -42,6 +42,15 @@ data/raw/
 data/extracted/
 data/processed/
 
+# Datasets (PDFs and processed outputs)
+datasets/projects/**/*.pdf
+datasets/processed/
+datasets/*.log
+experiments/**/pdfs/*.pdf
+experiments/**/outputs/
+experiments/**/logs/
+experiments/**/models/
+
 # Models (too large for git)
 models/custom_*/
 models/bge-large-en-v1.5/

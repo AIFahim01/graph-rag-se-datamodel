@@ -4,10 +4,12 @@ torchvision>=0.15.0
 sentence-transformers>=2.2.0
 transformers>=4.30.0
 accelerate>=0.20.0
+datasets>=2.14.0  # For HuggingFace datasets (REBEL)
 
 # PDF Processing
 pymupdf>=1.23.0
 pdfplumber>=0.10.0
+reportlab>=4.0.0  # For generating dummy PDFs
 
 # Vector Databases (install based on your choice)
 chromadb>=0.4.0
@@ -36,6 +38,8 @@ tqdm>=4.65.0
 numpy>=1.24.0
 scipy>=1.10.0
 pandas>=2.0.0
+matplotlib>=3.7.0  # For graph visualization
+seaborn>=0.12.0  # For enhanced visualizations
 
 # Monitoring & Logging
 prometheus-client>=0.17.0

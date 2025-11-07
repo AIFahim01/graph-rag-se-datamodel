@@ -1,0 +1,40 @@
+{
+  "project_name": "gamma_analytics_platform",
+  "num_pdfs": 3,
+  "num_text_segments": 6,
+  "num_total_triplets": 6,
+  "num_unique_triplets": 6,
+  "timestamp": "2025-10-31T07:37:41.300865",
+  "triplets": [
+    {
+      "head": "Continuous integration",
+      "relation": "part of",
+      "tail": "Agile development"
+    },
+    {
+      "head": "unsupervised learning",
+      "relation": "use",
+      "tail": "Anomaly detection"
+    },
+    {
+      "head": "Twitter",
+      "relation": "instance of",
+      "tail": "Social Media"
+    },
+    {
+      "head": "Apache Spark",
+      "relation": "has part",
+      "tail": "Apache Flink"
+    },
+    {
+      "head": "Kafka",
+      "relation": "used by",
+      "tail": "Apache Spark"
+    },
+    {
+      "head": "Kafka",
+      "relation": "part of",
+      "tail": "Cloud"
+    }
+  ]
+}

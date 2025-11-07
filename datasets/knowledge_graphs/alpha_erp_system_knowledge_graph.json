@@ -1,0 +1,46 @@
+{
+  "project_name": "alpha_erp_system",
+  "num_pdfs": 4,
+  "num_text_segments": 8,
+  "num_total_triplets": 9,
+  "num_unique_triplets": 8,
+  "timestamp": "2025-10-31T07:37:17.298353",
+  "triplets": [
+    {
+      "head": "demand forecasting",
+      "relation": "subclass of",
+      "tail": "analytics"
+    },
+    {
+      "head": "SAP Fiori",
+      "relation": "part of",
+      "tail": "SAP S/4HANA"
+    },
+    {
+      "head": "SAP S/4HANA Enterprise Edition",
+      "relation": "use",
+      "tail": "ERP"
+    },
+    {
+      "head": "SAP",
+      "relation": "product or material produced",
+      "tail": "S/4HANA"
+    },
+    {
+      "head": "S/4HANA",
+      "relation\": \"developer\",\n      \"tail\": \"SAP\"\n    },\n    {\n      \"head\": \"SAP HANA",
+      "relation": "use",
+      "tail": "HANA"
+    },
+    {
+      "head": "Purchase order management",
+      "relation": "facet of",
+      "tail": "procurement"
+    },
+    {
+      "head": "encryption",
+      "relation": "use",
+      "tail": "Data Protection"
+    }
+  ]
+}

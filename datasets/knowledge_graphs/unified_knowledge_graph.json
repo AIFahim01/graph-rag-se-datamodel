@@ -1,0 +1,3173 @@
+{
+  "timestamp": "2025-10-31T09:47:10.535726",
+  "num_projects": 3,
+  "project_names": [
+    "alpha_erp_system",
+    "beta_cloud_migration",
+    "gamma_analytics_platform"
+  ],
+  "num_total_entities": 97,
+  "num_cross_project_entities": 2,
+  "num_within_project_triplets": 58,
+  "num_project_level_triplets": 100,
+  "num_total_triplets": 158,
+  "graph_nodes": 100,
+  "graph_edges": 157,
+  "communities": {
+    "num_communities": 0,
+    "communities": {}
+  },
+  "projects": {
+    "alpha_erp_system": {
+      "num_pdfs": 4,
+      "num_triplets": 23,
+      "timestamp": "2025-10-31T09:44:39.303818"
+    },
+    "beta_cloud_migration": {
+      "num_pdfs": 3,
+      "num_triplets": 17,
+      "timestamp": "2025-10-31T09:44:56.120020"
+    },
+    "gamma_analytics_platform": {
+      "num_pdfs": 3,
+      "num_triplets": 18,
+      "timestamp": "2025-10-31T09:45:16.419652"
+    }
+  },
+  "entities": {
+    "SAP S/4HANA Enterprise Edition": {
+      "type": "Entity",
+      "projects": [
+        "alpha_erp_system"
+      ],
+      "mentions": [
+        {
+          "project": "alpha_erp_system",
+          "role": "head",
+          "relation": "use"
+        }
+      ],
+      "project_count": 1,
+      "total_mentions": 1
+    },
+    "ERP": {
+      "type": "Entity",
+      "projects": [
+        "alpha_erp_system"
+      ],
+      "mentions": [
+        {
+          "project": "alpha_erp_system",
+          "role": "tail",
+          "relation": "use"
+        },
+        {
+          "project": "alpha_erp_system",
+          "role": "tail",
+          "relation": "use"
+        },
+        {
+          "project": "alpha_erp_system",
+          "role": "tail",
+          "relation": "product or material produced"
+        },
+        {
+          "project": "alpha_erp_system",
+          "role": "tail",
+          "relation": "use"
+        }
+      ],
+      "project_count": 1,
+      "total_mentions": 4
+    },
+    "Deliverables": {
+      "type": "Entity",
+      "projects": [
+        "alpha_erp_system"
+      ],
+      "mentions": [
+        {
+          "project": "alpha_erp_system",
+          "role": "head",
+          "relation": "part of"
+        },
+        {
+          "project": "alpha_erp_system",
+          "role": "tail",
+          "relation": "facet of"
+        }
+      ],
+      "project_count": 1,
+      "total_mentions": 2
+    },
+    "Payment Terms": {
+      "type": "Entity",
+      "projects": [
+        "alpha_erp_system"
+      ],
+      "mentions": [
+        {
+          "project": "alpha_erp_system",
+          "role": "tail",
+          "relation": "part of"
+        }
+      ],
+      "project_count": 1,
+      "total_mentions": 1
+    },
+    "invoice": {
+      "type": "Entity",
+      "projects": [
+        "alpha_erp_system"
+      ],
+      "mentions": [
+        {
+          "project": "alpha_erp_system",
+          "role": "head",
+          "relation": "facet of"
+        }
+      ],
+      "project_count": 1,
+      "total_mentions": 1
+    },
+    "S/4HANA": {
+      "type": "Entity",
+      "projects": [
+        "alpha_erp_system"
+      ],
+      "mentions": [
+        {
+          "project": "alpha_erp_system",
+          "role": "head",
+          "relation": "developer"
+        },
+        {
+          "project": "alpha_erp_system",
+          "role": "tail",
+          "relation": "product or material produced"
+        }
+      ],
+      "project_count": 1,
+      "total_mentions": 2
+    },
+    "SAP": {
+      "type": "Entity",
+      "projects": [
+        "alpha_erp_system"
+      ],
+      "mentions": [
+        {
+          "project": "alpha_erp_system",
+          "role": "tail",
+          "relation": "developer"
+        },
+        {
+          "project": "alpha_erp_system",
+          "role": "head",
+          "relation": "product or material produced"
+        },
+        {
+          "project": "alpha_erp_system",
+          "role": "head",
+          "relation": "product or material produced"
+        },
+        {
+          "project": "alpha_erp_system",
+          "role": "tail",
+          "relation": "developer"
+        }
+      ],
+      "project_count": 1,
+      "total_mentions": 4
+    },
+    "Contract": {
+      "type": "Entity",
+      "projects": [
+        "alpha_erp_system"
+      ],
+      "mentions": [
+        {
+          "project": "alpha_erp_system",
+          "role": "head",
+          "relation": "has part"
+        }
+      ],
+      "project_count": 1,
+      "total_mentions": 1
+    },
+    "Terms and Conditions": {
+      "type": "Entity",
+      "projects": [
+        "alpha_erp_system"
+      ],
+      "mentions": [
+        {
+          "project": "alpha_erp_system",
+          "role": "tail",
+          "relation": "has part"
+        }
+      ],
+      "project_count": 1,
+      "total_mentions": 1
+    },
+    "perts": {
+      "type": "Entity",
+      "projects": [
+        "alpha_erp_system"
+      ],
+      "mentions": [
+        {
+          "project": "alpha_erp_system",
+          "role": "head",
+          "relation": "has part"
+        },
+        {
+          "project": "alpha_erp_system",
+          "role": "tail",
+          "relation": "has part"
+        }
+      ],
+      "project_count": 1,
+      "total_mentions": 2
+    },
+    "Response to RFQ": {
+      "type": "Entity",
+      "projects": [
+        "alpha_erp_system"
+      ],
+      "mentions": [
+        {
+          "project": "alpha_erp_system",
+          "role": "head",
+          "relation": "use"
+        }
+      ],
+      "project_count": 1,
+      "total_mentions": 1
+    },
+    "demand forecasting": {
+      "type": "Entity",
+      "projects": [
+        "alpha_erp_system"
+      ],
+      "mentions": [
+        {
+          "project": "alpha_erp_system",
+          "role": "head",
+          "relation": "subclass of"
+        }
+      ],
+      "project_count": 1,
+      "total_mentions": 1
+    },
+    "analytics": {
+      "type": "Entity",
+      "projects": [
+        "alpha_erp_system"
+      ],
+      "mentions": [
+        {
+          "project": "alpha_erp_system",
+          "role": "tail",
+          "relation": "subclass of"
+        }
+      ],
+      "project_count": 1,
+      "total_mentions": 1
+    },
+    "modules": {
+      "type": "Entity",
+      "projects": [
+        "alpha_erp_system"
+      ],
+      "mentions": [
+        {
+          "project": "alpha_erp_system",
+          "role": "head",
+          "relation": "subclass of"
+        },
+        {
+          "project": "alpha_erp_system",
+          "role": "tail",
+          "relation": "subclass of"
+        }
+      ],
+      "project_count": 1,
+      "total_mentions": 2
+    },
+    "SAP S/4HANA": {
+      "type": "Entity",
+      "projects": [
+        "alpha_erp_system"
+      ],
+      "mentions": [
+        {
+          "project": "alpha_erp_system",
+          "role": "head",
+          "relation": "use"
+        }
+      ],
+      "project_count": 1,
+      "total_mentions": 1
+    },
+    "SAP Fiori": {
+      "type": "Entity",
+      "projects": [
+        "alpha_erp_system"
+      ],
+      "mentions": [
+        {
+          "project": "alpha_erp_system",
+          "role": "head",
+          "relation": "developer"
+        }
+      ],
+      "project_count": 1,
+      "total_mentions": 1
+    },
+    "PI/PO": {
+      "type": "Entity",
+      "projects": [
+        "alpha_erp_system"
+      ],
+      "mentions": [
+        {
+          "project": "alpha_erp_system",
+          "role": "head",
+          "relation": "subclass of"
+        }
+      ],
+      "project_count": 1,
+      "total_mentions": 1
+    },
+    "middleware": {
+      "type": "Entity",
+      "projects": [
+        "alpha_erp_system"
+      ],
+      "mentions": [
+        {
+          "project": "alpha_erp_system",
+          "role": "tail",
+          "relation": "subclass of"
+        }
+      ],
+      "project_count": 1,
+      "total_mentions": 1
+    },
+    "Purchase order management": {
+      "type": "Entity",
+      "projects": [
+        "alpha_erp_system"
+      ],
+      "mentions": [
+        {
+          "project": "alpha_erp_system",
+          "role": "head",
+          "relation": "facet of"
+        }
+      ],
+      "project_count": 1,
+      "total_mentions": 1
+    },
+    "Procurement": {
+      "type": "Entity",
+      "projects": [
+        "alpha_erp_system"
+      ],
+      "mentions": [
+        {
+          "project": "alpha_erp_system",
+          "role": "tail",
+          "relation": "facet of"
+        }
+      ],
+      "project_count": 1,
+      "total_mentions": 1
+    },
+    "accounts payable": {
+      "type": "Entity",
+      "projects": [
+        "alpha_erp_system"
+      ],
+      "mentions": [
+        {
+          "project": "alpha_erp_system",
+          "role": "head",
+          "relation": "part of"
+        }
+      ],
+      "project_count": 1,
+      "total_mentions": 1
+    },
+    "General ledger": {
+      "type": "Entity",
+      "projects": [
+        "alpha_erp_system"
+      ],
+      "mentions": [
+        {
+          "project": "alpha_erp_system",
+          "role": "tail",
+          "relation": "part of"
+        }
+      ],
+      "project_count": 1,
+      "total_mentions": 1
+    },
+    "Core module": {
+      "type": "Entity",
+      "projects": [
+        "alpha_erp_system"
+      ],
+      "mentions": [
+        {
+          "project": "alpha_erp_system",
+          "role": "head",
+          "relation": "part of"
+        }
+      ],
+      "project_count": 1,
+      "total_mentions": 1
+    },
+    "system design": {
+      "type": "Entity",
+      "projects": [
+        "alpha_erp_system"
+      ],
+      "mentions": [
+        {
+          "project": "alpha_erp_system",
+          "role": "tail",
+          "relation": "part of"
+        }
+      ],
+      "project_count": 1,
+      "total_mentions": 1
+    },
+    "SAP HANA": {
+      "type": "Entity",
+      "projects": [
+        "alpha_erp_system"
+      ],
+      "mentions": [
+        {
+          "project": "alpha_erp_system",
+          "role": "head",
+          "relation": "platform"
+        }
+      ],
+      "project_count": 1,
+      "total_mentions": 1
+    },
+    "SPS06": {
+      "type": "Entity",
+      "projects": [
+        "alpha_erp_system"
+      ],
+      "mentions": [
+        {
+          "project": "alpha_erp_system",
+          "role": "tail",
+          "relation": "platform"
+        }
+      ],
+      "project_count": 1,
+      "total_mentions": 1
+    },
+    "SFTP": {
+      "type": "Entity",
+      "projects": [
+        "alpha_erp_system"
+      ],
+      "mentions": [
+        {
+          "project": "alpha_erp_system",
+          "role": "head",
+          "relation": "use"
+        }
+      ],
+      "project_count": 1,
+      "total_mentions": 1
+    },
+    "Backup Infrastructure": {
+      "type": "Entity",
+      "projects": [
+        "alpha_erp_system"
+      ],
+      "mentions": [
+        {
+          "project": "alpha_erp_system",
+          "role": "tail",
+          "relation": "use"
+        }
+      ],
+      "project_count": 1,
+      "total_mentions": 1
+    },
+    "HANA": {
+      "type": "Entity",
+      "projects": [
+        "alpha_erp_system"
+      ],
+      "mentions": [
+        {
+          "project": "alpha_erp_system",
+          "role": "head",
+          "relation": "use"
+        }
+      ],
+      "project_count": 1,
+      "total_mentions": 1
+    },
+    "Analytics": {
+      "type": "Entity",
+      "projects": [
+        "alpha_erp_system"
+      ],
+      "mentions": [
+        {
+          "project": "alpha_erp_system",
+          "role": "tail",
+          "relation": "use"
+        }
+      ],
+      "project_count": 1,
+      "total_mentions": 1
+    },
+    "encryption": {
+      "type": "Entity",
+      "projects": [
+        "alpha_erp_system"
+      ],
+      "mentions": [
+        {
+          "project": "alpha_erp_system",
+          "role": "head",
+          "relation": "use"
+        }
+      ],
+      "project_count": 1,
+      "total_mentions": 1
+    },
+    "Data Protection": {
+      "type": "Entity",
+      "projects": [
+        "alpha_erp_system"
+      ],
+      "mentions": [
+        {
+          "project": "alpha_erp_system",
+          "role": "tail",
+          "relation": "use"
+        }
+      ],
+      "project_count": 1,
+      "total_mentions": 1
+    },
+    "Performance Requirements": {
+      "type": "Entity",
+      "projects": [
+        "alpha_erp_system"
+      ],
+      "mentions": [
+        {
+          "project": "alpha_erp_system",
+          "role": "head",
+          "relation": "facet of"
+        }
+      ],
+      "project_count": 1,
+      "total_mentions": 1
+    },
+    "System Availability": {
+      "type": "Entity",
+      "projects": [
+        "alpha_erp_system"
+      ],
+      "mentions": [
+        {
+          "project": "alpha_erp_system",
+          "role": "tail",
+          "relation": "facet of"
+        }
+      ],
+      "project_count": 1,
+      "total_mentions": 1
+    },
+    "2 AM": {
+      "type": "Entity",
+      "projects": [
+        "alpha_erp_system"
+      ],
+      "mentions": [
+        {
+          "project": "alpha_erp_system",
+          "role": "head",
+          "relation": "followed by"
+        }
+      ],
+      "project_count": 1,
+      "total_mentions": 1
+    },
+    "6 AM": {
+      "type": "Entity",
+      "projects": [
+        "alpha_erp_system"
+      ],
+      "mentions": [
+        {
+          "project": "alpha_erp_system",
+          "role": "tail",
+          "relation": "followed by"
+        }
+      ],
+      "project_count": 1,
+      "total_mentions": 1
+    },
+    "Cloud Migration - Commercial Proposal": {
+      "type": "Entity",
+      "projects": [
+        "beta_cloud_migration"
+      ],
+      "mentions": [
+        {
+          "project": "beta_cloud_migration",
+          "role": "head",
+          "relation": "publication date"
+        }
+      ],
+      "project_count": 1,
+      "total_mentions": 1
+    },
+    "October 29, 2025": {
+      "type": "Entity",
+      "projects": [
+        "beta_cloud_migration",
+        "gamma_analytics_platform"
+      ],
+      "mentions": [
+        {
+          "project": "beta_cloud_migration",
+          "role": "tail",
+          "relation": "publication date"
+        },
+        {
+          "project": "gamma_analytics_platform",
+          "role": "tail",
+          "relation": "inception"
+        },
+        {
+          "project": "gamma_analytics_platform",
+          "role": "tail",
+          "relation": "inception"
+        }
+      ],
+      "project_count": 2,
+      "total_mentions": 3
+    },
+    "EKS": {
+      "type": "Entity",
+      "projects": [
+        "beta_cloud_migration"
+      ],
+      "mentions": [
+        {
+          "project": "beta_cloud_migration",
+          "role": "head",
+          "relation": "use"
+        }
+      ],
+      "project_count": 1,
+      "total_mentions": 1
+    },
+    "Kubernetes": {
+      "type": "Entity",
+      "projects": [
+        "beta_cloud_migration",
+        "gamma_analytics_platform"
+      ],
+      "mentions": [
+        {
+          "project": "beta_cloud_migration",
+          "role": "tail",
+          "relation": "use"
+        },
+        {
+          "project": "beta_cloud_migration",
+          "role": "head",
+          "relation": "use"
+        },
+        {
+          "project": "gamma_analytics_platform",
+          "role": "head",
+          "relation": "use"
+        }
+      ],
+      "project_count": 2,
+      "total_mentions": 3
+    },
+    "Backup and Disaster Recovery Management": {
+      "type": "Entity",
+      "projects": [
+        "beta_cloud_migration"
+      ],
+      "mentions": [
+        {
+          "project": "beta_cloud_migration",
+          "role": "head",
+          "relation": "subclass of"
+        }
+      ],
+      "project_count": 1,
+      "total_mentions": 1
+    },
+    "Infrastructure Management": {
+      "type": "Entity",
+      "projects": [
+        "beta_cloud_migration"
+      ],
+      "mentions": [
+        {
+          "project": "beta_cloud_migration",
+          "role": "tail",
+          "relation": "subclass of"
+        }
+      ],
+      "project_count": 1,
+      "total_mentions": 1
+    },
+    "Cost Optimization Services": {
+      "type": "Entity",
+      "projects": [
+        "beta_cloud_migration"
+      ],
+      "mentions": [
+        {
+          "project": "beta_cloud_migration",
+          "role": "head",
+          "relation": "use"
+        }
+      ],
+      "project_count": 1,
+      "total_mentions": 1
+    },
+    "Optimization": {
+      "type": "Entity",
+      "projects": [
+        "beta_cloud_migration"
+      ],
+      "mentions": [
+        {
+          "project": "beta_cloud_migration",
+          "role": "tail",
+          "relation": "use"
+        }
+      ],
+      "project_count": 1,
+      "total_mentions": 1
+    },
+    "AWS": {
+      "type": "Entity",
+      "projects": [
+        "beta_cloud_migration"
+      ],
+      "mentions": [
+        {
+          "project": "beta_cloud_migration",
+          "role": "head",
+          "relation": "instance of"
+        }
+      ],
+      "project_count": 1,
+      "total_mentions": 1
+    },
+    "cloud provider": {
+      "type": "Entity",
+      "projects": [
+        "beta_cloud_migration"
+      ],
+      "mentions": [
+        {
+          "project": "beta_cloud_migration",
+          "role": "tail",
+          "relation": "instance of"
+        }
+      ],
+      "project_count": 1,
+      "total_mentions": 1
+    },
+    "containerization": {
+      "type": "Entity",
+      "projects": [
+        "beta_cloud_migration"
+      ],
+      "mentions": [
+        {
+          "project": "beta_cloud_migration",
+          "role": "tail",
+          "relation": "use"
+        }
+      ],
+      "project_count": 1,
+      "total_mentions": 1
+    },
+    "Amazon RDS": {
+      "type": "Entity",
+      "projects": [
+        "beta_cloud_migration"
+      ],
+      "mentions": [
+        {
+          "project": "beta_cloud_migration",
+          "role": "head",
+          "relation": "use"
+        }
+      ],
+      "project_count": 1,
+      "total_mentions": 1
+    },
+    "relational database": {
+      "type": "Entity",
+      "projects": [
+        "beta_cloud_migration"
+      ],
+      "mentions": [
+        {
+          "project": "beta_cloud_migration",
+          "role": "tail",
+          "relation": "use"
+        }
+      ],
+      "project_count": 1,
+      "total_mentions": 1
+    },
+    "John F. Kennedy School of Government": {
+      "type": "Entity",
+      "projects": [
+        "beta_cloud_migration"
+      ],
+      "mentions": [
+        {
+          "project": "beta_cloud_migration",
+          "role": "head",
+          "relation": "part of"
+        }
+      ],
+      "project_count": 1,
+      "total_mentions": 1
+    },
+    "Harvard University": {
+      "type": "Entity",
+      "projects": [
+        "beta_cloud_migration"
+      ],
+      "mentions": [
+        {
+          "project": "beta_cloud_migration",
+          "role": "tail",
+          "relation": "part of"
+        }
+      ],
+      "project_count": 1,
+      "total_mentions": 1
+    },
+    "Database migration": {
+      "type": "Entity",
+      "projects": [
+        "beta_cloud_migration"
+      ],
+      "mentions": [
+        {
+          "project": "beta_cloud_migration",
+          "role": "head",
+          "relation": "subclass of"
+        }
+      ],
+      "project_count": 1,
+      "total_mentions": 1
+    },
+    "Migration": {
+      "type": "Entity",
+      "projects": [
+        "beta_cloud_migration"
+      ],
+      "mentions": [
+        {
+          "project": "beta_cloud_migration",
+          "role": "tail",
+          "relation": "subclass of"
+        }
+      ],
+      "project_count": 1,
+      "total_mentions": 1
+    },
+    "Cost optimization": {
+      "type": "Entity",
+      "projects": [
+        "beta_cloud_migration"
+      ],
+      "mentions": [
+        {
+          "project": "beta_cloud_migration",
+          "role": "head",
+          "relation": "subclass of"
+        }
+      ],
+      "project_count": 1,
+      "total_mentions": 1
+    },
+    "Performance tuning": {
+      "type": "Entity",
+      "projects": [
+        "beta_cloud_migration"
+      ],
+      "mentions": [
+        {
+          "project": "beta_cloud_migration",
+          "role": "tail",
+          "relation": "subclass of"
+        }
+      ],
+      "project_count": 1,
+      "total_mentions": 1
+    },
+    "VMware": {
+      "type": "Entity",
+      "projects": [
+        "beta_cloud_migration"
+      ],
+      "mentions": [
+        {
+          "project": "beta_cloud_migration",
+          "role": "head",
+          "relation": "product or material produced"
+        },
+        {
+          "project": "beta_cloud_migration",
+          "role": "tail",
+          "relation": "developer"
+        }
+      ],
+      "project_count": 1,
+      "total_mentions": 2
+    },
+    "vSphere": {
+      "type": "Entity",
+      "projects": [
+        "beta_cloud_migration"
+      ],
+      "mentions": [
+        {
+          "project": "beta_cloud_migration",
+          "role": "tail",
+          "relation": "product or material produced"
+        },
+        {
+          "project": "beta_cloud_migration",
+          "role": "head",
+          "relation": "developer"
+        }
+      ],
+      "project_count": 1,
+      "total_mentions": 2
+    },
+    "EC2": {
+      "type": "Entity",
+      "projects": [
+        "beta_cloud_migration"
+      ],
+      "mentions": [
+        {
+          "project": "beta_cloud_migration",
+          "role": "head",
+          "relation": "use"
+        }
+      ],
+      "project_count": 1,
+      "total_mentions": 1
+    },
+    "Compute": {
+      "type": "Entity",
+      "projects": [
+        "beta_cloud_migration"
+      ],
+      "mentions": [
+        {
+          "project": "beta_cloud_migration",
+          "role": "tail",
+          "relation": "use"
+        }
+      ],
+      "project_count": 1,
+      "total_mentions": 1
+    },
+    "HTTP": {
+      "type": "Entity",
+      "projects": [
+        "beta_cloud_migration"
+      ],
+      "mentions": [
+        {
+          "project": "beta_cloud_migration",
+          "role": "head",
+          "relation": "different from"
+        },
+        {
+          "project": "beta_cloud_migration",
+          "role": "tail",
+          "relation": "different from"
+        }
+      ],
+      "project_count": 1,
+      "total_mentions": 2
+    },
+    "HTTPS": {
+      "type": "Entity",
+      "projects": [
+        "beta_cloud_migration"
+      ],
+      "mentions": [
+        {
+          "project": "beta_cloud_migration",
+          "role": "tail",
+          "relation": "different from"
+        },
+        {
+          "project": "beta_cloud_migration",
+          "role": "head",
+          "relation": "different from"
+        }
+      ],
+      "project_count": 1,
+      "total_mentions": 2
+    },
+    "AWS Database Migration Service": {
+      "type": "Entity",
+      "projects": [
+        "beta_cloud_migration"
+      ],
+      "mentions": [
+        {
+          "project": "beta_cloud_migration",
+          "role": "head",
+          "relation": "use"
+        }
+      ],
+      "project_count": 1,
+      "total_mentions": 1
+    },
+    "Data Migration": {
+      "type": "Entity",
+      "projects": [
+        "beta_cloud_migration"
+      ],
+      "mentions": [
+        {
+          "project": "beta_cloud_migration",
+          "role": "tail",
+          "relation": "use"
+        }
+      ],
+      "project_count": 1,
+      "total_mentions": 1
+    },
+    "Comprehensive testing": {
+      "type": "Entity",
+      "projects": [
+        "beta_cloud_migration"
+      ],
+      "mentions": [
+        {
+          "project": "beta_cloud_migration",
+          "role": "head",
+          "relation": "subclass of"
+        }
+      ],
+      "project_count": 1,
+      "total_mentions": 1
+    },
+    "test": {
+      "type": "Entity",
+      "projects": [
+        "beta_cloud_migration"
+      ],
+      "mentions": [
+        {
+          "project": "beta_cloud_migration",
+          "role": "tail",
+          "relation": "subclass of"
+        }
+      ],
+      "project_count": 1,
+      "total_mentions": 1
+    },
+    "Apache Kafka": {
+      "type": "Entity",
+      "projects": [
+        "gamma_analytics_platform"
+      ],
+      "mentions": [
+        {
+          "project": "gamma_analytics_platform",
+          "role": "head",
+          "relation": "use"
+        }
+      ],
+      "project_count": 1,
+      "total_mentions": 1
+    },
+    "data ingestion": {
+      "type": "Entity",
+      "projects": [
+        "gamma_analytics_platform"
+      ],
+      "mentions": [
+        {
+          "project": "gamma_analytics_platform",
+          "role": "tail",
+          "relation": "use"
+        }
+      ],
+      "project_count": 1,
+      "total_mentions": 1
+    },
+    "TensorFlow": {
+      "type": "Entity",
+      "projects": [
+        "gamma_analytics_platform"
+      ],
+      "mentions": [
+        {
+          "project": "gamma_analytics_platform",
+          "role": "head",
+          "relation": "use"
+        }
+      ],
+      "project_count": 1,
+      "total_mentions": 1
+    },
+    "Machine learning": {
+      "type": "Entity",
+      "projects": [
+        "gamma_analytics_platform"
+      ],
+      "mentions": [
+        {
+          "project": "gamma_analytics_platform",
+          "role": "tail",
+          "relation": "use"
+        }
+      ],
+      "project_count": 1,
+      "total_mentions": 1
+    },
+    "S3": {
+      "type": "Entity",
+      "projects": [
+        "gamma_analytics_platform"
+      ],
+      "mentions": [
+        {
+          "project": "gamma_analytics_platform",
+          "role": "head",
+          "relation": "instance of"
+        }
+      ],
+      "project_count": 1,
+      "total_mentions": 1
+    },
+    "Data Lake": {
+      "type": "Entity",
+      "projects": [
+        "gamma_analytics_platform"
+      ],
+      "mentions": [
+        {
+          "project": "gamma_analytics_platform",
+          "role": "tail",
+          "relation": "instance of"
+        }
+      ],
+      "project_count": 1,
+      "total_mentions": 1
+    },
+    "FastAPI": {
+      "type": "Entity",
+      "projects": [
+        "gamma_analytics_platform"
+      ],
+      "mentions": [
+        {
+          "project": "gamma_analytics_platform",
+          "role": "head",
+          "relation": "use"
+        }
+      ],
+      "project_count": 1,
+      "total_mentions": 1
+    },
+    "RESTful": {
+      "type": "Entity",
+      "projects": [
+        "gamma_analytics_platform"
+      ],
+      "mentions": [
+        {
+          "project": "gamma_analytics_platform",
+          "role": "tail",
+          "relation": "use"
+        }
+      ],
+      "project_count": 1,
+      "total_mentions": 1
+    },
+    "unsupervised learning": {
+      "type": "Entity",
+      "projects": [
+        "gamma_analytics_platform"
+      ],
+      "mentions": [
+        {
+          "project": "gamma_analytics_platform",
+          "role": "head",
+          "relation": "use"
+        }
+      ],
+      "project_count": 1,
+      "total_mentions": 1
+    },
+    "Anomaly detection": {
+      "type": "Entity",
+      "projects": [
+        "gamma_analytics_platform"
+      ],
+      "mentions": [
+        {
+          "project": "gamma_analytics_platform",
+          "role": "tail",
+          "relation": "use"
+        }
+      ],
+      "project_count": 1,
+      "total_mentions": 1
+    },
+    "audit logging": {
+      "type": "Entity",
+      "projects": [
+        "gamma_analytics_platform"
+      ],
+      "mentions": [
+        {
+          "project": "gamma_analytics_platform",
+          "role": "head",
+          "relation": "facet of"
+        }
+      ],
+      "project_count": 1,
+      "total_mentions": 1
+    },
+    "access control": {
+      "type": "Entity",
+      "projects": [
+        "gamma_analytics_platform"
+      ],
+      "mentions": [
+        {
+          "project": "gamma_analytics_platform",
+          "role": "tail",
+          "relation": "facet of"
+        }
+      ],
+      "project_count": 1,
+      "total_mentions": 1
+    },
+    "Data Insights Inc": {
+      "type": "Entity",
+      "projects": [
+        "gamma_analytics_platform"
+      ],
+      "mentions": [
+        {
+          "project": "gamma_analytics_platform",
+          "role": "head",
+          "relation": "inception"
+        }
+      ],
+      "project_count": 1,
+      "total_mentions": 1
+    },
+    "Microservices": {
+      "type": "Entity",
+      "projects": [
+        "gamma_analytics_platform"
+      ],
+      "mentions": [
+        {
+          "project": "gamma_analytics_platform",
+          "role": "head",
+          "relation": "part of"
+        }
+      ],
+      "project_count": 1,
+      "total_mentions": 1
+    },
+    "Cloud": {
+      "type": "Entity",
+      "projects": [
+        "gamma_analytics_platform"
+      ],
+      "mentions": [
+        {
+          "project": "gamma_analytics_platform",
+          "role": "tail",
+          "relation": "part of"
+        }
+      ],
+      "project_count": 1,
+      "total_mentions": 1
+    },
+    "Kafka": {
+      "type": "Entity",
+      "projects": [
+        "gamma_analytics_platform"
+      ],
+      "mentions": [
+        {
+          "project": "gamma_analytics_platform",
+          "role": "head",
+          "relation": "instance of"
+        }
+      ],
+      "project_count": 1,
+      "total_mentions": 1
+    },
+    "Event-driven architecture": {
+      "type": "Entity",
+      "projects": [
+        "gamma_analytics_platform"
+      ],
+      "mentions": [
+        {
+          "project": "gamma_analytics_platform",
+          "role": "tail",
+          "relation": "instance of"
+        }
+      ],
+      "project_count": 1,
+      "total_mentions": 1
+    },
+    "ELK stack": {
+      "type": "Entity",
+      "projects": [
+        "gamma_analytics_platform"
+      ],
+      "mentions": [
+        {
+          "project": "gamma_analytics_platform",
+          "role": "head",
+          "relation": "has part"
+        },
+        {
+          "project": "gamma_analytics_platform",
+          "role": "head",
+          "relation": "has part"
+        }
+      ],
+      "project_count": 1,
+      "total_mentions": 2
+    },
+    "Prometheus": {
+      "type": "Entity",
+      "projects": [
+        "gamma_analytics_platform"
+      ],
+      "mentions": [
+        {
+          "project": "gamma_analytics_platform",
+          "role": "tail",
+          "relation": "has part"
+        }
+      ],
+      "project_count": 1,
+      "total_mentions": 1
+    },
+    "Grafana": {
+      "type": "Entity",
+      "projects": [
+        "gamma_analytics_platform"
+      ],
+      "mentions": [
+        {
+          "project": "gamma_analytics_platform",
+          "role": "tail",
+          "relation": "has part"
+        }
+      ],
+      "project_count": 1,
+      "total_mentions": 1
+    },
+    "sprints": {
+      "type": "Entity",
+      "projects": [
+        "gamma_analytics_platform"
+      ],
+      "mentions": [
+        {
+          "project": "gamma_analytics_platform",
+          "role": "head",
+          "relation": "part of"
+        }
+      ],
+      "project_count": 1,
+      "total_mentions": 1
+    },
+    "Agile development": {
+      "type": "Entity",
+      "projects": [
+        "gamma_analytics_platform"
+      ],
+      "mentions": [
+        {
+          "project": "gamma_analytics_platform",
+          "role": "tail",
+          "relation": "part of"
+        }
+      ],
+      "project_count": 1,
+      "total_mentions": 1
+    },
+    "Data Analytics Platform": {
+      "type": "Entity",
+      "projects": [
+        "gamma_analytics_platform"
+      ],
+      "mentions": [
+        {
+          "project": "gamma_analytics_platform",
+          "role": "head",
+          "relation": "inception"
+        }
+      ],
+      "project_count": 1,
+      "total_mentions": 1
+    },
+    "Bloomberg": {
+      "type": "Entity",
+      "projects": [
+        "gamma_analytics_platform"
+      ],
+      "mentions": [
+        {
+          "project": "gamma_analytics_platform",
+          "role": "head",
+          "relation": "subsidiary"
+        }
+      ],
+      "project_count": 1,
+      "total_mentions": 1
+    },
+    "Reuters": {
+      "type": "Entity",
+      "projects": [
+        "gamma_analytics_platform"
+      ],
+      "mentions": [
+        {
+          "project": "gamma_analytics_platform",
+          "role": "tail",
+          "relation": "subsidiary"
+        }
+      ],
+      "project_count": 1,
+      "total_mentions": 1
+    },
+    "Twitter": {
+      "type": "Entity",
+      "projects": [
+        "gamma_analytics_platform"
+      ],
+      "mentions": [
+        {
+          "project": "gamma_analytics_platform",
+          "role": "head",
+          "relation": "instance of"
+        }
+      ],
+      "project_count": 1,
+      "total_mentions": 1
+    },
+    "Social Media": {
+      "type": "Entity",
+      "projects": [
+        "gamma_analytics_platform"
+      ],
+      "mentions": [
+        {
+          "project": "gamma_analytics_platform",
+          "role": "tail",
+          "relation": "instance of"
+        }
+      ],
+      "project_count": 1,
+      "total_mentions": 1
+    },
+    "Apache Spark": {
+      "type": "Entity",
+      "projects": [
+        "gamma_analytics_platform"
+      ],
+      "mentions": [
+        {
+          "project": "gamma_analytics_platform",
+          "role": "head",
+          "relation": "has part"
+        }
+      ],
+      "project_count": 1,
+      "total_mentions": 1
+    },
+    "Apache Flink": {
+      "type": "Entity",
+      "projects": [
+        "gamma_analytics_platform"
+      ],
+      "mentions": [
+        {
+          "project": "gamma_analytics_platform",
+          "role": "tail",
+          "relation": "has part"
+        }
+      ],
+      "project_count": 1,
+      "total_mentions": 1
+    },
+    "container orchestration": {
+      "type": "Entity",
+      "projects": [
+        "gamma_analytics_platform"
+      ],
+      "mentions": [
+        {
+          "project": "gamma_analytics_platform",
+          "role": "tail",
+          "relation": "use"
+        }
+      ],
+      "project_count": 1,
+      "total_mentions": 1
+    },
+    "AES-256": {
+      "type": "Entity",
+      "projects": [
+        "gamma_analytics_platform"
+      ],
+      "mentions": [
+        {
+          "project": "gamma_analytics_platform",
+          "role": "head",
+          "relation": "use"
+        }
+      ],
+      "project_count": 1,
+      "total_mentions": 1
+    },
+    "Encryption": {
+      "type": "Entity",
+      "projects": [
+        "gamma_analytics_platform"
+      ],
+      "mentions": [
+        {
+          "project": "gamma_analytics_platform",
+          "role": "tail",
+          "relation": "use"
+        }
+      ],
+      "project_count": 1,
+      "total_mentions": 1
+    }
+  },
+  "cross_project_entities": [
+    {
+      "entity": "October 29, 2025",
+      "projects": [
+        "beta_cloud_migration",
+        "gamma_analytics_platform"
+      ],
+      "project_count": 2,
+      "total_mentions": 3
+    },
+    {
+      "entity": "Kubernetes",
+      "projects": [
+        "beta_cloud_migration",
+        "gamma_analytics_platform"
+      ],
+      "project_count": 2,
+      "total_mentions": 3
+    }
+  ],
+  "triplets": {
+    "within_project": [
+      {
+        "head": "SAP S/4HANA Enterprise Edition",
+        "relation": "use",
+        "tail": "ERP",
+        "metadata": {
+          "source_pdf": "commercial_offer.pdf",
+          "source_path": "datasets/projects/alpha_erp_system/commercial_offer.pdf",
+          "page_number": 1,
+          "chunk_id": "chunk_0",
+          "source_text": "ERP Implementation - Commercial\nProposal\nDate: October 29, 2025\nDocument Type: Commercial Offer\n1. Pricing Structure\nSoftware Licenses: SAP S/4HANA Enterprise Edition - $450,000 (one-time)\nImplementat...",
+          "source_text_length": 400,
+          "extraction_method": "REBEL",
+          "model_name": "Babelscape/rebel-large"
+        },
+        "project": "alpha_erp_system"
+      },
+      {
+        "head": "Deliverables",
+        "relation": "part of",
+        "tail": "Payment Terms",
+        "metadata": {
+          "source_pdf": "commercial_offer.pdf",
+          "source_path": "datasets/projects/alpha_erp_system/commercial_offer.pdf",
+          "page_number": 1,
+          "chunk_id": "chunk_1",
+          "source_text": "sive user training program - $85,000\nAnnual Support and Maintenance: 22% of license cost - $99,000/year (starting Year 2)\n2. Payment Terms\n30% upon contract signing and project kickoff\n40% upon succes...",
+          "source_text_length": 396,
+          "extraction_method": "REBEL",
+          "model_name": "Babelscape/rebel-large"
+        },
+        "project": "alpha_erp_system"
+      },
+      {
+        "head": "invoice",
+        "relation": "facet of",
+        "tail": "Deliverables",
+        "metadata": {
+          "source_pdf": "commercial_offer.pdf",
+          "source_path": "datasets/projects/alpha_erp_system/commercial_offer.pdf",
+          "page_number": 1,
+          "chunk_id": "chunk_2",
+          "source_text": "ys from invoice date\n3. Deliverables...",
+          "source_text_length": 36,
+          "extraction_method": "REBEL",
+          "model_name": "Babelscape/rebel-large"
+        },
+        "project": "alpha_erp_system"
+      },
+      {
+        "head": "S/4HANA",
+        "relation": "developer",
+        "tail": "SAP",
+        "metadata": {
+          "source_pdf": "commercial_offer.pdf",
+          "source_path": "datasets/projects/alpha_erp_system/commercial_offer.pdf",
+          "page_number": 2,
+          "chunk_id": "chunk_3",
+          "source_text": "Fully configured SAP S/4HANA system with all specified modules\nCustom integrations with existing legacy systems\nComprehensive documentation including technical design, user manuals, and operational pr...",
+          "source_text_length": 349,
+          "extraction_method": "REBEL",
+          "model_name": "Babelscape/rebel-large"
+        },
+        "mentions": [
+          {
+            "source_pdf": "commercial_offer.pdf",
+            "source_path": "datasets/projects/alpha_erp_system/commercial_offer.pdf",
+            "page_number": 2,
+            "chunk_id": "chunk_3",
+            "source_text": "Fully configured SAP S/4HANA system with all specified modules\nCustom integrations with existing legacy systems\nComprehensive documentation including technical design, user manuals, and operational pr...",
+            "source_text_length": 349,
+            "extraction_method": "REBEL",
+            "model_name": "Babelscape/rebel-large"
+          },
+          {
+            "source_pdf": "rfq_response.pdf",
+            "source_path": "datasets/projects/alpha_erp_system/rfq_response.pdf",
+            "page_number": 1,
+            "chunk_id": "chunk_2",
+            "source_text": "ing.\nExpected benefits: 30% reduction in inventory carrying costs, 25% improvement in on-time delivery,\nreal-time financial visibility.\nCritical success factors: minimal business disruption, comprehen...",
+            "source_text_length": 364,
+            "extraction_method": "REBEL",
+            "model_name": "Babelscape/rebel-large"
+          }
+        ],
+        "mention_count": 2,
+        "project": "alpha_erp_system"
+      },
+      {
+        "head": "Contract",
+        "relation": "has part",
+        "tail": "Terms and Conditions",
+        "metadata": {
+          "source_pdf": "commercial_offer.pdf",
+          "source_path": "datasets/projects/alpha_erp_system/commercial_offer.pdf",
+          "page_number": 2,
+          "chunk_id": "chunk_4",
+          "source_text": "warranty on all implementation work\n4. Terms and Conditions\nProposal validity: 60 days from date of submission\nProject duration: 12 months from contract signing\nTravel and expenses will be billed at c...",
+          "source_text_length": 364,
+          "extraction_method": "REBEL",
+          "model_name": "Babelscape/rebel-large"
+        },
+        "project": "alpha_erp_system"
+      },
+      {
+        "head": "perts",
+        "relation": "has part",
+        "tail": "perts",
+        "metadata": {
+          "source_pdf": "commercial_offer.pdf",
+          "source_path": "datasets/projects/alpha_erp_system/commercial_offer.pdf",
+          "page_number": 2,
+          "chunk_id": "chunk_5",
+          "source_text": "perts...",
+          "source_text_length": 5,
+          "extraction_method": "REBEL",
+          "model_name": "Babelscape/rebel-large"
+        },
+        "project": "alpha_erp_system"
+      },
+      {
+        "head": "Response to RFQ",
+        "relation": "use",
+        "tail": "ERP",
+        "metadata": {
+          "source_pdf": "rfq_response.pdf",
+          "source_path": "datasets/projects/alpha_erp_system/rfq_response.pdf",
+          "page_number": 1,
+          "chunk_id": "chunk_0",
+          "source_text": "Response to RFQ - ERP System\nDate: October 29, 2025\nDocument Type: Rfq Response\n1. Company Overview\nOur company has 15+ years of experience implementing ERP solutions for manufacturing enterprises.\nWe...",
+          "source_text_length": 400,
+          "extraction_method": "REBEL",
+          "model_name": "Babelscape/rebel-large"
+        },
+        "project": "alpha_erp_system"
+      },
+      {
+        "head": "SAP",
+        "relation": "product or material produced",
+        "tail": "ERP",
+        "metadata": {
+          "source_pdf": "rfq_response.pdf",
+          "source_path": "datasets/projects/alpha_erp_system/rfq_response.pdf",
+          "page_number": 1,
+          "chunk_id": "chunk_1",
+          "source_text": "in expertise.\nWe maintain SAP Gold Partner status and have received multiple implementation excellence awards.\n2. Understanding of Requirements\nABC Corporation requires an integrated ERP system to rep...",
+          "source_text_length": 400,
+          "extraction_method": "REBEL",
+          "model_name": "Babelscape/rebel-large"
+        },
+        "project": "alpha_erp_system"
+      },
+      {
+        "head": "SAP",
+        "relation": "product or material produced",
+        "tail": "S/4HANA",
+        "metadata": {
+          "source_pdf": "rfq_response.pdf",
+          "source_path": "datasets/projects/alpha_erp_system/rfq_response.pdf",
+          "page_number": 1,
+          "chunk_id": "chunk_2",
+          "source_text": "ing.\nExpected benefits: 30% reduction in inventory carrying costs, 25% improvement in on-time delivery,\nreal-time financial visibility.\nCritical success factors: minimal business disruption, comprehen...",
+          "source_text_length": 364,
+          "extraction_method": "REBEL",
+          "model_name": "Babelscape/rebel-large"
+        },
+        "project": "alpha_erp_system"
+      },
+      {
+        "head": "demand forecasting",
+        "relation": "subclass of",
+        "tail": "analytics",
+        "metadata": {
+          "source_pdf": "rfq_response.pdf",
+          "source_path": "datasets/projects/alpha_erp_system/rfq_response.pdf",
+          "page_number": 2,
+          "chunk_id": "chunk_4",
+          "source_text": "Pre-configured industry templates for discrete manufacturing to accelerate implementation.\nMobile-enabled interfaces for shop floor workers and warehouse staff.\nAdvanced analytics with embedded AI for...",
+          "source_text_length": 352,
+          "extraction_method": "REBEL",
+          "model_name": "Babelscape/rebel-large"
+        },
+        "project": "alpha_erp_system"
+      },
+      {
+        "head": "modules",
+        "relation": "subclass of",
+        "tail": "modules",
+        "metadata": {
+          "source_pdf": "rfq_response.pdf",
+          "source_path": "datasets/projects/alpha_erp_system/rfq_response.pdf",
+          "page_number": 2,
+          "chunk_id": "chunk_5",
+          "source_text": "ystem) and quality management\ntools.\n4. Team Composition\nProject Manager: PMP certified with 10+ years SAP implementation experience\nSolution Architect: SAP Certified with expertise in manufacturing i...",
+          "source_text_length": 400,
+          "extraction_method": "REBEL",
+          "model_name": "Babelscape/rebel-large"
+        },
+        "project": "alpha_erp_system"
+      },
+      {
+        "head": "SAP S/4HANA",
+        "relation": "use",
+        "tail": "ERP",
+        "metadata": {
+          "source_pdf": "technical_offer.pdf",
+          "source_path": "datasets/projects/alpha_erp_system/technical_offer.pdf",
+          "page_number": 1,
+          "chunk_id": "chunk_0",
+          "source_text": "ERP Implementation - Technical\nProposal\nDate: October 29, 2025\nDocument Type: Technical Offer\n1. Executive Summary\nWe propose a comprehensive ERP solution for ABC Corporation to streamline manufacturi...",
+          "source_text_length": 400,
+          "extraction_method": "REBEL",
+          "model_name": "Babelscape/rebel-large"
+        },
+        "project": "alpha_erp_system"
+      },
+      {
+        "head": "SAP Fiori",
+        "relation": "developer",
+        "tail": "SAP",
+        "metadata": {
+          "source_pdf": "technical_offer.pdf",
+          "source_path": "datasets/projects/alpha_erp_system/technical_offer.pdf",
+          "page_number": 1,
+          "chunk_id": "chunk_1",
+          "source_text": "and real-time\nanalytics.\nThe implementation will be phased over 12 months with minimal disruption to ongoing operations.\n2. Technical Architecture\nThe proposed architecture consists of three tiers: pr...",
+          "source_text_length": 399,
+          "extraction_method": "REBEL",
+          "model_name": "Babelscape/rebel-large"
+        },
+        "project": "alpha_erp_system"
+      },
+      {
+        "head": "PI/PO",
+        "relation": "subclass of",
+        "tail": "middleware",
+        "metadata": {
+          "source_pdf": "technical_offer.pdf",
+          "source_path": "datasets/projects/alpha_erp_system/technical_offer.pdf",
+          "page_number": 1,
+          "chunk_id": "chunk_2",
+          "source_text": "APIs and SAP PI/PO middleware.\nHigh availability will be ensured through active-active clustering across two data centers.\nSecurity measures include role-based access control, data encryption at rest ...",
+          "source_text_length": 273,
+          "extraction_method": "REBEL",
+          "model_name": "Babelscape/rebel-large"
+        },
+        "project": "alpha_erp_system"
+      },
+      {
+        "head": "Purchase order management",
+        "relation": "facet of",
+        "tail": "Procurement",
+        "metadata": {
+          "source_pdf": "technical_offer.pdf",
+          "source_path": "datasets/projects/alpha_erp_system/technical_offer.pdf",
+          "page_number": 2,
+          "chunk_id": "chunk_3",
+          "source_text": "Material Management (MM): Purchase order management, inventory tracking, vendor management,\nand procurement workflows.\nProduction Planning (PP): Master production scheduling, capacity planning, shop f...",
+          "source_text_length": 400,
+          "extraction_method": "REBEL",
+          "model_name": "Babelscape/rebel-large"
+        },
+        "project": "alpha_erp_system"
+      },
+      {
+        "head": "accounts payable",
+        "relation": "part of",
+        "tail": "General ledger",
+        "metadata": {
+          "source_pdf": "technical_offer.pdf",
+          "source_path": "datasets/projects/alpha_erp_system/technical_offer.pdf",
+          "page_number": 2,
+          "chunk_id": "chunk_4",
+          "source_text": "ing (FICO): General ledger, accounts payable/receivable, asset accounting, and\ncost center accounting.\nWarehouse Management (WM): Bin management, picking strategies, goods receipt/issue, and\ninventory...",
+          "source_text_length": 400,
+          "extraction_method": "REBEL",
+          "model_name": "Babelscape/rebel-large"
+        },
+        "project": "alpha_erp_system"
+      },
+      {
+        "head": "Core module",
+        "relation": "part of",
+        "tail": "system design",
+        "metadata": {
+          "source_pdf": "technical_offer.pdf",
+          "source_path": "datasets/projects/alpha_erp_system/technical_offer.pdf",
+          "page_number": 2,
+          "chunk_id": "chunk_5",
+          "source_text": "s 1-3): Requirements gathering, system design, and infrastructure setup.\nPhase 2 (Months 4-7): Core module configuration, custom development, and integration.\nPhase 3 (Months 8-10): User acceptance te...",
+          "source_text_length": 324,
+          "extraction_method": "REBEL",
+          "model_name": "Babelscape/rebel-large"
+        },
+        "project": "alpha_erp_system"
+      },
+      {
+        "head": "SAP HANA",
+        "relation": "platform",
+        "tail": "SPS06",
+        "metadata": {
+          "source_pdf": "technical_specifications.pdf",
+          "source_path": "datasets/projects/alpha_erp_system/technical_specifications.pdf",
+          "page_number": 1,
+          "chunk_id": "chunk_0",
+          "source_text": "ERP System - Technical Specifications\nDate: October 29, 2025\nDocument Type: Technical Specifications\n1. System Requirements\nApplication Server: SUSE Linux Enterprise Server 15, 32 vCPU, 256GB RAM, 2TB...",
+          "source_text_length": 400,
+          "extraction_method": "REBEL",
+          "model_name": "Babelscape/rebel-large"
+        },
+        "project": "alpha_erp_system"
+      },
+      {
+        "head": "SFTP",
+        "relation": "use",
+        "tail": "Backup Infrastructure",
+        "metadata": {
+          "source_pdf": "technical_specifications.pdf",
+          "source_path": "datasets/projects/alpha_erp_system/technical_specifications.pdf",
+          "page_number": 1,
+          "chunk_id": "chunk_1",
+          "source_text": "load balancing\nBackup Infrastructure: Daily incremental, weekly full backups with 30-day retention\nNetwork: 10 Gbps internal network, 1 Gbps internet connectivity, redundant firewalls\n2. Integration S...",
+          "source_text_length": 399,
+          "extraction_method": "REBEL",
+          "model_name": "Babelscape/rebel-large"
+        },
+        "project": "alpha_erp_system"
+      },
+      {
+        "head": "HANA",
+        "relation": "use",
+        "tail": "Analytics",
+        "metadata": {
+          "source_pdf": "technical_specifications.pdf",
+          "source_path": "datasets/projects/alpha_erp_system/technical_specifications.pdf",
+          "page_number": 1,
+          "chunk_id": "chunk_2",
+          "source_text": "ocol\nQuality Management: API-based integration for inspection results and non-conformance reports\nBI/Analytics: Direct HANA connectivity for reporting and analytics tools\nEmail System: SMTP integratio...",
+          "source_text_length": 267,
+          "extraction_method": "REBEL",
+          "model_name": "Babelscape/rebel-large"
+        },
+        "project": "alpha_erp_system"
+      },
+      {
+        "head": "encryption",
+        "relation": "use",
+        "tail": "Data Protection",
+        "metadata": {
+          "source_pdf": "technical_specifications.pdf",
+          "source_path": "datasets/projects/alpha_erp_system/technical_specifications.pdf",
+          "page_number": 2,
+          "chunk_id": "chunk_3",
+          "source_text": "Authentication: Single Sign-On (SSO) with Active Directory integration\nAuthorization: Role-based access control (RBAC) with segregation of duties enforcement\nData Protection: AES-256 encryption for da...",
+          "source_text_length": 399,
+          "extraction_method": "REBEL",
+          "model_name": "Babelscape/rebel-large"
+        },
+        "project": "alpha_erp_system"
+      },
+      {
+        "head": "Performance Requirements",
+        "relation": "facet of",
+        "tail": "System Availability",
+        "metadata": {
+          "source_pdf": "technical_specifications.pdf",
+          "source_path": "datasets/projects/alpha_erp_system/technical_specifications.pdf",
+          "page_number": 2,
+          "chunk_id": "chunk_4",
+          "source_text": "27001, and GDPR compliance requirements\n4. Performance Requirements\nSystem Availability: 99.9% uptime during business hours (6 AM - 10 PM)\nResponse Time: <2 seconds for 95% of transactions, <5 seconds...",
+          "source_text_length": 400,
+          "extraction_method": "REBEL",
+          "model_name": "Babelscape/rebel-large"
+        },
+        "project": "alpha_erp_system"
+      },
+      {
+        "head": "2 AM",
+        "relation": "followed by",
+        "tail": "6 AM",
+        "metadata": {
+          "source_pdf": "technical_specifications.pdf",
+          "source_path": "datasets/projects/alpha_erp_system/technical_specifications.pdf",
+          "page_number": 2,
+          "chunk_id": "chunk_5",
+          "source_text": "hour window (2 AM - 6 AM)\nData Volume: Initial data load of 5 million material records, 2 million customer records, 10 years of\ntransaction history...",
+          "source_text_length": 147,
+          "extraction_method": "REBEL",
+          "model_name": "Babelscape/rebel-large"
+        },
+        "project": "alpha_erp_system"
+      },
+      {
+        "head": "Cloud Migration - Commercial Proposal",
+        "relation": "publication date",
+        "tail": "October 29, 2025",
+        "metadata": {
+          "source_pdf": "cloud_migration_commercial.pdf",
+          "source_path": "datasets/projects/beta_cloud_migration/cloud_migration_commercial.pdf",
+          "page_number": 1,
+          "chunk_id": "chunk_0",
+          "source_text": "Cloud Migration - Commercial Proposal\nDate: October 29, 2025\nDocument Type: Cloud Migration Commercial\n1. Professional Services\nMigration Planning and Assessment: $95,000\nInfrastructure Setup and Conf...",
+          "source_text_length": 400,
+          "extraction_method": "REBEL",
+          "model_name": "Babelscape/rebel-large"
+        },
+        "project": "beta_cloud_migration"
+      },
+      {
+        "head": "EKS",
+        "relation": "use",
+        "tail": "Kubernetes",
+        "metadata": {
+          "source_pdf": "cloud_migration_commercial.pdf",
+          "source_path": "datasets/projects/beta_cloud_migration/cloud_migration_commercial.pdf",
+          "page_number": 1,
+          "chunk_id": "chunk_1",
+          "source_text": "e Transfer: $45,000\nTotal Professional Services: $770,000\n2. Cloud Infrastructure Costs (Monthly Estimates)\nCompute (EC2 instances): $15,000/month\nManaged Kubernetes (EKS): $8,000/month\nDatabase Servi...",
+          "source_text_length": 347,
+          "extraction_method": "REBEL",
+          "model_name": "Babelscape/rebel-large"
+        },
+        "project": "beta_cloud_migration"
+      },
+      {
+        "head": "Backup and Disaster Recovery Management",
+        "relation": "subclass of",
+        "tail": "Infrastructure Management",
+        "metadata": {
+          "source_pdf": "cloud_migration_commercial.pdf",
+          "source_path": "datasets/projects/beta_cloud_migration/cloud_migration_commercial.pdf",
+          "page_number": 2,
+          "chunk_id": "chunk_2",
+          "source_text": "Estimated Monthly Infrastructure Cost: $47,000\nNote: Actual costs may vary based on usage patterns and will be optimized post-migration.\n3. Managed Services (Optional)\n24/7 Infrastructure Management: ...",
+          "source_text_length": 400,
+          "extraction_method": "REBEL",
+          "model_name": "Babelscape/rebel-large"
+        },
+        "project": "beta_cloud_migration"
+      },
+      {
+        "head": "Cost Optimization Services",
+        "relation": "use",
+        "tail": "Optimization",
+        "metadata": {
+          "source_pdf": "cloud_migration_commercial.pdf",
+          "source_path": "datasets/projects/beta_cloud_migration/cloud_migration_commercial.pdf",
+          "page_number": 2,
+          "chunk_id": "chunk_3",
+          "source_text": ",000/month\nCost Optimization Services: $5,000/month...",
+          "source_text_length": 51,
+          "extraction_method": "REBEL",
+          "model_name": "Babelscape/rebel-large"
+        },
+        "project": "beta_cloud_migration"
+      },
+      {
+        "head": "AWS",
+        "relation": "instance of",
+        "tail": "cloud provider",
+        "metadata": {
+          "source_pdf": "cloud_migration_proposal.pdf",
+          "source_path": "datasets/projects/beta_cloud_migration/cloud_migration_proposal.pdf",
+          "page_number": 1,
+          "chunk_id": "chunk_0",
+          "source_text": "Cloud Migration - Technical Proposal\nDate: October 29, 2025\nDocument Type: Cloud Migration Proposal\n1. Migration Strategy\nWe propose a phased lift-and-shift migration followed by cloud-native optimiza...",
+          "source_text_length": 400,
+          "extraction_method": "REBEL",
+          "model_name": "Babelscape/rebel-large"
+        },
+        "project": "beta_cloud_migration"
+      },
+      {
+        "head": "Kubernetes",
+        "relation": "use",
+        "tail": "containerization",
+        "metadata": {
+          "source_pdf": "cloud_migration_proposal.pdf",
+          "source_path": "datasets/projects/beta_cloud_migration/cloud_migration_proposal.pdf",
+          "page_number": 1,
+          "chunk_id": "chunk_1",
+          "source_text": "mizes downtime through parallel run strategy and automated rollback capabilities.\nPost-migration optimization will focus on containerization, auto-scaling, and serverless architecture\nwhere applicable...",
+          "source_text_length": 400,
+          "extraction_method": "REBEL",
+          "model_name": "Babelscape/rebel-large"
+        },
+        "project": "beta_cloud_migration"
+      },
+      {
+        "head": "Amazon RDS",
+        "relation": "use",
+        "tail": "relational database",
+        "metadata": {
+          "source_pdf": "cloud_migration_proposal.pdf",
+          "source_path": "datasets/projects/beta_cloud_migration/cloud_migration_proposal.pdf",
+          "page_number": 1,
+          "chunk_id": "chunk_2",
+          "source_text": "(EKS) for containerized microservices with auto-scaling.\nData layer: Amazon RDS for relational databases, DynamoDB for NoSQL, S3 for object storage.\nNetworking: AWS Transit Gateway for inter-VPC conne...",
+          "source_text_length": 360,
+          "extraction_method": "REBEL",
+          "model_name": "Babelscape/rebel-large"
+        },
+        "project": "beta_cloud_migration"
+      },
+      {
+        "head": "John F. Kennedy School of Government",
+        "relation": "part of",
+        "tail": "Harvard University",
+        "metadata": {
+          "source_pdf": "cloud_migration_proposal.pdf",
+          "source_path": "datasets/projects/beta_cloud_migration/cloud_migration_proposal.pdf",
+          "page_number": 1,
+          "chunk_id": "chunk_3",
+          "source_text": "....",
+          "source_text_length": 1,
+          "extraction_method": "REBEL",
+          "model_name": "Babelscape/rebel-large"
+        },
+        "project": "beta_cloud_migration"
+      },
+      {
+        "head": "Database migration",
+        "relation": "subclass of",
+        "tail": "Migration",
+        "metadata": {
+          "source_pdf": "cloud_migration_proposal.pdf",
+          "source_path": "datasets/projects/beta_cloud_migration/cloud_migration_proposal.pdf",
+          "page_number": 2,
+          "chunk_id": "chunk_4",
+          "source_text": "3. Migration Phases\nPhase 1: Assessment and Planning (Weeks 1-4) - Infrastructure inventory, dependency mapping,\nmigration wave planning.\nPhase 2: Foundation Setup (Weeks 5-8) - Landing zone creation,...",
+          "source_text_length": 400,
+          "extraction_method": "REBEL",
+          "model_name": "Babelscape/rebel-large"
+        },
+        "project": "beta_cloud_migration"
+      },
+      {
+        "head": "Cost optimization",
+        "relation": "subclass of",
+        "tail": "Performance tuning",
+        "metadata": {
+          "source_pdf": "cloud_migration_proposal.pdf",
+          "source_path": "datasets/projects/beta_cloud_migration/cloud_migration_proposal.pdf",
+          "page_number": 2,
+          "chunk_id": "chunk_5",
+          "source_text": "Phase 4: Optimization (Weeks 21-24) - Performance tuning, cost optimization, automation\nimplementation.\nPhase 5: Cutover and Stabilization (Weeks 25-28) - Final migration, DNS cutover, hypercare suppo...",
+          "source_text_length": 203,
+          "extraction_method": "REBEL",
+          "model_name": "Babelscape/rebel-large"
+        },
+        "project": "beta_cloud_migration"
+      },
+      {
+        "head": "VMware",
+        "relation": "product or material produced",
+        "tail": "vSphere",
+        "metadata": {
+          "source_pdf": "migration_specifications.pdf",
+          "source_path": "datasets/projects/beta_cloud_migration/migration_specifications.pdf",
+          "page_number": 1,
+          "chunk_id": "chunk_0",
+          "source_text": "Cloud Migration - Technical\nSpecifications\nDate: October 29, 2025\nDocument Type: Migration Specifications\n1. Current Infrastructure Inventory\nPhysical Servers: 45 servers (mix of application, database...",
+          "source_text_length": 400,
+          "extraction_method": "REBEL",
+          "model_name": "Babelscape/rebel-large"
+        },
+        "project": "beta_cloud_migration"
+      },
+      {
+        "head": "vSphere",
+        "relation": "developer",
+        "tail": "VMware",
+        "metadata": {
+          "source_pdf": "migration_specifications.pdf",
+          "source_path": "datasets/projects/beta_cloud_migration/migration_specifications.pdf",
+          "page_number": 1,
+          "chunk_id": "chunk_0",
+          "source_text": "Cloud Migration - Technical\nSpecifications\nDate: October 29, 2025\nDocument Type: Migration Specifications\n1. Current Infrastructure Inventory\nPhysical Servers: 45 servers (mix of application, database...",
+          "source_text_length": 400,
+          "extraction_method": "REBEL",
+          "model_name": "Babelscape/rebel-large"
+        },
+        "project": "beta_cloud_migration"
+      },
+      {
+        "head": "EC2",
+        "relation": "use",
+        "tail": "Compute",
+        "metadata": {
+          "source_pdf": "migration_specifications.pdf",
+          "source_path": "datasets/projects/beta_cloud_migration/migration_specifications.pdf",
+          "page_number": 1,
+          "chunk_id": "chunk_1",
+          "source_text": "e: 85TB total storage across SAN and NAS systems\nApplications: 35 business applications including custom-developed and COTS\n2. Target Cloud Architecture\nRegions: Primary in us-east-1, DR in us-west-2 ...",
+          "source_text_length": 400,
+          "extraction_method": "REBEL",
+          "model_name": "Babelscape/rebel-large"
+        },
+        "project": "beta_cloud_migration"
+      },
+      {
+        "head": "HTTP",
+        "relation": "different from",
+        "tail": "HTTPS",
+        "metadata": {
+          "source_pdf": "migration_specifications.pdf",
+          "source_path": "datasets/projects/beta_cloud_migration/migration_specifications.pdf",
+          "page_number": 1,
+          "chunk_id": "chunk_2",
+          "source_text": "abase subnets\nLoad Balancing: Application Load Balancers for HTTP/HTTPS, Network Load Balancers for TCP\nAuto-scaling: Configured based on CPU, memory, and custom application metrics\n3. Migration Metho...",
+          "source_text_length": 206,
+          "extraction_method": "REBEL",
+          "model_name": "Babelscape/rebel-large"
+        },
+        "project": "beta_cloud_migration"
+      },
+      {
+        "head": "HTTPS",
+        "relation": "different from",
+        "tail": "HTTP",
+        "metadata": {
+          "source_pdf": "migration_specifications.pdf",
+          "source_path": "datasets/projects/beta_cloud_migration/migration_specifications.pdf",
+          "page_number": 1,
+          "chunk_id": "chunk_2",
+          "source_text": "abase subnets\nLoad Balancing: Application Load Balancers for HTTP/HTTPS, Network Load Balancers for TCP\nAuto-scaling: Configured based on CPU, memory, and custom application metrics\n3. Migration Metho...",
+          "source_text_length": 206,
+          "extraction_method": "REBEL",
+          "model_name": "Babelscape/rebel-large"
+        },
+        "project": "beta_cloud_migration"
+      },
+      {
+        "head": "AWS Database Migration Service",
+        "relation": "use",
+        "tail": "Data Migration",
+        "metadata": {
+          "source_pdf": "migration_specifications.pdf",
+          "source_path": "datasets/projects/beta_cloud_migration/migration_specifications.pdf",
+          "page_number": 2,
+          "chunk_id": "chunk_3",
+          "source_text": "Discovery: Automated discovery using AWS Application Discovery Service and CloudEndure\nAssessment: 7Rs framework (Retain, Rehost, Replatform, Refactor, Repurchase, Retire, Relocate)\nData Migration: AW...",
+          "source_text_length": 399,
+          "extraction_method": "REBEL",
+          "model_name": "Babelscape/rebel-large"
+        },
+        "project": "beta_cloud_migration"
+      },
+      {
+        "head": "Comprehensive testing",
+        "relation": "subclass of",
+        "tail": "test",
+        "metadata": {
+          "source_pdf": "migration_specifications.pdf",
+          "source_path": "datasets/projects/beta_cloud_migration/migration_specifications.pdf",
+          "page_number": 2,
+          "chunk_id": "chunk_4",
+          "source_text": "d-native\nTesting: Comprehensive testing including functional, performance, security, and disaster recovery tests...",
+          "source_text_length": 112,
+          "extraction_method": "REBEL",
+          "model_name": "Babelscape/rebel-large"
+        },
+        "project": "beta_cloud_migration"
+      },
+      {
+        "head": "Apache Kafka",
+        "relation": "use",
+        "tail": "data ingestion",
+        "metadata": {
+          "source_pdf": "analytics_platform_proposal.pdf",
+          "source_path": "datasets/projects/gamma_analytics_platform/analytics_platform_proposal.pdf",
+          "page_number": 1,
+          "chunk_id": "chunk_0",
+          "source_text": "Data Analytics Platform - Technical\nProposal\nDate: October 29, 2025\nDocument Type: Analytics Platform Proposal\n1. Platform Overview\nWe propose a real-time data analytics platform for Data Insights Inc...",
+          "source_text_length": 400,
+          "extraction_method": "REBEL",
+          "model_name": "Babelscape/rebel-large"
+        },
+        "project": "gamma_analytics_platform"
+      },
+      {
+        "head": "TensorFlow",
+        "relation": "use",
+        "tail": "Machine learning",
+        "metadata": {
+          "source_pdf": "analytics_platform_proposal.pdf",
+          "source_path": "datasets/projects/gamma_analytics_platform/analytics_platform_proposal.pdf",
+          "page_number": 1,
+          "chunk_id": "chunk_1",
+          "source_text": "d analytics.\nMachine learning models built with TensorFlow will provide predictive analytics and anomaly detection.\nInteractive dashboards powered by custom visualization framework will deliver action...",
+          "source_text_length": 400,
+          "extraction_method": "REBEL",
+          "model_name": "Babelscape/rebel-large"
+        },
+        "project": "gamma_analytics_platform"
+      },
+      {
+        "head": "S3",
+        "relation": "instance of",
+        "tail": "Data Lake",
+        "metadata": {
+          "source_pdf": "analytics_platform_proposal.pdf",
+          "source_path": "datasets/projects/gamma_analytics_platform/analytics_platform_proposal.pdf",
+          "page_number": 1,
+          "chunk_id": "chunk_2",
+          "source_text": "a\nfeeds\nStream Processing: Spark Structured Streaming for real-time transformations and aggregations\nBatch Processing: Spark batch jobs for historical analysis and model training\nStorage Layer: Data L...",
+          "source_text_length": 400,
+          "extraction_method": "REBEL",
+          "model_name": "Babelscape/rebel-large"
+        },
+        "project": "gamma_analytics_platform"
+      },
+      {
+        "head": "FastAPI",
+        "relation": "use",
+        "tail": "RESTful",
+        "metadata": {
+          "source_pdf": "analytics_platform_proposal.pdf",
+          "source_path": "datasets/projects/gamma_analytics_platform/analytics_platform_proposal.pdf",
+          "page_number": 1,
+          "chunk_id": "chunk_3",
+          "source_text": "esting capabilities\nAPI Layer: FastAPI for RESTful services, WebSocket for real-time data streaming to clients...",
+          "source_text_length": 110,
+          "extraction_method": "REBEL",
+          "model_name": "Babelscape/rebel-large"
+        },
+        "project": "gamma_analytics_platform"
+      },
+      {
+        "head": "unsupervised learning",
+        "relation": "use",
+        "tail": "Anomaly detection",
+        "metadata": {
+          "source_pdf": "analytics_platform_proposal.pdf",
+          "source_path": "datasets/projects/gamma_analytics_platform/analytics_platform_proposal.pdf",
+          "page_number": 2,
+          "chunk_id": "chunk_4",
+          "source_text": "3. Key Features\nReal-time market data processing with sub-100ms latency\nAnomaly detection using unsupervised learning algorithms\nPredictive models for price forecasting and trend analysis\nNatural lang...",
+          "source_text_length": 400,
+          "extraction_method": "REBEL",
+          "model_name": "Babelscape/rebel-large"
+        },
+        "project": "gamma_analytics_platform"
+      },
+      {
+        "head": "audit logging",
+        "relation": "facet of",
+        "tail": "access control",
+        "metadata": {
+          "source_pdf": "analytics_platform_proposal.pdf",
+          "source_path": "datasets/projects/gamma_analytics_platform/analytics_platform_proposal.pdf",
+          "page_number": 2,
+          "chunk_id": "chunk_5",
+          "source_text": "ategies\nRole-based access control with audit logging for compliance...",
+          "source_text_length": 67,
+          "extraction_method": "REBEL",
+          "model_name": "Babelscape/rebel-large"
+        },
+        "project": "gamma_analytics_platform"
+      },
+      {
+        "head": "Data Insights Inc",
+        "relation": "inception",
+        "tail": "October 29, 2025",
+        "metadata": {
+          "source_pdf": "analytics_rfq_response.pdf",
+          "source_path": "datasets/projects/gamma_analytics_platform/analytics_rfq_response.pdf",
+          "page_number": 1,
+          "chunk_id": "chunk_0",
+          "source_text": "Response to RFQ - Data Analytics\nPlatform\nDate: October 29, 2025\nDocument Type: Analytics Rfq Response\n1. Understanding of Requirements\nData Insights Inc requires a scalable platform to ingest, proces...",
+          "source_text_length": 400,
+          "extraction_method": "REBEL",
+          "model_name": "Babelscape/rebel-large"
+        },
+        "project": "gamma_analytics_platform"
+      },
+      {
+        "head": "Microservices",
+        "relation": "part of",
+        "tail": "Cloud",
+        "metadata": {
+          "source_pdf": "analytics_rfq_response.pdf",
+          "source_path": "datasets/projects/gamma_analytics_platform/analytics_rfq_response.pdf",
+          "page_number": 1,
+          "chunk_id": "chunk_1",
+          "source_text": "h existing: Bloomberg terminals, internal risk systems, trading platforms.\nCompliance: Must meet financial regulations including data retention, audit trails, and access controls.\nScalability: Platfor...",
+          "source_text_length": 400,
+          "extraction_method": "REBEL",
+          "model_name": "Babelscape/rebel-large"
+        },
+        "project": "gamma_analytics_platform"
+      },
+      {
+        "head": "Kafka",
+        "relation": "instance of",
+        "tail": "Event-driven architecture",
+        "metadata": {
+          "source_pdf": "analytics_rfq_response.pdf",
+          "source_path": "datasets/projects/gamma_analytics_platform/analytics_rfq_response.pdf",
+          "page_number": 1,
+          "chunk_id": "chunk_2",
+          "source_text": "ces-based design for independent scaling and deployment of components.\nEvent-driven architecture using Kafka for loose coupling and replay capability.\nMulti-layer caching strategy for frequently acces...",
+          "source_text_length": 395,
+          "extraction_method": "REBEL",
+          "model_name": "Babelscape/rebel-large"
+        },
+        "project": "gamma_analytics_platform"
+      },
+      {
+        "head": "ELK stack",
+        "relation": "has part",
+        "tail": "Prometheus",
+        "metadata": {
+          "source_pdf": "analytics_rfq_response.pdf",
+          "source_path": "datasets/projects/gamma_analytics_platform/analytics_rfq_response.pdf",
+          "page_number": 1,
+          "chunk_id": "chunk_3",
+          "source_text": "Prometheus, Grafana, and ELK stack....",
+          "source_text_length": 35,
+          "extraction_method": "REBEL",
+          "model_name": "Babelscape/rebel-large"
+        },
+        "project": "gamma_analytics_platform"
+      },
+      {
+        "head": "ELK stack",
+        "relation": "has part",
+        "tail": "Grafana",
+        "metadata": {
+          "source_pdf": "analytics_rfq_response.pdf",
+          "source_path": "datasets/projects/gamma_analytics_platform/analytics_rfq_response.pdf",
+          "page_number": 1,
+          "chunk_id": "chunk_3",
+          "source_text": "Prometheus, Grafana, and ELK stack....",
+          "source_text_length": 35,
+          "extraction_method": "REBEL",
+          "model_name": "Babelscape/rebel-large"
+        },
+        "project": "gamma_analytics_platform"
+      },
+      {
+        "head": "sprints",
+        "relation": "part of",
+        "tail": "Agile development",
+        "metadata": {
+          "source_pdf": "analytics_rfq_response.pdf",
+          "source_path": "datasets/projects/gamma_analytics_platform/analytics_rfq_response.pdf",
+          "page_number": 2,
+          "chunk_id": "chunk_4",
+          "source_text": "3. Implementation Approach\nAgile development with 2-week sprints and continuous integration/deployment.\nMVP delivery in 12 weeks with core ingestion, processing, and visualization capabilities.\nIterat...",
+          "source_text_length": 400,
+          "extraction_method": "REBEL",
+          "model_name": "Babelscape/rebel-large"
+        },
+        "project": "gamma_analytics_platform"
+      },
+      {
+        "head": "Data Analytics Platform",
+        "relation": "inception",
+        "tail": "October 29, 2025",
+        "metadata": {
+          "source_pdf": "analytics_specifications.pdf",
+          "source_path": "datasets/projects/gamma_analytics_platform/analytics_specifications.pdf",
+          "page_number": 1,
+          "chunk_id": "chunk_0",
+          "source_text": "Data Analytics Platform - System\nSpecifications\nDate: October 29, 2025\nDocument Type: Analytics Specifications\n1. Performance Requirements\nData Ingestion: 500,000 events/second sustained, 1,000,000 ev...",
+          "source_text_length": 400,
+          "extraction_method": "REBEL",
+          "model_name": "Babelscape/rebel-large"
+        },
+        "project": "gamma_analytics_platform"
+      },
+      {
+        "head": "Bloomberg",
+        "relation": "subsidiary",
+        "tail": "Reuters",
+        "metadata": {
+          "source_pdf": "analytics_specifications.pdf",
+          "source_path": "datasets/projects/gamma_analytics_platform/analytics_specifications.pdf",
+          "page_number": 1,
+          "chunk_id": "chunk_1",
+          "source_text": "egations\nDashboard Load Time: <2 seconds for initial load, <500ms for updates\nConcurrent Users: Support 200+ concurrent analysts and traders\nData Retention: 7 years hot storage, infinite cold storage ...",
+          "source_text_length": 400,
+          "extraction_method": "REBEL",
+          "model_name": "Babelscape/rebel-large"
+        },
+        "project": "gamma_analytics_platform"
+      },
+      {
+        "head": "Twitter",
+        "relation": "instance of",
+        "tail": "Social Media",
+        "metadata": {
+          "source_pdf": "analytics_specifications.pdf",
+          "source_path": "datasets/projects/gamma_analytics_platform/analytics_specifications.pdf",
+          "page_number": 1,
+          "chunk_id": "chunk_2",
+          "source_text": "stems\nNews and Social Media: Financial news APIs, Twitter streams for sentiment analysis\nReference Data: Security master, exchange calendars, corporate actions\nAlternative Data: Satellite imagery, web...",
+          "source_text_length": 231,
+          "extraction_method": "REBEL",
+          "model_name": "Babelscape/rebel-large"
+        },
+        "project": "gamma_analytics_platform"
+      },
+      {
+        "head": "Apache Spark",
+        "relation": "has part",
+        "tail": "Apache Flink",
+        "metadata": {
+          "source_pdf": "analytics_specifications.pdf",
+          "source_path": "datasets/projects/gamma_analytics_platform/analytics_specifications.pdf",
+          "page_number": 2,
+          "chunk_id": "chunk_3",
+          "source_text": "3. Technology Stack\nData Ingestion: Apache Kafka 3.x, Kafka Connect for source connectors\nStream Processing: Apache Spark 3.x Structured Streaming, Apache Flink (backup option)\nBatch Processing: Apach...",
+          "source_text_length": 400,
+          "extraction_method": "REBEL",
+          "model_name": "Babelscape/rebel-large"
+        },
+        "project": "gamma_analytics_platform"
+      },
+      {
+        "head": "Kubernetes",
+        "relation": "use",
+        "tail": "container orchestration",
+        "metadata": {
+          "source_pdf": "analytics_specifications.pdf",
+          "source_path": "datasets/projects/gamma_analytics_platform/analytics_specifications.pdf",
+          "page_number": 2,
+          "chunk_id": "chunk_4",
+          "source_text": "Scikit-learn, MLflow for experiment tracking\nOrchestration: Apache Airflow for batch jobs, Kubernetes for container orchestration\nVisualization: React-based custom dashboards, D3.js for interactive ch...",
+          "source_text_length": 400,
+          "extraction_method": "REBEL",
+          "model_name": "Babelscape/rebel-large"
+        },
+        "project": "gamma_analytics_platform"
+      },
+      {
+        "head": "AES-256",
+        "relation": "use",
+        "tail": "Encryption",
+        "metadata": {
+          "source_pdf": "analytics_specifications.pdf",
+          "source_path": "datasets/projects/gamma_analytics_platform/analytics_specifications.pdf",
+          "page_number": 2,
+          "chunk_id": "chunk_5",
+          "source_text": "ntrol for sensitive data\nEncryption: TLS 1.3 for data in transit, AES-256 for data at rest\nAudit Logging: Comprehensive logging of all data access and system changes\nCompliance: SOC 2 Type II, SOX com...",
+          "source_text_length": 312,
+          "extraction_method": "REBEL",
+          "model_name": "Babelscape/rebel-large"
+        },
+        "project": "gamma_analytics_platform"
+      }
+    ],
+    "project_level": [
+      {
+        "head": "alpha_erp_system",
+        "relation": "mentions_entity",
+        "tail": "SAP S/4HANA Enterprise Edition",
+        "type": "project_to_entity"
+      },
+      {
+        "head": "alpha_erp_system",
+        "relation": "mentions_entity",
+        "tail": "ERP",
+        "type": "project_to_entity"
+      },
+      {
+        "head": "alpha_erp_system",
+        "relation": "mentions_entity",
+        "tail": "Deliverables",
+        "type": "project_to_entity"
+      },
+      {
+        "head": "alpha_erp_system",
+        "relation": "mentions_entity",
+        "tail": "Payment Terms",
+        "type": "project_to_entity"
+      },
+      {
+        "head": "alpha_erp_system",
+        "relation": "mentions_entity",
+        "tail": "invoice",
+        "type": "project_to_entity"
+      },
+      {
+        "head": "alpha_erp_system",
+        "relation": "mentions_entity",
+        "tail": "S/4HANA",
+        "type": "project_to_entity"
+      },
+      {
+        "head": "alpha_erp_system",
+        "relation": "mentions_entity",
+        "tail": "SAP",
+        "type": "project_to_entity"
+      },
+      {
+        "head": "alpha_erp_system",
+        "relation": "mentions_entity",
+        "tail": "Contract",
+        "type": "project_to_entity"
+      },
+      {
+        "head": "alpha_erp_system",
+        "relation": "mentions_entity",
+        "tail": "Terms and Conditions",
+        "type": "project_to_entity"
+      },
+      {
+        "head": "alpha_erp_system",
+        "relation": "mentions_entity",
+        "tail": "perts",
+        "type": "project_to_entity"
+      },
+      {
+        "head": "alpha_erp_system",
+        "relation": "mentions_entity",
+        "tail": "Response to RFQ",
+        "type": "project_to_entity"
+      },
+      {
+        "head": "alpha_erp_system",
+        "relation": "mentions_entity",
+        "tail": "demand forecasting",
+        "type": "project_to_entity"
+      },
+      {
+        "head": "alpha_erp_system",
+        "relation": "mentions_entity",
+        "tail": "analytics",
+        "type": "project_to_entity"
+      },
+      {
+        "head": "alpha_erp_system",
+        "relation": "mentions_entity",
+        "tail": "modules",
+        "type": "project_to_entity"
+      },
+      {
+        "head": "alpha_erp_system",
+        "relation": "mentions_entity",
+        "tail": "SAP S/4HANA",
+        "type": "project_to_entity"
+      },
+      {
+        "head": "alpha_erp_system",
+        "relation": "mentions_entity",
+        "tail": "SAP Fiori",
+        "type": "project_to_entity"
+      },
+      {
+        "head": "alpha_erp_system",
+        "relation": "mentions_entity",
+        "tail": "PI/PO",
+        "type": "project_to_entity"
+      },
+      {
+        "head": "alpha_erp_system",
+        "relation": "mentions_entity",
+        "tail": "middleware",
+        "type": "project_to_entity"
+      },
+      {
+        "head": "alpha_erp_system",
+        "relation": "mentions_entity",
+        "tail": "Purchase order management",
+        "type": "project_to_entity"
+      },
+      {
+        "head": "alpha_erp_system",
+        "relation": "mentions_entity",
+        "tail": "Procurement",
+        "type": "project_to_entity"
+      },
+      {
+        "head": "alpha_erp_system",
+        "relation": "mentions_entity",
+        "tail": "accounts payable",
+        "type": "project_to_entity"
+      },
+      {
+        "head": "alpha_erp_system",
+        "relation": "mentions_entity",
+        "tail": "General ledger",
+        "type": "project_to_entity"
+      },
+      {
+        "head": "alpha_erp_system",
+        "relation": "mentions_entity",
+        "tail": "Core module",
+        "type": "project_to_entity"
+      },
+      {
+        "head": "alpha_erp_system",
+        "relation": "mentions_entity",
+        "tail": "system design",
+        "type": "project_to_entity"
+      },
+      {
+        "head": "alpha_erp_system",
+        "relation": "mentions_entity",
+        "tail": "SAP HANA",
+        "type": "project_to_entity"
+      },
+      {
+        "head": "alpha_erp_system",
+        "relation": "mentions_entity",
+        "tail": "SPS06",
+        "type": "project_to_entity"
+      },
+      {
+        "head": "alpha_erp_system",
+        "relation": "mentions_entity",
+        "tail": "SFTP",
+        "type": "project_to_entity"
+      },
+      {
+        "head": "alpha_erp_system",
+        "relation": "mentions_entity",
+        "tail": "Backup Infrastructure",
+        "type": "project_to_entity"
+      },
+      {
+        "head": "alpha_erp_system",
+        "relation": "mentions_entity",
+        "tail": "HANA",
+        "type": "project_to_entity"
+      },
+      {
+        "head": "alpha_erp_system",
+        "relation": "mentions_entity",
+        "tail": "Analytics",
+        "type": "project_to_entity"
+      },
+      {
+        "head": "alpha_erp_system",
+        "relation": "mentions_entity",
+        "tail": "encryption",
+        "type": "project_to_entity"
+      },
+      {
+        "head": "alpha_erp_system",
+        "relation": "mentions_entity",
+        "tail": "Data Protection",
+        "type": "project_to_entity"
+      },
+      {
+        "head": "alpha_erp_system",
+        "relation": "mentions_entity",
+        "tail": "Performance Requirements",
+        "type": "project_to_entity"
+      },
+      {
+        "head": "alpha_erp_system",
+        "relation": "mentions_entity",
+        "tail": "System Availability",
+        "type": "project_to_entity"
+      },
+      {
+        "head": "alpha_erp_system",
+        "relation": "mentions_entity",
+        "tail": "2 AM",
+        "type": "project_to_entity"
+      },
+      {
+        "head": "alpha_erp_system",
+        "relation": "mentions_entity",
+        "tail": "6 AM",
+        "type": "project_to_entity"
+      },
+      {
+        "head": "beta_cloud_migration",
+        "relation": "mentions_entity",
+        "tail": "Cloud Migration - Commercial Proposal",
+        "type": "project_to_entity"
+      },
+      {
+        "head": "beta_cloud_migration",
+        "relation": "mentions_entity",
+        "tail": "October 29, 2025",
+        "type": "project_to_entity"
+      },
+      {
+        "head": "gamma_analytics_platform",
+        "relation": "mentions_entity",
+        "tail": "October 29, 2025",
+        "type": "project_to_entity"
+      },
+      {
+        "head": "beta_cloud_migration",
+        "relation": "mentions_entity",
+        "tail": "EKS",
+        "type": "project_to_entity"
+      },
+      {
+        "head": "beta_cloud_migration",
+        "relation": "mentions_entity",
+        "tail": "Kubernetes",
+        "type": "project_to_entity"
+      },
+      {
+        "head": "gamma_analytics_platform",
+        "relation": "mentions_entity",
+        "tail": "Kubernetes",
+        "type": "project_to_entity"
+      },
+      {
+        "head": "beta_cloud_migration",
+        "relation": "mentions_entity",
+        "tail": "Backup and Disaster Recovery Management",
+        "type": "project_to_entity"
+      },
+      {
+        "head": "beta_cloud_migration",
+        "relation": "mentions_entity",
+        "tail": "Infrastructure Management",
+        "type": "project_to_entity"
+      },
+      {
+        "head": "beta_cloud_migration",
+        "relation": "mentions_entity",
+        "tail": "Cost Optimization Services",
+        "type": "project_to_entity"
+      },
+      {
+        "head": "beta_cloud_migration",
+        "relation": "mentions_entity",
+        "tail": "Optimization",
+        "type": "project_to_entity"
+      },
+      {
+        "head": "beta_cloud_migration",
+        "relation": "mentions_entity",
+        "tail": "AWS",
+        "type": "project_to_entity"
+      },
+      {
+        "head": "beta_cloud_migration",
+        "relation": "mentions_entity",
+        "tail": "cloud provider",
+        "type": "project_to_entity"
+      },
+      {
+        "head": "beta_cloud_migration",
+        "relation": "mentions_entity",
+        "tail": "containerization",
+        "type": "project_to_entity"
+      },
+      {
+        "head": "beta_cloud_migration",
+        "relation": "mentions_entity",
+        "tail": "Amazon RDS",
+        "type": "project_to_entity"
+      },
+      {
+        "head": "beta_cloud_migration",
+        "relation": "mentions_entity",
+        "tail": "relational database",
+        "type": "project_to_entity"
+      },
+      {
+        "head": "beta_cloud_migration",
+        "relation": "mentions_entity",
+        "tail": "John F. Kennedy School of Government",
+        "type": "project_to_entity"
+      },
+      {
+        "head": "beta_cloud_migration",
+        "relation": "mentions_entity",
+        "tail": "Harvard University",
+        "type": "project_to_entity"
+      },
+      {
+        "head": "beta_cloud_migration",
+        "relation": "mentions_entity",
+        "tail": "Database migration",
+        "type": "project_to_entity"
+      },
+      {
+        "head": "beta_cloud_migration",
+        "relation": "mentions_entity",
+        "tail": "Migration",
+        "type": "project_to_entity"
+      },
+      {
+        "head": "beta_cloud_migration",
+        "relation": "mentions_entity",
+        "tail": "Cost optimization",
+        "type": "project_to_entity"
+      },
+      {
+        "head": "beta_cloud_migration",
+        "relation": "mentions_entity",
+        "tail": "Performance tuning",
+        "type": "project_to_entity"
+      },
+      {
+        "head": "beta_cloud_migration",
+        "relation": "mentions_entity",
+        "tail": "VMware",
+        "type": "project_to_entity"
+      },
+      {
+        "head": "beta_cloud_migration",
+        "relation": "mentions_entity",
+        "tail": "vSphere",
+        "type": "project_to_entity"
+      },
+      {
+        "head": "beta_cloud_migration",
+        "relation": "mentions_entity",
+        "tail": "EC2",
+        "type": "project_to_entity"
+      },
+      {
+        "head": "beta_cloud_migration",
+        "relation": "mentions_entity",
+        "tail": "Compute",
+        "type": "project_to_entity"
+      },
+      {
+        "head": "beta_cloud_migration",
+        "relation": "mentions_entity",
+        "tail": "HTTP",
+        "type": "project_to_entity"
+      },
+      {
+        "head": "beta_cloud_migration",
+        "relation": "mentions_entity",
+        "tail": "HTTPS",
+        "type": "project_to_entity"
+      },
+      {
+        "head": "beta_cloud_migration",
+        "relation": "mentions_entity",
+        "tail": "AWS Database Migration Service",
+        "type": "project_to_entity"
+      },
+      {
+        "head": "beta_cloud_migration",
+        "relation": "mentions_entity",
+        "tail": "Data Migration",
+        "type": "project_to_entity"
+      },
+      {
+        "head": "beta_cloud_migration",
+        "relation": "mentions_entity",
+        "tail": "Comprehensive testing",
+        "type": "project_to_entity"
+      },
+      {
+        "head": "beta_cloud_migration",
+        "relation": "mentions_entity",
+        "tail": "test",
+        "type": "project_to_entity"
+      },
+      {
+        "head": "gamma_analytics_platform",
+        "relation": "mentions_entity",
+        "tail": "Apache Kafka",
+        "type": "project_to_entity"
+      },
+      {
+        "head": "gamma_analytics_platform",
+        "relation": "mentions_entity",
+        "tail": "data ingestion",
+        "type": "project_to_entity"
+      },
+      {
+        "head": "gamma_analytics_platform",
+        "relation": "mentions_entity",
+        "tail": "TensorFlow",
+        "type": "project_to_entity"
+      },
+      {
+        "head": "gamma_analytics_platform",
+        "relation": "mentions_entity",
+        "tail": "Machine learning",
+        "type": "project_to_entity"
+      },
+      {
+        "head": "gamma_analytics_platform",
+        "relation": "mentions_entity",
+        "tail": "S3",
+        "type": "project_to_entity"
+      },
+      {
+        "head": "gamma_analytics_platform",
+        "relation": "mentions_entity",
+        "tail": "Data Lake",
+        "type": "project_to_entity"
+      },
+      {
+        "head": "gamma_analytics_platform",
+        "relation": "mentions_entity",
+        "tail": "FastAPI",
+        "type": "project_to_entity"
+      },
+      {
+        "head": "gamma_analytics_platform",
+        "relation": "mentions_entity",
+        "tail": "RESTful",
+        "type": "project_to_entity"
+      },
+      {
+        "head": "gamma_analytics_platform",
+        "relation": "mentions_entity",
+        "tail": "unsupervised learning",
+        "type": "project_to_entity"
+      },
+      {
+        "head": "gamma_analytics_platform",
+        "relation": "mentions_entity",
+        "tail": "Anomaly detection",
+        "type": "project_to_entity"
+      },
+      {
+        "head": "gamma_analytics_platform",
+        "relation": "mentions_entity",
+        "tail": "audit logging",
+        "type": "project_to_entity"
+      },
+      {
+        "head": "gamma_analytics_platform",
+        "relation": "mentions_entity",
+        "tail": "access control",
+        "type": "project_to_entity"
+      },
+      {
+        "head": "gamma_analytics_platform",
+        "relation": "mentions_entity",
+        "tail": "Data Insights Inc",
+        "type": "project_to_entity"
+      },
+      {
+        "head": "gamma_analytics_platform",
+        "relation": "mentions_entity",
+        "tail": "Microservices",
+        "type": "project_to_entity"
+      },
+      {
+        "head": "gamma_analytics_platform",
+        "relation": "mentions_entity",
+        "tail": "Cloud",
+        "type": "project_to_entity"
+      },
+      {
+        "head": "gamma_analytics_platform",
+        "relation": "mentions_entity",
+        "tail": "Kafka",
+        "type": "project_to_entity"
+      },
+      {
+        "head": "gamma_analytics_platform",
+        "relation": "mentions_entity",
+        "tail": "Event-driven architecture",
+        "type": "project_to_entity"
+      },
+      {
+        "head": "gamma_analytics_platform",
+        "relation": "mentions_entity",
+        "tail": "ELK stack",
+        "type": "project_to_entity"
+      },
+      {
+        "head": "gamma_analytics_platform",
+        "relation": "mentions_entity",
+        "tail": "Prometheus",
+        "type": "project_to_entity"
+      },
+      {
+        "head": "gamma_analytics_platform",
+        "relation": "mentions_entity",
+        "tail": "Grafana",
+        "type": "project_to_entity"
+      },
+      {
+        "head": "gamma_analytics_platform",
+        "relation": "mentions_entity",
+        "tail": "sprints",
+        "type": "project_to_entity"
+      },
+      {
+        "head": "gamma_analytics_platform",
+        "relation": "mentions_entity",
+        "tail": "Agile development",
+        "type": "project_to_entity"
+      },
+      {
+        "head": "gamma_analytics_platform",
+        "relation": "mentions_entity",
+        "tail": "Data Analytics Platform",
+        "type": "project_to_entity"
+      },
+      {
+        "head": "gamma_analytics_platform",
+        "relation": "mentions_entity",
+        "tail": "Bloomberg",
+        "type": "project_to_entity"
+      },
+      {
+        "head": "gamma_analytics_platform",
+        "relation": "mentions_entity",
+        "tail": "Reuters",
+        "type": "project_to_entity"
+      },
+      {
+        "head": "gamma_analytics_platform",
+        "relation": "mentions_entity",
+        "tail": "Twitter",
+        "type": "project_to_entity"
+      },
+      {
+        "head": "gamma_analytics_platform",
+        "relation": "mentions_entity",
+        "tail": "Social Media",
+        "type": "project_to_entity"
+      },
+      {
+        "head": "gamma_analytics_platform",
+        "relation": "mentions_entity",
+        "tail": "Apache Spark",
+        "type": "project_to_entity"
+      },
+      {
+        "head": "gamma_analytics_platform",
+        "relation": "mentions_entity",
+        "tail": "Apache Flink",
+        "type": "project_to_entity"
+      },
+      {
+        "head": "gamma_analytics_platform",
+        "relation": "mentions_entity",
+        "tail": "container orchestration",
+        "type": "project_to_entity"
+      },
+      {
+        "head": "gamma_analytics_platform",
+        "relation": "mentions_entity",
+        "tail": "AES-256",
+        "type": "project_to_entity"
+      },
+      {
+        "head": "gamma_analytics_platform",
+        "relation": "mentions_entity",
+        "tail": "Encryption",
+        "type": "project_to_entity"
+      },
+      {
+        "head": "beta_cloud_migration",
+        "relation": "shares_entities_with",
+        "tail": "gamma_analytics_platform",
+        "type": "project_to_project",
+        "shared_entities": [
+          "Kubernetes",
+          "October 29, 2025"
+        ],
+        "shared_count": 2
+      }
+    ]
+  }
+}
