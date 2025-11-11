@@ -9,7 +9,7 @@ class DataPreprocessingOrchestrator:
         self.input_folder = Path(input_folder)
         self.output_folder = Path(output_folder)
         self.file_filter = FileFilter()
-        self.document_processor = DocumentProcessor()
+        self.document_processor = DocumentProcessor("docling")
         self.output_manager = OutputManager(output_folder)
     
     def run(self) -> bool:
@@ -47,12 +47,9 @@ class DataPreprocessingOrchestrator:
             print(f"No supported files in: {offer_name}")
             return False
 
-        files_content = []
-        for file_path in supported_files:
-            content, success = self.document_processor.process_file(file_path)
-            files_content.append((file_path, content, success))
+        files_contents = self.document_processor.process_files(supported_files)
         
-        success = self.output_manager.save_offer_documents(offer_name, start_time, files_content)
+        success = self.output_manager.save_offer_documents(offer_name, start_time, files_contents)
         if success:
             print(f"Processed: {offer_name} ({len(supported_files)} files)")
         
@@ -62,10 +59,8 @@ def main():
     input_folder = r'D:\Data-Model\Data\GC 2025'
     output_folder = r'D:\Data-Model\Data\Processed'
 
-    print(f"Input folder: {input_folder}")
-    print(f"Output folder: {output_folder}")
-
-    _ = input("Press Enter to continue...")
+    print(f"===> Input folder: {input_folder}")
+    print(f"===> Output folder: {output_folder}")
 
     orchestrator = DataPreprocessingOrchestrator(input_folder, output_folder)
     success = orchestrator.run()

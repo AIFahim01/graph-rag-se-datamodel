@@ -70,16 +70,13 @@ This section is for contributors who need to add or update dependencies.
     ```
     Then, regenerate the `environment.yml` file:
     ```bash
-    # Windows
-    conda env export --from-history > environment.yml
-    # Linux/macOS
     conda env export --from-history > environment.yml
     ```
 
 -   **Add Pip Package:**
     ```bash
     pip install <package>
-    pip freeze > requirements.txt
+    pip list --not-required --format=freeze > requirements.txt
     ```
 
 -   **Sync Local Environment:**

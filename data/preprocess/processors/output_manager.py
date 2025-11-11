@@ -15,20 +15,22 @@ class OutputManager:
     
     def save_offer_documents(self, offer_name: str, start_time: float, files_content: List[tuple[Path, str, bool]]) -> bool:
         """Save documents for an offer. Returns success status."""
-        offer_folder = self._create_offer_structure(offer_name)
+        offer_folder = self.output_base_path / offer_name
+        offer_folder.mkdir(parents=True, exist_ok=True)
         
         success_count = 0
         processed_files: List[str] = []
 
         for file_path, content, success in files_content:
-            if success and content:
-                output_file = offer_folder / f"{file_path.stem}.md"
-                try:
-                    output_file.write_text(content, encoding='utf-8')
-                    success_count += 1
-                    processed_files.append(file_path.name)
-                except Exception:
-                    pass
+            if not (success and content):
+                continue
+
+            subdir = self._relative_subdir(offer_name, file_path)
+            output_file = offer_folder / subdir / f"{file_path.stem}.md"
+            output_file.parent.mkdir(parents=True, exist_ok=True)
+            output_file.write_text(content, encoding='utf-8')
+            success_count += 1
+            processed_files.append(file_path.name)
         
         if success_count > 0:
             duration = time.perf_counter() - start_time
@@ -42,11 +44,6 @@ class OutputManager:
             return True
         
         return False
-    
-    def _create_offer_structure(self, offer_name: str) -> Path:
-        offer_folder = self.output_base_path / offer_name
-        offer_folder.mkdir(parents=True, exist_ok=True)
-        return offer_folder
     
     def _load_processed_offers(self) -> Dict[str, Any]:
         if self.processed_offers_file.exists():
@@ -65,3 +62,9 @@ class OutputManager:
                 json.dump(self.processed_offers, f, indent=2)
         except Exception:
             pass
+
+    def _relative_subdir(self, offer_name: str, file_path: Path) -> Path:
+        for parent in file_path.parents:
+            if parent.name == offer_name:
+                return file_path.parent.relative_to(parent)
+        return Path()
