@@ -1,0 +1,22 @@
+{
+  "GC25_002_HVDC_SE_RnD_POD_test": {
+    "last_processed": "2025-11-10T07:09:54.681289",
+    "duration_seconds": 1093791.388,
+    "file_count": 3,
+    "files": [
+      "GC25_002_HVDC_SE_RnD_POD_Offer.docx",
+      "GC25_002_HVDC_SE_RnD_POD_Offer.pdf",
+      "GC25_002_HVDC_SE_RnD_POD_Offer_signed.pdf"
+    ]
+  },
+  "GC25_016_SynCon_SEC_Group_1_test": {
+    "last_processed": "2025-11-10T07:09:54.916333",
+    "duration_seconds": 1093791.623,
+    "file_count": 3,
+    "files": [
+      "GC25_016_SynCon_SEC_G1_Comm_v2.docx",
+      "GC25_016_SynCon_SEC_G1_Comm_v2.pdf",
+      "GC25_016_SynCon_SEC_G1_Pricing_v2.1.pdf"
+    ]
+  }
+}

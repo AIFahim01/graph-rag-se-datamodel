@@ -1,0 +1,50 @@
+{
+  "test_date": "2025-11-11",
+  "sample_size": 10,
+  "rebel": {
+    "success": true,
+    "time": 1.8431873321533203,
+    "triplets": 14,
+    "sample": [
+      "Siemens Energy <subj> Munich <obj> headquarters location",
+      "Siemens Energy <subj> Munich <obj> headquarters location</s>",
+      "Erlangen <subj> Germany <obj> country</s>",
+      "INCOTERMS <subj> 2.2 <obj> has part",
+      "2.2 <subj> INCOTERMS <obj> part of</s>"
+    ]
+  },
+  "relik": {
+    "success": true,
+    "time": 3.8084542751312256,
+    "entities": 0,
+    "relations": 41,
+    "sample_entities": [],
+    "sample_relations": [
+      {
+        "subject": "Erlangen \nGermany",
+        "relation": "country",
+        "object": "Germany"
+      },
+      {
+        "subject": "Munich",
+        "relation": "country",
+        "object": "Germany"
+      },
+      {
+        "subject": "Munich",
+        "relation": "country",
+        "object": "Germany"
+      },
+      {
+        "subject": "HRA",
+        "relation": "country",
+        "object": "Germany"
+      },
+      {
+        "subject": "Siemens Energy Management GmbH",
+        "relation": "board member",
+        "object": "Joe Kaeser"
+      }
+    ]
+  }
+}

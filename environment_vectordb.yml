@@ -1,0 +1,21 @@
+name: hdvc_syncon_vectordb
+channels:
+  - conda-forge
+  - pytorch
+  - defaults
+dependencies:
+  - python=3.10
+  - pip
+  - numpy
+  - pandas
+  - jupyter
+  - pip:
+    - PyMuPDF==1.23.8
+    - sentence-transformers==2.2.2
+    - chromadb==0.4.15
+    - loguru==0.7.2
+    - python-docx==0.8.11
+    - transformers==4.35.0
+    - torch==2.0.1
+    - pydantic==2.4.2
+    - pydantic-settings==2.0.3
