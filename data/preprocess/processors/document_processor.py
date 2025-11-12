@@ -1,7 +1,7 @@
 from pathlib import Path
-from typing import List, Tuple
+from typing import List
 #--- docling imports starts
-from docling_core.types.doc import ImageRefMode, PictureItem, TableItem
+from docling_core.types.doc import ImageRefMode
 from docling.datamodel.base_models import InputFormat
 from docling.datamodel.pipeline_options import PdfPipelineOptions
 from docling.document_converter import DocumentConverter, PdfFormatOption
@@ -11,18 +11,20 @@ from PIL import Image
 
 class DocumentExtractedResponse:
     success: bool
-    content: str
-    pages: List[str]
-    images: List[Image]
+    full_content: str
+    content_pages: List[str]
+    pages: List[Image]
+    pictures: List[Image]
     tables: List[Image]
 
-    def __init__(self, file_path: Path, success: bool, content: str, pages: List[str] = [], images: List[Image] = [], tables: List[Image] = []):
+    def __init__(self, file_path: Path, success: bool, full_content: str, content_pages: List[str] = [], pages: List[Image] = [], pictures: List[Image] = [], tables: List[Image] = []):
         self.file_path = file_path
         self.success = success
         if self.success == True:
-            self.content = content
+            self.full_content = full_content
+            self.content_pages = content_pages
             self.pages = pages
-            self.images = images
+            self.pictures = pictures
             self.tables = tables
 
 class DocumentProcessor:
@@ -103,26 +105,31 @@ class DocumentProcessor:
             contents: List[DocumentExtractedResponse] = []
             for fp, res in zip(file_paths, results):
                 doc = res.document
-                full_content = doc.export_to_markdown()
+
+                full_content = ''
                 pages = []
+                content_pages = []
                 for page in doc.pages.values():
                     page_no = page.page_no
-                    # full_content += f"\n<!-- page {page_no} -->\n"
                     page_content = doc.export_to_markdown(
                         page_no=page_no,
                         image_mode=ImageRefMode.PLACEHOLDER,
                     )
-                    pages.append(page_content)
-                    # full_content += f"{page_content}"
-                images = []
+                    content_pages.append(page_content)
+                    pages.append(page.image.pil_image)
+
+                    full_content += f"\n<!-- page {page_no} -->\n"
+                    full_content += f"{page_content}"
+
+                pictures = []
+                for picture in doc.pictures:
+                    pictures.append(picture.get_image(doc))
+
                 tables = []
-                for element, _level in doc.iterate_items():
-                    if isinstance(element, TableItem):
-                        tables.append(element.get_image(doc))
-                    if isinstance(element, PictureItem):
-                        images.append(element.get_image(doc))
+                for table in doc.tables:
+                    tables.append(table.get_image(doc))
                 
-                contents.append(DocumentExtractedResponse(fp, True, full_content, pages, images, tables))
+                contents.append(DocumentExtractedResponse(fp, True, full_content, content_pages, pages, pictures, tables))
 
             print(f"===> Finished Processing PDF with Docling: {len(file_paths)} files")
             return contents
