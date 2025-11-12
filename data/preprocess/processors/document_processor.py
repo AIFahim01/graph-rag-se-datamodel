@@ -1,22 +1,29 @@
 from pathlib import Path
 from typing import List, Tuple
 #--- docling imports starts
-from docling_core.types.doc import ImageRefMode
+from docling_core.types.doc import ImageRefMode, PictureItem, TableItem
 from docling.datamodel.base_models import InputFormat
 from docling.datamodel.pipeline_options import PdfPipelineOptions
 from docling.document_converter import DocumentConverter, PdfFormatOption
 from docling.datamodel.accelerator_options import AcceleratorDevice, AcceleratorOptions
 #--- docling imports ends
-# from PIL import Image
+from PIL import Image
 
-# class DocumentExtractedResponse:
-#     def __init__(self, file_path: Path, success: bool, markdown_content: str, pages: List[str] = [], images: List[Image] = []):
-#         self.file_path = file_path
-#         self.success = success
-#         if self.success == True:
-#             self.markdown_content = markdown_content
-#             self.pages = pages
-#             self.images = images
+class DocumentExtractedResponse:
+    success: bool
+    content: str
+    pages: List[str]
+    images: List[Image]
+    tables: List[Image]
+
+    def __init__(self, file_path: Path, success: bool, content: str, pages: List[str] = [], images: List[Image] = [], tables: List[Image] = []):
+        self.file_path = file_path
+        self.success = success
+        if self.success == True:
+            self.content = content
+            self.pages = pages
+            self.images = images
+            self.tables = tables
 
 class DocumentProcessor:
     def __init__(self, ocr: str):
@@ -60,8 +67,8 @@ class DocumentProcessor:
 
         return file_path, f"# Unsupported file type: {file_path.name}\n\n[Unsupported file type]", False
 
-    def process_files(self, file_paths: List[Path]) -> List[Tuple[Path, str, bool]]:
-        """Process files and return list of (file_path, markdown_content, success) tuples"""
+    def process_files(self, file_paths: List[Path]) -> List[DocumentExtractedResponse]:
+        """Process files and return list of DocumentExtractedResponse object"""
         pdf_paths = [fp for fp in file_paths if fp.exists() and fp.suffix.lower() == ".pdf"]
         if not pdf_paths:
             return []
@@ -88,24 +95,34 @@ class DocumentProcessor:
         return file_path, f"# PDF: {file_path.name}\n\n[PDF processing failed]", False
 
 
-    def _process_pdfs(self, file_paths: List[Path]) -> List[Tuple[Path, str, bool]]:
+    def _process_pdfs(self, file_paths: List[Path]) -> List[DocumentExtractedResponse]:
         if self.ocr == "docling":
             print(f"===> Starting Processing PDF with Docling: {file_paths}")
             results = self.docling_pdf_converter.convert_all(file_paths)
 
-            contents: List[Tuple[Path, str, bool]] = []
+            contents: List[DocumentExtractedResponse] = []
             for fp, res in zip(file_paths, results):
                 doc = res.document
-                full_content = ''
+                full_content = doc.export_to_markdown()
+                pages = []
                 for page in doc.pages.values():
                     page_no = page.page_no
-                    full_content += f"\n<!-- page {page_no} -->\n"
+                    # full_content += f"\n<!-- page {page_no} -->\n"
                     page_content = doc.export_to_markdown(
                         page_no=page_no,
                         image_mode=ImageRefMode.PLACEHOLDER,
                     )
-                    full_content += f"{page_content}"
-                contents.append((fp, full_content, True))
+                    pages.append(page_content)
+                    # full_content += f"{page_content}"
+                images = []
+                tables = []
+                for element, _level in doc.iterate_items():
+                    if isinstance(element, TableItem):
+                        tables.append(element.get_image(doc))
+                    if isinstance(element, PictureItem):
+                        images.append(element.get_image(doc))
+                
+                contents.append(DocumentExtractedResponse(fp, True, full_content, pages, images, tables))
 
             print(f"===> Finished Processing PDF with Docling: {len(file_paths)} files")
             return contents
