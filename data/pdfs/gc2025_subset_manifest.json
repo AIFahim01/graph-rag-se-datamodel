@@ -1,0 +1,214 @@
+{
+  "hvdc_folders": [
+    {
+      "name": "GC25_026_HVDC_VSC_Sun_Cable_PSA",
+      "original_path": "/mnt/c/Users/z0051yym/Desktop/test_bp_code/knowledge_graph_vector_GC_Data/graph-rag-se-datamodel/GC_2025/GC25_026_HVDC_VSC_Sun_Cable_PSA",
+      "dest_path": "/mnt/c/Users/z0051yym/Desktop/test_bp_code/knowledge_graph_vector_GC_Data/graph-rag-se-datamodel/data/pdfs/hdvc/GC25_026_HVDC_VSC_Sun_Cable_PSA",
+      "size_bytes": 16563805,
+      "category": "hvdc"
+    },
+    {
+      "name": "GC25_029_LS_Power_HVDC_1000MW_PSLF_pre_model",
+      "original_path": "/mnt/c/Users/z0051yym/Desktop/test_bp_code/knowledge_graph_vector_GC_Data/graph-rag-se-datamodel/GC_2025/GC25_029_LS_Power_HVDC_1000MW_PSLF_pre_model",
+      "dest_path": "/mnt/c/Users/z0051yym/Desktop/test_bp_code/knowledge_graph_vector_GC_Data/graph-rag-se-datamodel/data/pdfs/hdvc/GC25_029_LS_Power_HVDC_1000MW_PSLF_pre_model",
+      "size_bytes": 33542781,
+      "category": "hvdc"
+    },
+    {
+      "name": "GC25_035_SEC_Central_East_HVDC_FEED",
+      "original_path": "/mnt/c/Users/z0051yym/Desktop/test_bp_code/knowledge_graph_vector_GC_Data/graph-rag-se-datamodel/GC_2025/GC25_035_SEC_Central_East_HVDC_FEED",
+      "dest_path": "/mnt/c/Users/z0051yym/Desktop/test_bp_code/knowledge_graph_vector_GC_Data/graph-rag-se-datamodel/data/pdfs/hdvc/GC25_035_SEC_Central_East_HVDC_FEED",
+      "size_bytes": 4567089,
+      "category": "hvdc"
+    },
+    {
+      "name": "GC25_038_HVDC_VSC_Penbal2",
+      "original_path": "/mnt/c/Users/z0051yym/Desktop/test_bp_code/knowledge_graph_vector_GC_Data/graph-rag-se-datamodel/GC_2025/GC25_038_HVDC_VSC_Penbal2",
+      "dest_path": "/mnt/c/Users/z0051yym/Desktop/test_bp_code/knowledge_graph_vector_GC_Data/graph-rag-se-datamodel/data/pdfs/hdvc/GC25_038_HVDC_VSC_Penbal2",
+      "size_bytes": 9590215,
+      "category": "hvdc"
+    },
+    {
+      "name": "GC25_057_HVDC_LA2-LA4-BA3_Protection",
+      "original_path": "/mnt/c/Users/z0051yym/Desktop/test_bp_code/knowledge_graph_vector_GC_Data/graph-rag-se-datamodel/GC_2025/GC25_057_HVDC_LA2-LA4-BA3_Protection",
+      "dest_path": "/mnt/c/Users/z0051yym/Desktop/test_bp_code/knowledge_graph_vector_GC_Data/graph-rag-se-datamodel/data/pdfs/hdvc/GC25_057_HVDC_LA2-LA4-BA3_Protection",
+      "size_bytes": 12850023,
+      "category": "hvdc"
+    },
+    {
+      "name": "GC25_062_TWE_HVDC_FEED",
+      "original_path": "/mnt/c/Users/z0051yym/Desktop/test_bp_code/knowledge_graph_vector_GC_Data/graph-rag-se-datamodel/GC_2025/GC25_062_TWE_HVDC_FEED",
+      "dest_path": "/mnt/c/Users/z0051yym/Desktop/test_bp_code/knowledge_graph_vector_GC_Data/graph-rag-se-datamodel/data/pdfs/hdvc/GC25_062_TWE_HVDC_FEED",
+      "size_bytes": 17884823,
+      "category": "hvdc"
+    },
+    {
+      "name": "GC25_073_CentralEast_HVDC_SEC",
+      "original_path": "/mnt/c/Users/z0051yym/Desktop/test_bp_code/knowledge_graph_vector_GC_Data/graph-rag-se-datamodel/GC_2025/GC25_073_CentralEast_HVDC_SEC",
+      "dest_path": "/mnt/c/Users/z0051yym/Desktop/test_bp_code/knowledge_graph_vector_GC_Data/graph-rag-se-datamodel/data/pdfs/hdvc/GC25_073_CentralEast_HVDC_SEC",
+      "size_bytes": 18914755,
+      "category": "hvdc"
+    },
+    {
+      "name": "GC25_084_HVDC_VSC_Lanwin4_Tennet",
+      "original_path": "/mnt/c/Users/z0051yym/Desktop/test_bp_code/knowledge_graph_vector_GC_Data/graph-rag-se-datamodel/GC_2025/GC25_084_HVDC_VSC_Lanwin4_Tennet",
+      "dest_path": "/mnt/c/Users/z0051yym/Desktop/test_bp_code/knowledge_graph_vector_GC_Data/graph-rag-se-datamodel/data/pdfs/hdvc/GC25_084_HVDC_VSC_Lanwin4_Tennet",
+      "size_bytes": 44499876,
+      "category": "hvdc"
+    },
+    {
+      "name": "GC25_086_HVDC_VSC_Balwin3_Tennet",
+      "original_path": "/mnt/c/Users/z0051yym/Desktop/test_bp_code/knowledge_graph_vector_GC_Data/graph-rag-se-datamodel/GC_2025/GC25_086_HVDC_VSC_Balwin3_Tennet",
+      "dest_path": "/mnt/c/Users/z0051yym/Desktop/test_bp_code/knowledge_graph_vector_GC_Data/graph-rag-se-datamodel/data/pdfs/hdvc/GC25_086_HVDC_VSC_Balwin3_Tennet",
+      "size_bytes": 558710093,
+      "category": "hvdc"
+    },
+    {
+      "name": "GC25_100_Oman_India_HVDC_Feasibility",
+      "original_path": "/mnt/c/Users/z0051yym/Desktop/test_bp_code/knowledge_graph_vector_GC_Data/graph-rag-se-datamodel/GC_2025/GC25_100_Oman_India_HVDC_Feasibility",
+      "dest_path": "/mnt/c/Users/z0051yym/Desktop/test_bp_code/knowledge_graph_vector_GC_Data/graph-rag-se-datamodel/data/pdfs/hdvc/GC25_100_Oman_India_HVDC_Feasibility",
+      "size_bytes": 19549272,
+      "category": "hvdc"
+    },
+    {
+      "name": "GC25_103_Ferroresonance_KSO2500_HVDC",
+      "original_path": "/mnt/c/Users/z0051yym/Desktop/test_bp_code/knowledge_graph_vector_GC_Data/graph-rag-se-datamodel/GC_2025/GC25_103_Ferroresonance_KSO2500_HVDC",
+      "dest_path": "/mnt/c/Users/z0051yym/Desktop/test_bp_code/knowledge_graph_vector_GC_Data/graph-rag-se-datamodel/data/pdfs/hdvc/GC25_103_Ferroresonance_KSO2500_HVDC",
+      "size_bytes": 566584,
+      "category": "hvdc"
+    },
+    {
+      "name": "GC25_114_Tata Power_AC to HVDC tower conversion",
+      "original_path": "/mnt/c/Users/z0051yym/Desktop/test_bp_code/knowledge_graph_vector_GC_Data/graph-rag-se-datamodel/GC_2025/GC25_114_Tata Power_AC to HVDC tower conversion",
+      "dest_path": "/mnt/c/Users/z0051yym/Desktop/test_bp_code/knowledge_graph_vector_GC_Data/graph-rag-se-datamodel/data/pdfs/hdvc/GC25_114_Tata Power_AC to HVDC tower conversion",
+      "size_bytes": 9428587,
+      "category": "hvdc"
+    },
+    {
+      "name": "GC25_115_HVDC_VSC_NorthSeaConnector2(Lanwin6)",
+      "original_path": "/mnt/c/Users/z0051yym/Desktop/test_bp_code/knowledge_graph_vector_GC_Data/graph-rag-se-datamodel/GC_2025/GC25_115_HVDC_VSC_NorthSeaConnector2(Lanwin6)",
+      "dest_path": "/mnt/c/Users/z0051yym/Desktop/test_bp_code/knowledge_graph_vector_GC_Data/graph-rag-se-datamodel/data/pdfs/hdvc/GC25_115_HVDC_VSC_NorthSeaConnector2(Lanwin6)",
+      "size_bytes": 9953319,
+      "category": "hvdc"
+    },
+    {
+      "name": "GC25_124_HVDC_VSC_Sarawak_SingaporePowerLtd",
+      "original_path": "/mnt/c/Users/z0051yym/Desktop/test_bp_code/knowledge_graph_vector_GC_Data/graph-rag-se-datamodel/GC_2025/GC25_124_HVDC_VSC_Sarawak_SingaporePowerLtd",
+      "dest_path": "/mnt/c/Users/z0051yym/Desktop/test_bp_code/knowledge_graph_vector_GC_Data/graph-rag-se-datamodel/data/pdfs/hdvc/GC25_124_HVDC_VSC_Sarawak_SingaporePowerLtd",
+      "size_bytes": 32087407,
+      "category": "hvdc"
+    },
+    {
+      "name": "GCDE25_210_HVDC_VSC_InnovationPartnership_Tennet",
+      "original_path": "/mnt/c/Users/z0051yym/Desktop/test_bp_code/knowledge_graph_vector_GC_Data/graph-rag-se-datamodel/GC_2025/GCDE25_210_HVDC_VSC_InnovationPartnership_Tennet",
+      "dest_path": "/mnt/c/Users/z0051yym/Desktop/test_bp_code/knowledge_graph_vector_GC_Data/graph-rag-se-datamodel/data/pdfs/hdvc/GCDE25_210_HVDC_VSC_InnovationPartnership_Tennet",
+      "size_bytes": 7932932,
+      "category": "hvdc"
+    },
+    {
+      "name": "GCDE25_222_HVDC_TyrrhenianLink_Harmonic_Imp",
+      "original_path": "/mnt/c/Users/z0051yym/Desktop/test_bp_code/knowledge_graph_vector_GC_Data/graph-rag-se-datamodel/GC_2025/GCDE25_222_HVDC_TyrrhenianLink_Harmonic_Imp",
+      "dest_path": "/mnt/c/Users/z0051yym/Desktop/test_bp_code/knowledge_graph_vector_GC_Data/graph-rag-se-datamodel/data/pdfs/hdvc/GCDE25_222_HVDC_TyrrhenianLink_Harmonic_Imp",
+      "size_bytes": 6075630,
+      "category": "hvdc"
+    },
+    {
+      "name": "GCDE25_266_KEPCO_HVDC_Tech_Spec",
+      "original_path": "/mnt/c/Users/z0051yym/Desktop/test_bp_code/knowledge_graph_vector_GC_Data/graph-rag-se-datamodel/GC_2025/GCDE25_266_KEPCO_HVDC_Tech_Spec",
+      "dest_path": "/mnt/c/Users/z0051yym/Desktop/test_bp_code/knowledge_graph_vector_GC_Data/graph-rag-se-datamodel/data/pdfs/hdvc/GCDE25_266_KEPCO_HVDC_Tech_Spec",
+      "size_bytes": 10021373,
+      "category": "hvdc"
+    },
+    {
+      "name": "GCDE25_278_HVDC_LCC_WATL_SSTI2",
+      "original_path": "/mnt/c/Users/z0051yym/Desktop/test_bp_code/knowledge_graph_vector_GC_Data/graph-rag-se-datamodel/GC_2025/GCDE25_278_HVDC_LCC_WATL_SSTI2",
+      "dest_path": "/mnt/c/Users/z0051yym/Desktop/test_bp_code/knowledge_graph_vector_GC_Data/graph-rag-se-datamodel/data/pdfs/hdvc/GCDE25_278_HVDC_LCC_WATL_SSTI2",
+      "size_bytes": 68681823,
+      "category": "hvdc"
+    },
+    {
+      "name": "GCUS25_230_WyTie_HVDC_planning_GridUnited",
+      "original_path": "/mnt/c/Users/z0051yym/Desktop/test_bp_code/knowledge_graph_vector_GC_Data/graph-rag-se-datamodel/GC_2025/GCUS25_230_WyTie_HVDC_planning_GridUnited",
+      "dest_path": "/mnt/c/Users/z0051yym/Desktop/test_bp_code/knowledge_graph_vector_GC_Data/graph-rag-se-datamodel/data/pdfs/hdvc/GCUS25_230_WyTie_HVDC_planning_GridUnited",
+      "size_bytes": 5673532,
+      "category": "hvdc"
+    }
+  ],
+  "syncon_folders": [
+    {
+      "name": "GC25_016_SynCon_SEC_Group_1",
+      "original_path": "/mnt/c/Users/z0051yym/Desktop/test_bp_code/knowledge_graph_vector_GC_Data/graph-rag-se-datamodel/GC_2025/GC25_016_SynCon_SEC_Group_1",
+      "dest_path": "/mnt/c/Users/z0051yym/Desktop/test_bp_code/knowledge_graph_vector_GC_Data/graph-rag-se-datamodel/data/pdfs/syncon/GC25_016_SynCon_SEC_Group_1",
+      "size_bytes": 10449243,
+      "category": "syncon"
+    },
+    {
+      "name": "GC25_032_SynCon_SEC_Group_2",
+      "original_path": "/mnt/c/Users/z0051yym/Desktop/test_bp_code/knowledge_graph_vector_GC_Data/graph-rag-se-datamodel/GC_2025/GC25_032_SynCon_SEC_Group_2",
+      "dest_path": "/mnt/c/Users/z0051yym/Desktop/test_bp_code/knowledge_graph_vector_GC_Data/graph-rag-se-datamodel/data/pdfs/syncon/GC25_032_SynCon_SEC_Group_2",
+      "size_bytes": 137668,
+      "category": "syncon"
+    },
+    {
+      "name": "GC25_033_SynCon_SEC_Group_3",
+      "original_path": "/mnt/c/Users/z0051yym/Desktop/test_bp_code/knowledge_graph_vector_GC_Data/graph-rag-se-datamodel/GC_2025/GC25_033_SynCon_SEC_Group_3",
+      "dest_path": "/mnt/c/Users/z0051yym/Desktop/test_bp_code/knowledge_graph_vector_GC_Data/graph-rag-se-datamodel/data/pdfs/syncon/GC25_033_SynCon_SEC_Group_3",
+      "size_bytes": 137668,
+      "category": "syncon"
+    },
+    {
+      "name": "GC25_075_SynCon_Comanche_Xcel",
+      "original_path": "/mnt/c/Users/z0051yym/Desktop/test_bp_code/knowledge_graph_vector_GC_Data/graph-rag-se-datamodel/GC_2025/GC25_075_SynCon_Comanche_Xcel",
+      "dest_path": "/mnt/c/Users/z0051yym/Desktop/test_bp_code/knowledge_graph_vector_GC_Data/graph-rag-se-datamodel/data/pdfs/syncon/GC25_075_SynCon_Comanche_Xcel",
+      "size_bytes": 13936494,
+      "category": "syncon"
+    },
+    {
+      "name": "GC25_076_SynCon_Garvin_Xcel",
+      "original_path": "/mnt/c/Users/z0051yym/Desktop/test_bp_code/knowledge_graph_vector_GC_Data/graph-rag-se-datamodel/GC_2025/GC25_076_SynCon_Garvin_Xcel",
+      "dest_path": "/mnt/c/Users/z0051yym/Desktop/test_bp_code/knowledge_graph_vector_GC_Data/graph-rag-se-datamodel/data/pdfs/syncon/GC25_076_SynCon_Garvin_Xcel",
+      "size_bytes": 10513985,
+      "category": "syncon"
+    },
+    {
+      "name": "GC25_079_SynCon_5x_Transgrid",
+      "original_path": "/mnt/c/Users/z0051yym/Desktop/test_bp_code/knowledge_graph_vector_GC_Data/graph-rag-se-datamodel/GC_2025/GC25_079_SynCon_5x_Transgrid",
+      "dest_path": "/mnt/c/Users/z0051yym/Desktop/test_bp_code/knowledge_graph_vector_GC_Data/graph-rag-se-datamodel/data/pdfs/syncon/GC25_079_SynCon_5x_Transgrid",
+      "size_bytes": 21902992,
+      "category": "syncon"
+    },
+    {
+      "name": "GC25_089_SynCon_3x_TenneTNL",
+      "original_path": "/mnt/c/Users/z0051yym/Desktop/test_bp_code/knowledge_graph_vector_GC_Data/graph-rag-se-datamodel/GC_2025/GC25_089_SynCon_3x_TenneTNL",
+      "dest_path": "/mnt/c/Users/z0051yym/Desktop/test_bp_code/knowledge_graph_vector_GC_Data/graph-rag-se-datamodel/data/pdfs/syncon/GC25_089_SynCon_3x_TenneTNL",
+      "size_bytes": 14360531,
+      "category": "syncon"
+    },
+    {
+      "name": "GC25_090_SynCon_Agora_RioSol",
+      "original_path": "/mnt/c/Users/z0051yym/Desktop/test_bp_code/knowledge_graph_vector_GC_Data/graph-rag-se-datamodel/GC_2025/GC25_090_SynCon_Agora_RioSol",
+      "dest_path": "/mnt/c/Users/z0051yym/Desktop/test_bp_code/knowledge_graph_vector_GC_Data/graph-rag-se-datamodel/data/pdfs/syncon/GC25_090_SynCon_Agora_RioSol",
+      "size_bytes": 5782891,
+      "category": "syncon"
+    },
+    {
+      "name": "GC25_122_SynCon_4x_Powerlink",
+      "original_path": "/mnt/c/Users/z0051yym/Desktop/test_bp_code/knowledge_graph_vector_GC_Data/graph-rag-se-datamodel/GC_2025/GC25_122_SynCon_4x_Powerlink",
+      "dest_path": "/mnt/c/Users/z0051yym/Desktop/test_bp_code/knowledge_graph_vector_GC_Data/graph-rag-se-datamodel/data/pdfs/syncon/GC25_122_SynCon_4x_Powerlink",
+      "size_bytes": 39707927,
+      "category": "syncon"
+    },
+    {
+      "name": "GCDE25_218_SynCon_Big_Cedar_ITC",
+      "original_path": "/mnt/c/Users/z0051yym/Desktop/test_bp_code/knowledge_graph_vector_GC_Data/graph-rag-se-datamodel/GC_2025/GCDE25_218_SynCon_Big_Cedar_ITC",
+      "dest_path": "/mnt/c/Users/z0051yym/Desktop/test_bp_code/knowledge_graph_vector_GC_Data/graph-rag-se-datamodel/data/pdfs/syncon/GCDE25_218_SynCon_Big_Cedar_ITC",
+      "size_bytes": 5636989,
+      "category": "syncon"
+    }
+  ],
+  "mixed_folders": [],
+  "total_copied": 29,
+  "errors": [],
+  "start_time": "2025-11-10T07:07:49.998461",
+  "end_time": "2025-11-10T07:08:39.445606"
+}
