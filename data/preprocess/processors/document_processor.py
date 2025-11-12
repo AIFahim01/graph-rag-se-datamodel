@@ -7,6 +7,16 @@ from docling.datamodel.pipeline_options import PdfPipelineOptions
 from docling.document_converter import DocumentConverter, PdfFormatOption
 from docling.datamodel.accelerator_options import AcceleratorDevice, AcceleratorOptions
 #--- docling imports ends
+# from PIL import Image
+
+# class DocumentExtractedResponse:
+#     def __init__(self, file_path: Path, success: bool, markdown_content: str, pages: List[str] = [], images: List[Image] = []):
+#         self.file_path = file_path
+#         self.success = success
+#         if self.success == True:
+#             self.markdown_content = markdown_content
+#             self.pages = pages
+#             self.images = images
 
 class DocumentProcessor:
     def __init__(self, ocr: str):
@@ -66,12 +76,12 @@ class DocumentProcessor:
             full_content = ''
             for page in doc.pages.values():
                 page_no = page.page_no
+                full_content += f"\n<!-- page {page_no} -->\n"
                 page_content = doc.export_to_markdown(
                     page_no=page_no,
                     image_mode=ImageRefMode.PLACEHOLDER,
                 )
                 full_content += f"{page_content}"
-                full_content += f"\n --- Page {page_no} --- \n"
 
             print(f"===> Finished Processing PDF with Docling: {file_path}")
             return file_path, full_content, True
@@ -89,7 +99,7 @@ class DocumentProcessor:
                 full_content = ''
                 for page in doc.pages.values():
                     page_no = page.page_no
-                    full_content += f"\n<!--- page {page_no} --->\n"
+                    full_content += f"\n<!-- page {page_no} -->\n"
                     page_content = doc.export_to_markdown(
                         page_no=page_no,
                         image_mode=ImageRefMode.PLACEHOLDER,
