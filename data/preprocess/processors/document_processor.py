@@ -19,8 +19,24 @@ class DocumentProcessor:
         return "", False
     
     def _process_pdf(self, file_path: Path) -> tuple[str, bool]:
-        # TODO: Implement Docling integration
-        return f"# PDF: {file_path.name}\n\n[PDF processing placeholder]", True
+        """Extract PDF content using Docling"""
+        try:
+            from docling.document_converter import DocumentConverter
+
+            print(f"   Processing PDF with Docling: {file_path.name}")
+            converter = DocumentConverter()
+            result = converter.convert(str(file_path))
+
+            # Export to markdown with structure preserved
+            markdown_content = result.document.export_to_markdown()
+
+            print(f"   ✅ Extracted {len(markdown_content)} characters")
+            return markdown_content, True
+
+        except Exception as e:
+            print(f"   ❌ Docling failed: {e}")
+            # Fallback to simple extraction
+            return f"# PDF: {file_path.name}\n\nDocling error: {e}", False
     
     def _process_docx(self, file_path: Path) -> tuple[str, bool]:
         # TODO: Implement Docling integration  
