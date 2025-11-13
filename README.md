@@ -1,180 +1,258 @@
-# SE- Datamodel GraphRAG: Domain-Specific Document Intelligence
+# HVDC/SynCon Knowledge Graph with ReLiK Extraction
 
-Train custom embeddings from PDFs using contrastive learning and build knowledge graphs for intelligent document retrieval with local LLMs.
+Advanced knowledge graph system for HVDC (High Voltage Direct Current) and Synchronous Condenser electrical grid documentation using state-of-the-art ReLiK entity extraction.
 
 ![Python](https://img.shields.io/badge/python-3.10+-blue.svg)
-![License](https://img.shields.io/badge/license-MIT-green.svg)
-![PyTorch](https://img.shields.io/badge/PyTorch-2.0+-red.svg)
+![PyTorch](https://img.shields.io/badge/PyTorch-2.3+-red.svg)
+![CUDA](https://img.shields.io/badge/CUDA-12.1+-green.svg)
+![ReLiK](https://img.shields.io/badge/ReLiK-GPU_Optimized-orange.svg)
 
 ## Overview
 
-Transform PDF document collections into an intelligent knowledge base through:
-- **Custom Embedding Training**: Domain-adapted embeddings via contrastive learning (no Q&A generation needed)
-- **Knowledge Graph Construction**: Entity and relationship extraction with local LLMs
-- **GraphRAG Retrieval**: Multi-level search combining vectors and graph traversal
-- **Local Q&A**: Answer generation using Llama 3.1 70B (completely on-premise)
+Extract structured knowledge from HVDC and SynCon technical documentation using GPU-accelerated ReLiK extraction:
+- **ReLiK Entity Extraction**: Clean, artifact-free entity and relationship extraction
+- **Chunk-Level Provenance**: Track every fact back to source chunks and projects
+- **GPU-Optimized Processing**: 2.67 chunks/sec on NVIDIA RTX 4500 Ada
+- **Neo4j Knowledge Graph**: 10,924+ document chunks with full metadata
+- **Smart Cypher GraphRAG**: 100% query success rate with Ollama integration
 
 ## Key Features
 
-- ✅ **No Q&A Pair Generation**: Trains from document structure automatically
-- ✅ **Fully Local**: Complete privacy, no cloud APIs (Ollama + local models)
-- ✅ **Research-Based**: Built on SimCSE, BGE, E5, and Microsoft GraphRAG papers
-- ✅ **Production-Ready**: Based on proven open-source implementations
-- ✅ **Multi-PDF Support**: Handles multiple documents per project with cross-document understanding
+- ✅ **3x Better Extraction**: ReLiK extracts 367 relations vs REBEL's 125 per 100 chunks
+- ✅ **0% Noise**: Zero XML artifacts vs REBEL's 100% noisy output
+- ✅ **GPU-Accelerated**: Full CUDA support with automatic optimization
+- ✅ **Chunk-Level Tracking**: Complete provenance from chunk to entity
+- ✅ **Production Scale**: Processes 10,924 chunks in ~68 minutes on GPU
 
 ## Architecture
 
-![Architecture Diagram](docs/images/architecture-diagram.png)
+The system processes HVDC/SynCon technical documents through a multi-stage pipeline:
 
-**8 Core Components**:
+1. **PDF Processing** → Extract and chunk 10,924 documents from GC 2025 projects
+2. **ReLiK Extraction** → GPU-accelerated entity and relationship extraction
+3. **Neo4j Storage** → Store knowledge graph with chunk-level provenance
+4. **Smart Cypher Query** → Ollama-powered natural language to Cypher translation
+5. **GraphRAG Retrieval** → Multi-hop graph traversal with vector similarity
 
-1. **PDF Documents** → 2. **Processing** (extract & chunk) → 3. **Embedding Training** (contrastive learning) + 4. **Knowledge Graph** (entities & relations) → 5. **Vector Generation** → 6. **Storage** (Neo4j/ChromaDB) → 7. **GraphRAG Query** (multi-level retrieval) → 8. **Q&A System** (local LLM)
+See [Architecture Documentation](docs/architecture/) for details.
 
-See [Architecture Documentation](docs/architecture.md) for details.
+## Repository Structure
+
+```
+graph-rag-se-datamodel/
+├── scripts/
+│   ├── build/         (9 files)  - Knowledge graph builders (ReLiK, REBEL)
+│   ├── chat/          (5 files)  - Chat interfaces (Ollama, Smart Cypher)
+│   ├── setup/         (7 files)  - Environment and database setup
+│   ├── utils/         (3 files)  - PDF processing, data copying
+│   ├── legacy/        (12 files) - Deprecated REBEL-based scripts
+│   └── visualization/ (7 files)  - Graph visualization tools
+│
+├── tests/            (10 files) - All tests with pytest configuration
+├── docs/
+│   ├── setup/        - Installation and setup guides
+│   ├── performance/  - Benchmark results and comparisons
+│   ├── reference/    - Query examples and summaries
+│   └── architecture/ - System design documentation
+│
+├── src/              - Core library code
+├── data/             - Processed data and knowledge graphs
+└── dataset_samples/  - Sample PDFs from HVDC/SynCon projects
+```
 
 ## Quick Start
 
-### Installation
+### 1. Environment Setup
 
 ```bash
 # Clone repository
-git clone https://github.com/your-org/pdf-to-graphrag.git
-cd pdf-to-graphrag
+git clone https://github.com/InfinitiBit/graph-rag-se-datamodel.git
+cd graph-rag-se-datamodel
 
-# Install dependencies
-pip install -r requirements.txt
+# Create conda environment
+conda env create -f environment_vectordb.yml
+conda activate hdvc_syncon_vectordb
 
-# Setup Ollama (for local LLM)
-bash scripts/setup_ollama.sh
+# Install ReLiK
+pip install relik
 
-# Setup Neo4j (optional - can use ChromaDB)
-bash scripts/setup_neo4j.sh
+# Setup services
+bash scripts/setup/setup_ollama.sh
+bash scripts/setup/setup_neo4j.sh
 ```
 
-### Basic Usage
+### 2. Build Knowledge Graph with ReLiK
 
-```python
-from src.processing import PDFExtractor, Chunker
-from src.training import PairGenerator, EmbeddingTrainer
-from src.graph import EntityExtractor, GraphBuilder
-from src.retrieval import GraphRAGRetriever
+```bash
+# Test on 100 chunks first (verify GPU is working)
+python scripts/build/build_chunk_level_relik_kg.py --test --sample-size 100
 
-# 1. Process PDFs
-extractor = PDFExtractor()
-chunker = Chunker(chunk_size=1000, overlap=200)
-chunks = chunker.chunk(extractor.extract("path/to/pdfs/"))
+# Process all 10,924 chunks (~68 minutes on GPU)
+python scripts/build/build_chunk_level_relik_kg.py
 
-# 2. Train custom embeddings
-pair_gen = PairGenerator()
-pairs = pair_gen.generate_from_structure(chunks)  # No Q&A needed!
-
-trainer = EmbeddingTrainer(base_model="BAAI/bge-large-en-v1.5")
-custom_model = trainer.train(pairs, epochs=3, batch_size=32)
-
-# 3. Build knowledge graph
-entity_ext = EntityExtractor(llm_model="llama3.1:70b")
-entities = entity_ext.extract(chunks)
-
-graph_builder = GraphBuilder()
-graph = graph_builder.build(entities, chunks)
-
-# 4. Query with GraphRAG
-retriever = GraphRAGRetriever(custom_model, graph)
-results = retriever.retrieve("What are the voltage requirements?")
-
-print(results)
+# Load to Neo4j with provenance
+python scripts/build/build_chunk_level_relik_kg.py --load-neo4j
 ```
 
-See [examples/](examples/) for complete workflows.
+### 3. Query with Smart Cypher GraphRAG
+
+```bash
+# Start interactive chat (100% query success rate)
+python scripts/chat/ollama_smart_cypher_graphrag.py
+
+# Example queries:
+# - "What HVDC projects involve TenneT?"
+# - "Show all converter stations in Germany"
+# - "What are the voltage specifications for GC25_002?"
+```
+
+See [Quick Start Guide](docs/setup/QUICKSTART.md) for detailed instructions.
 
 ## Documentation
 
-- **[Architecture Guide](docs/architecture.md)**: Complete system design
-- **[Contrastive Learning](docs/contrastive-learning.md)**: Training methodology explained
-- **[GraphRAG](docs/graphrag.md)**: Multi-level retrieval approach
-- **[Installation Guide](docs/installation.md)**: Detailed setup instructions
-- **[API Reference](docs/api.md)**: Function and class documentation
+### Setup Guides
+- **[Ollama Setup](docs/setup/OLLAMA_SETUP.md)**: Configure Ollama for local LLM queries
+- **[Vector DB Instructions](docs/setup/RUN_VECTORDB_INSTRUCTIONS.md)**: ChromaDB and vector storage setup
 
-## Examples
+### Performance & Results
+- **[ReLiK vs REBEL Comparison](docs/performance/GRAPH_COMPARISON_RECOMMENDATIONS.md)**: Detailed model comparison
+- **[Test Results](docs/performance/test_results_relik_vs_rebel.json)**: Benchmark data (367 vs 125 relations)
+- **[Smart Cypher Results](docs/performance/SMART_CYPHER_RESULTS.md)**: Query performance metrics
+- **[Performance Guide](docs/performance/GRAPHRAG_PERFORMANCE_GUIDE.md)**: Optimization tips
 
-- `examples/01_process_pdfs.py` - PDF extraction and chunking
-- `examples/02_train_embeddings.py` - Custom model training
-- `examples/03_build_graph.py` - Knowledge graph construction
-- `examples/04_query_system.py` - GraphRAG queries
-- `examples/end_to_end.py` - Complete pipeline
+### Reference
+- **[Neo4j Queries](docs/reference/neo4j_queries.md)**: Example Cypher queries for HVDC data
+- **[Dataset Summary](docs/reference/HDVC_SYNCON_SUBSET_SUMMARY.md)**: GC 2025 projects overview
+- **[Implementation Status](docs/reference/IMPLEMENTATION_STATUS.md)**: Current development status
 
-## Research Foundation
+## Available Scripts
 
-This project is built on proven research:
+### Build Scripts (`scripts/build/`)
+- `build_chunk_level_relik_kg.py` - **Recommended**: GPU-optimized chunk-level extraction
+- `build_relik_kg.py` - Standard ReLiK extraction
+- `build_complete_graphrag.py` - Complete pipeline (vector DB + KG)
+- `build_rebel_kg.py` - REBEL extraction (legacy comparison)
+- `load_kg_to_neo4j.py` - Load knowledge graph to Neo4j
 
-- **SimCSE** (Princeton NLP, 2021): Unsupervised contrastive learning
-  - Paper: https://arxiv.org/abs/2104.08821
-  - Shows structure-based training works
+### Chat Scripts (`scripts/chat/`)
+- `ollama_smart_cypher_graphrag.py` - **Recommended**: Smart Cypher with 100% success rate
+- `chat_hdvc_syncon.py` - Basic GraphRAG chat interface
+- `true_graphrag_chat.py` - Advanced GraphRAG queries
 
-- **BGE Models** (BAAI, 2023): State-of-the-art embeddings
-  - Paper: https://arxiv.org/abs/2309.07597
-  - Our base model choice
+### Test Scripts (`tests/`)
+Run all tests: `pytest tests/`
+- `test_relik_vs_rebel.py` - Compare extraction models
+- `test_relik_relation.py` - Verify ReLiK functionality
+- `test_neo4j_connection.py` - Test database connectivity
 
-- **E5 Embeddings** (Microsoft, 2022): Weak supervision from structure
-  - Paper: https://arxiv.org/abs/2212.03533
-  - Validates document-based training
+## ReLiK vs REBEL Comparison
 
-- **GraphRAG** (Microsoft Research, 2024): Graph-based retrieval
-  - GitHub: https://github.com/microsoft/graphrag
-  - Multi-level search architecture
+| Metric | REBEL | ReLiK | Winner |
+|--------|-------|-------|--------|
+| Relations/100 chunks | 125 | 367 | **ReLiK (3x)** |
+| Clean extraction | 0% | 100% | **ReLiK** |
+| XML artifacts | 100% | 0% | **ReLiK** |
+| Processing speed | Fast | 2.67 chunks/sec | REBEL |
+| **Recommendation** | ❌ Deprecated | ✅ **Production Use** | **ReLiK** |
 
-## Requirements
-
-### Hardware
-- **GPU**: 1-4x NVIDIA RTX 4090 (24GB) or 1-2x A100 (40-80GB)
-- **RAM**: 64-128GB
-- **Storage**: 1-2TB SSD
-
-### Software
-- Python 3.10+
-- PyTorch 2.0+
-- Ollama (for local LLM)
-- Neo4j 5.x or ChromaDB (for storage)
+See [comparison details](docs/performance/GRAPH_COMPARISON_RECOMMENDATIONS.md) for full analysis.
 
 ## Technology Stack
 
-| Component | Technology |
-|-----------|------------|
-| PDF Processing | PyMuPDF |
-| Embedding Training | PyTorch, sentence-transformers |
-| Base Model | bge-large-en-v1.5 (BAAI) |
-| Local LLM | Llama 3.1 70B (via Ollama) |
-| Vector DB | ChromaDB / Qdrant / Neo4j |
-| Graph DB | Neo4j / NetworkX |
-| API | FastAPI |
+| Component | Technology | Version |
+|-----------|------------|---------|
+| **Entity Extraction** | **ReLiK** | relik-ie/relik-relation-extraction-small |
+| GPU Acceleration | CUDA | 12.1+ |
+| PDF Processing | PyMuPDF | Latest |
+| Local LLM | Ollama (Llama 3.1 70B) | Latest |
+| Graph Database | Neo4j | 5.x |
+| Vector Database | ChromaDB | Latest |
+| Python | 3.10 | 3.10+ |
+| PyTorch | 2.3 | 2.0+ |
+
+## Requirements
+
+### Hardware (Tested Configuration)
+- **GPU**: NVIDIA RTX 4500 Ada (25.76 GB) or equivalent
+- **RAM**: 32GB+ recommended
+- **Storage**: 500GB+ for full dataset
+
+### Software Dependencies
+```bash
+Python 3.10+
+PyTorch 2.3.1 with CUDA 12.1+
+relik (pip install relik)
+transformers 4.41.2
+neo4j 5.15
+chromadb
+ollama (for Smart Cypher queries)
+```
+
+See `environment_vectordb.yml` for complete environment specification.
+
+## Performance Metrics
+
+### ReLiK Extraction Performance
+- **Processing Speed**: 2.67 chunks/sec on NVIDIA RTX 4500 Ada
+- **Extraction Quality**: 5.7 relations per chunk average
+- **Relation Types**: 45+ unique relationship types
+- **Top Relations**: country, headquarters location, manufacturer, diplomatic relation
+
+### Dataset Statistics
+- **Total Chunks**: 10,924 from GC 2025 HVDC/SynCon projects
+- **Expected Output**: ~62,000 relationships with full provenance
+- **Processing Time**: ~68 minutes for complete dataset on GPU
+- **Storage**: ~15-20MB for chunk-level knowledge graph JSON
+
+## Project Structure Highlights
+
+### Active Development
+- **scripts/build/** - Production ReLiK extraction pipeline
+- **scripts/chat/** - Smart Cypher GraphRAG interface
+- **tests/** - Comprehensive test suite
+
+### Legacy (Preserved for Reference)
+- **scripts/legacy/** - Original REBEL-based implementations
+- Kept for comparison and fallback purposes
 
 ## Contributing
 
-Contributions welcome! Please:
+Contributions welcome! This is an R&D project for HVDC/SynCon knowledge extraction.
+
+Please:
 1. Fork the repository
-2. Create a feature branch
-3. Make your changes
+2. Create a feature branch (e.g., `feature/improved-extraction`)
+3. Test thoroughly with sample data
 4. Submit a pull request
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed guidelines.
 
-```
+## Research Foundation
 
-And please cite the foundational research:
-- SimCSE: Gao et al. (2021)
-- BGE: Xiao et al. (2023)
-- GraphRAG: Edge et al. (2024)
+This project builds on state-of-the-art entity extraction research:
 
+- **ReLiK** (SapienzaNLP, 2024): Retrieval-based entity linking and relation extraction
+  - Model: relik-ie/relik-relation-extraction-small
+  - Zero XML artifacts, clean extraction
+  - Paper: https://arxiv.org/abs/2408.00103
+
+- **REBEL** (Babelscape, 2021): Relation extraction baseline
+  - Used for comparison purposes
+  - Replaced due to noisy output (100% XML artifacts)
+
+- **GraphRAG** (Microsoft Research, 2024): Graph-based retrieval architecture
+  - Smart Cypher integration for natural language queries
+  - GitHub: https://github.com/microsoft/graphrag
 
 ## Acknowledgments
 
-Built on excellent open-source work:
-- [sentence-transformers](https://github.com/UKPLab/sentence-transformers) by UKPLab
-- [GraphRAG](https://github.com/microsoft/graphrag) by Microsoft Research
+Built with excellent open-source tools:
+- [ReLiK](https://github.com/SapienzaNLP/relik) by SapienzaNLP for clean entity extraction
+- [Neo4j](https://neo4j.com/) for graph database and Cypher queries
 - [Ollama](https://ollama.ai/) for local LLM serving
-- [Neo4j](https://neo4j.com/) for graph database
+- [ChromaDB](https://www.trychroma.com/) for vector storage
 
-Special thanks to the research teams at Princeton NLP, BAAI, and Microsoft Research.
+Special thanks to the electrical grid engineering teams providing the HVDC/SynCon documentation corpus.
 
 
 
