@@ -6,6 +6,7 @@ from docling.datamodel.base_models import InputFormat
 from docling.datamodel.pipeline_options import PdfPipelineOptions
 from docling.document_converter import DocumentConverter, PdfFormatOption
 from docling.datamodel.accelerator_options import AcceleratorDevice, AcceleratorOptions
+from docling.backend.pypdfium2_backend import PyPdfiumDocumentBackend
 #--- docling imports ends
 from PIL import Image
 
@@ -42,13 +43,17 @@ class DocumentProcessor:
                 device=AcceleratorDevice.CUDA,
                 cuda_use_flash_attention2 = True
             )
-            pipeline_options.images_scale = 2.0
-            pipeline_options.generate_page_images = True
-            pipeline_options.generate_picture_images = True
+            # pipeline_options.images_scale = 2.0
+            # pipeline_options.generate_page_images = True
+            # pipeline_options.generate_picture_images = True
+
+            # pipeline_options.do_ocr = False
 
             self.docling_pdf_converter = DocumentConverter(
                 format_options={
-                    InputFormat.PDF: PdfFormatOption(pipeline_options=pipeline_options)
+                    InputFormat.PDF: PdfFormatOption(
+                        pipeline_options=pipeline_options,
+                        backend=PyPdfiumDocumentBackend)
                 }
             )
         else:
@@ -117,18 +122,18 @@ class DocumentProcessor:
                         image_mode=ImageRefMode.PLACEHOLDER,
                     )
                     content_pages.append(page_content)
-                    pages.append(page.image.pil_image)
+                    # pages.append(page.image.pil_image)
 
                     full_content += f"\n<!-- page {page_no} -->\n"
                     full_content += f"{page_content}"
 
                 pictures = []
-                for picture in doc.pictures:
-                    pictures.append(picture.get_image(doc))
+                # for picture in doc.pictures:
+                #     pictures.append(picture.get_image(doc))
 
                 tables = []
-                for table in doc.tables:
-                    tables.append(table.get_image(doc))
+                # for table in doc.tables:
+                #     tables.append(table.get_image(doc))
                 
                 contents.append(DocumentExtractedResponse(fp, True, full_content, content_pages, pages, pictures, tables))
 

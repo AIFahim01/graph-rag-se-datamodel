@@ -43,14 +43,14 @@ class OutputManager:
 
                 self._save_pages(output_file_dir, fc.file_path, fc.content_pages)
 
-                self._save_images(output_file_dir, fc.file_path, "page", fc.pages)
-                self._save_images(output_file_dir, fc.file_path, "picture", fc.pictures)
-                self._save_images(output_file_dir, fc.file_path, "table", fc.tables)
+                # self._save_images(output_file_dir, fc.file_path, "page", fc.pages)
+                # self._save_images(output_file_dir, fc.file_path, "picture", fc.pictures)
+                # self._save_images(output_file_dir, fc.file_path, "table", fc.tables)
 
                 relative_file_parents = relative_parents.copy()
                 relative_file_parents.append(offer_name)
                 relative_file_parents.extend(list(subdir.parts))
-                relative_file_parents.append(fc.file_path.stem)
+
                 self._save_metadata(output_file_dir, offer_name, relative_file_parents, fc)
                 
                 success_count += 1
@@ -117,15 +117,13 @@ class OutputManager:
         metadata_file = output_file_dir / f"{file_content.file_path.stem} - metadata.json"
         metadata_file.parent.mkdir(parents=True, exist_ok=True)
         payload = {
-            "offer_name": offer_name,
+            "project_name": offer_name,
             "file_name": file_content.file_path.name,
             "relative_path": str(self._relative_subdir(offer_name, file_content.file_path)),
             "file_path": str(file_content.file_path),
             "file_type": file_content.file_path.suffix,
             "extracted_at": datetime.now().isoformat(),
-            "pages": len(file_content.pages),
-            "pictures": len(file_content.pictures),
-            "tables": len(file_content.tables),
+            "pages": len(file_content.content_pages),
             "relative_parents": relative_parents,
         }
         with metadata_file.open("w", encoding="utf-8") as f:
