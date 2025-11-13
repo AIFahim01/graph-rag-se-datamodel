@@ -13,14 +13,14 @@ class DataPreprocessingOrchestrator:
         self.document_processor = DocumentProcessor("docling")
         self.output_manager = OutputManager(output_folder)
     
-    def run(self) -> bool:
+    def run(self, level: int) -> bool:
         """Run the preprocessing pipeline"""
         if not self.input_folder.exists():
             print(f"Input folder not found: {self.input_folder}")
             return False
         
-        processed_count = self._get_single_offer(2, self.input_folder, [])
-        print(f"=> Processed {processed_count} offers")
+        processed_count = self._get_single_offer(level, self.input_folder, [])
+        print(f"=> Processed {processed_count} projects")
         return processed_count > 0
 
     def _get_single_offer(self, level: int, current_folder: Path, relative_parents: List[str]) -> int:
@@ -37,11 +37,11 @@ class DataPreprocessingOrchestrator:
             processed_count += self._get_single_offer(level - 1, offer_folder, relative_parents)
 
         relative_parents.pop()
-        print(f"==> Processed folder: {current_folder.name} ({processed_count} offers)")
+        print(f"==> Processed folder: {current_folder.name} ({processed_count} projects)")
         return processed_count
     
     def _process_single_offer(self, offer_folder: Path, relative_parents: List[str]) -> bool:
-        print(f"===> Processing offer: {offer_folder.name}")
+        print(f"===> Processing project: {offer_folder.name}")
         start_time = time.perf_counter()
         offer_name = offer_folder.name
         
@@ -58,18 +58,18 @@ class DataPreprocessingOrchestrator:
         
         success = self.output_manager.save_offer_documents(start_time, offer_name, relative_parents, files_contents)
 
-        print(f"===> Processed offer: {offer_name} ({success})")
+        print(f"===> Processed project: {offer_name} ({success})")
         return success
 
 def main():
     input_folder = r'D:\Data-Model\Data\GC 2025'
-    output_folder = r'D:\Data-Model\Data\Processed-offers'
+    output_folder = r'D:\Data-Model\Data\Processed-data'
 
     print(f"=> Input folder: {input_folder}")
     print(f"=> Output folder: {output_folder}")
 
     orchestrator = DataPreprocessingOrchestrator(input_folder, output_folder)
-    success = orchestrator.run()
+    success = orchestrator.run(2)
     
     exit(0 if success else 1)
 
