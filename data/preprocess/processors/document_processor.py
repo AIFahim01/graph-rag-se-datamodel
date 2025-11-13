@@ -10,6 +10,7 @@ from docling.datamodel.accelerator_options import AcceleratorDevice, Accelerator
 from PIL import Image
 
 class DocumentExtractedResponse:
+    file_path: Path
     success: bool
     full_content: str
     content_pages: List[str]
@@ -79,7 +80,7 @@ class DocumentProcessor:
     # private methods
     def _process_pdf(self, file_path: Path) -> tuple[Path, str, bool]:
         if self.ocr == "docling":
-            print(f"===> Starting Processing PDF with Docling: {file_path}")
+            print(f"====> Starting Extracting Content from PDF with Docling: {file_path.name}")
             doc = self.docling_pdf_converter.convert(file_path).document
 
             full_content = ''
@@ -92,14 +93,14 @@ class DocumentProcessor:
                 )
                 full_content += f"{page_content}"
 
-            print(f"===> Finished Processing PDF with Docling: {file_path}")
+            print(f"====> Finished Extracting Content from PDF with Docling: {file_path.name}")
             return file_path, full_content, True
         return file_path, f"# PDF: {file_path.name}\n\n[PDF processing failed]", False
 
 
     def _process_pdfs(self, file_paths: List[Path]) -> List[DocumentExtractedResponse]:
         if self.ocr == "docling":
-            print(f"===> Starting Processing PDF with Docling: {file_paths}")
+            print(f"====> Starting Extracting Content from PDFs with Docling: {[fp.name for fp in file_paths]}")
             results = self.docling_pdf_converter.convert_all(file_paths)
 
             contents: List[DocumentExtractedResponse] = []
@@ -131,7 +132,7 @@ class DocumentProcessor:
                 
                 contents.append(DocumentExtractedResponse(fp, True, full_content, content_pages, pages, pictures, tables))
 
-            print(f"===> Finished Processing PDF with Docling: {len(file_paths)} files")
+            print(f"====> Finished Extracting Content from PDFs with Docling: {len(contents)} files")
             return contents
         return []
     

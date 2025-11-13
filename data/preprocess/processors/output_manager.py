@@ -15,9 +15,16 @@ class OutputManager:
     def is_offer_processed(self, offer_name: str) -> bool:
         return offer_name in self.processed_offers
     
-    def save_offer_documents(self, offer_name: str, start_time: float, files_contents: List[DocumentExtractedResponse]) -> bool:
+    def save_offer_documents(self, start_time: float, offer_name: str, relative_parents: List[str], files_contents: List[DocumentExtractedResponse]) -> bool:
         """Save documents for an offer. Returns success status."""
-        offer_folder = self.output_base_path / offer_name
+        offer_folder = self.output_base_path
+        relative_offer_name = ''
+        for p in relative_parents:
+            offer_folder /= p
+            relative_offer_name += f"{p} / "
+
+        offer_folder = offer_folder / offer_name
+        relative_offer_name += offer_name
         offer_folder.mkdir(parents=True, exist_ok=True)
         
         success_count = 0
@@ -40,7 +47,11 @@ class OutputManager:
                 self._save_images(output_file_dir, fc.file_path, "picture", fc.pictures)
                 self._save_images(output_file_dir, fc.file_path, "table", fc.tables)
 
-                self._save_metadata(output_file_dir, offer_name, fc)
+                relative_file_parents = relative_parents.copy()
+                relative_file_parents.append(offer_name)
+                relative_file_parents.extend(list(subdir.parts))
+                relative_file_parents.append(fc.file_path.stem)
+                self._save_metadata(output_file_dir, offer_name, relative_file_parents, fc)
                 
                 success_count += 1
                 processed_files.append(fc.file_path.name)
@@ -49,11 +60,12 @@ class OutputManager:
         
         if success_count > 0:
             duration = time.perf_counter() - start_time
-            self.processed_offers[offer_name] = {
+            self.processed_offers[relative_offer_name] = {
                 "last_processed": datetime.now().isoformat(),
                 "duration_seconds": round(duration, 3),
                 "file_count": success_count,
                 "files": processed_files,
+                "relative_parents": relative_parents
             }
             self._save_processed_offers()
             return True
@@ -101,12 +113,12 @@ class OutputManager:
                 pil_image.save(fp, format="PNG")
             idx += 1
 
-    def _save_metadata(self, output_file_dir: Path, offer_name: str, file_content: DocumentExtractedResponse):
+    def _save_metadata(self, output_file_dir: Path, offer_name: str, relative_parents: List[str], file_content: DocumentExtractedResponse):
         metadata_file = output_file_dir / f"{file_content.file_path.stem} - metadata.json"
         metadata_file.parent.mkdir(parents=True, exist_ok=True)
         payload = {
             "offer_name": offer_name,
-            "file_name": file_content.file_path.stem,
+            "file_name": file_content.file_path.name,
             "relative_path": str(self._relative_subdir(offer_name, file_content.file_path)),
             "file_path": str(file_content.file_path),
             "file_type": file_content.file_path.suffix,
@@ -114,6 +126,7 @@ class OutputManager:
             "pages": len(file_content.pages),
             "pictures": len(file_content.pictures),
             "tables": len(file_content.tables),
+            "relative_parents": relative_parents,
         }
         with metadata_file.open("w", encoding="utf-8") as f:
             json.dump(payload, f, indent=2)
