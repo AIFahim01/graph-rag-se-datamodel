@@ -244,16 +244,6 @@ This project builds on state-of-the-art entity extraction research:
   - Smart Cypher integration for natural language queries
   - GitHub: https://github.com/microsoft/graphrag
 
-## Acknowledgments
-
-Built with excellent open-source tools:
-- [ReLiK](https://github.com/SapienzaNLP/relik) by SapienzaNLP for clean entity extraction
-- [Neo4j](https://neo4j.com/) for graph database and Cypher queries
-- [Ollama](https://ollama.ai/) for local LLM serving
-- [ChromaDB](https://www.trychroma.com/) for vector storage
-
-Special thanks to the electrical grid engineering teams providing the HVDC/SynCon documentation corpus.
-
 
 
 
