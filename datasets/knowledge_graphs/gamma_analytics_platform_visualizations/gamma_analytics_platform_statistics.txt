@@ -1,0 +1,44 @@
+KNOWLEDGE GRAPH STATISTICS
+================================================================================
+
+Project: gamma_analytics_platform
+Timestamp: 2025-10-31T07:37:41.300865
+
+OVERVIEW
+--------
+PDFs Processed:          3
+Text Segments:           6
+Total Triplets:          6
+Unique Triplets:         6
+Unique Entities:         10
+Unique Relations:        5
+
+TOP 10 MOST FREQUENT ENTITIES
+------------------------------
+Apache Spark                                       :   2 occurrences
+Kafka                                              :   2 occurrences
+Continuous integration                             :   1 occurrences
+unsupervised learning                              :   1 occurrences
+Twitter                                            :   1 occurrences
+Agile development                                  :   1 occurrences
+Anomaly detection                                  :   1 occurrences
+Social Media                                       :   1 occurrences
+Apache Flink                                       :   1 occurrences
+Cloud                                              :   1 occurrences
+
+TOP 10 MOST FREQUENT RELATIONS
+--------------------------------------------------------------------------------
+part of                                            :   2 occurrences
+use                                                :   1 occurrences
+instance of                                        :   1 occurrences
+has part                                           :   1 occurrences
+used by                                            :   1 occurrences
+
+SAMPLE TRIPLETS
+--------------------------------------------------------------------------------
+Continuous integration --[part of]--> Agile development
+unsupervised learning --[use]--> Anomaly detection
+Twitter --[instance of]--> Social Media
+Apache Spark --[has part]--> Apache Flink
+Kafka --[used by]--> Apache Spark
+Kafka --[part of]--> Cloud

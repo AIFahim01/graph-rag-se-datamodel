@@ -1,0 +1,87 @@
+{
+  "timestamp": "2025-10-31T11:40:05.072128",
+  "model_name": "BAAI/bge-large-en-v1.5",
+  "embedding_dim": 1024,
+  "total_chunks": 31,
+  "projects": {
+    "alpha_erp_system": {
+      "num_chunks": 13,
+      "chunk_ids": [
+        "chunk_0",
+        "chunk_1",
+        "chunk_0",
+        "chunk_1",
+        "chunk_2",
+        "chunk_0",
+        "chunk_1",
+        "chunk_2",
+        "chunk_3",
+        "chunk_0",
+        "chunk_1",
+        "chunk_2",
+        "chunk_3"
+      ]
+    },
+    "beta_cloud_migration": {
+      "num_chunks": 8,
+      "chunk_ids": [
+        "chunk_0",
+        "chunk_1",
+        "chunk_0",
+        "chunk_1",
+        "chunk_2",
+        "chunk_0",
+        "chunk_1",
+        "chunk_2"
+      ]
+    },
+    "gamma_analytics_platform": {
+      "num_chunks": 10,
+      "chunk_ids": [
+        "chunk_0",
+        "chunk_1",
+        "chunk_2",
+        "chunk_0",
+        "chunk_1",
+        "chunk_2",
+        "chunk_0",
+        "chunk_1",
+        "chunk_2",
+        "chunk_3"
+      ]
+    }
+  },
+  "chunk_ids": [
+    "chunk_0",
+    "chunk_1",
+    "chunk_0",
+    "chunk_1",
+    "chunk_2",
+    "chunk_0",
+    "chunk_1",
+    "chunk_2",
+    "chunk_3",
+    "chunk_0",
+    "chunk_1",
+    "chunk_2",
+    "chunk_3",
+    "chunk_0",
+    "chunk_1",
+    "chunk_0",
+    "chunk_1",
+    "chunk_2",
+    "chunk_0",
+    "chunk_1",
+    "chunk_2",
+    "chunk_0",
+    "chunk_1",
+    "chunk_2",
+    "chunk_0",
+    "chunk_1",
+    "chunk_2",
+    "chunk_0",
+    "chunk_1",
+    "chunk_2",
+    "chunk_3"
+  ]
+}

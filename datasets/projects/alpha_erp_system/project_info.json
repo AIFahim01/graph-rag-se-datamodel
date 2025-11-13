@@ -1,0 +1,19 @@
+{
+  "project_name": "Alpha ERP System",
+  "project_id": "project_001",
+  "customer": "ABC Corporation",
+  "customer_industry": "Manufacturing",
+  "start_date": "2024-01-15",
+  "end_date": null,
+  "status": "active",
+  "description": "Enterprise resource planning system implementation for manufacturing operations",
+  "project_type": "ERP Implementation",
+  "team_size": 12,
+  "key_technologies": [
+    "SAP",
+    "Oracle",
+    "REST APIs",
+    "Microservices"
+  ],
+  "notes": "Example project - replace with your actual details"
+}

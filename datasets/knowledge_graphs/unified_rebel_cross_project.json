@@ -1,0 +1,681 @@
+{
+  "timestamp": "2025-10-31T10:09:03.525367",
+  "total_chunks": 58,
+  "total_triplets": 59,
+  "num_cross_project_entities": 2,
+  "cross_project_entities": {
+    "October 29, 2025": [
+      "beta_cloud_migration",
+      "gamma_analytics_platform"
+    ],
+    "Kubernetes": [
+      "beta_cloud_migration",
+      "gamma_analytics_platform"
+    ]
+  },
+  "project_connections": [
+    {
+      "project1": "beta_cloud_migration",
+      "project2": "gamma_analytics_platform",
+      "shared_entities": [
+        "Kubernetes",
+        "October 29, 2025"
+      ],
+      "num_shared_entities": 2,
+      "shared_triplets": [
+        {
+          "head": "Cloud Migration - Commercial Proposal",
+          "relation": "publication date",
+          "tail": "October 29, 2025",
+          "project": "beta_cloud_migration",
+          "source_pdf": "cloud_migration_commercial.pdf",
+          "page_number": 1,
+          "chunk_id": "chunk_0",
+          "source_text": "Cloud Migration - Commercial Proposal\nDate: October 29, 2025\nDocument Type: Cloud Migration Commercial\n1. Professional Services\nMigration Planning and Assessment: $95,000\nInfrastructure Setup and Conf..."
+        },
+        {
+          "head": "Data Insights Inc",
+          "relation": "inception",
+          "tail": "October 29, 2025",
+          "project": "gamma_analytics_platform",
+          "source_pdf": "analytics_rfq_response.pdf",
+          "page_number": 1,
+          "chunk_id": "chunk_0",
+          "source_text": "Response to RFQ - Data Analytics\nPlatform\nDate: October 29, 2025\nDocument Type: Analytics Rfq Response\n1. Understanding of Requirements\nData Insights Inc requires a scalable platform to ingest, proces..."
+        },
+        {
+          "head": "Data Analytics Platform",
+          "relation": "inception",
+          "tail": "October 29, 2025",
+          "project": "gamma_analytics_platform",
+          "source_pdf": "analytics_specifications.pdf",
+          "page_number": 1,
+          "chunk_id": "chunk_0",
+          "source_text": "Data Analytics Platform - System\nSpecifications\nDate: October 29, 2025\nDocument Type: Analytics Specifications\n1. Performance Requirements\nData Ingestion: 500,000 events/second sustained, 1,000,000 ev..."
+        },
+        {
+          "head": "EKS",
+          "relation": "use",
+          "tail": "Kubernetes",
+          "project": "beta_cloud_migration",
+          "source_pdf": "cloud_migration_commercial.pdf",
+          "page_number": 1,
+          "chunk_id": "chunk_1",
+          "source_text": "e Transfer: $45,000\nTotal Professional Services: $770,000\n2. Cloud Infrastructure Costs (Monthly Estimates)\nCompute (EC2 instances): $15,000/month\nManaged Kubernetes (EKS): $8,000/month\nDatabase Servi..."
+        },
+        {
+          "head": "Kubernetes",
+          "relation": "use",
+          "tail": "containerization",
+          "project": "beta_cloud_migration",
+          "source_pdf": "cloud_migration_proposal.pdf",
+          "page_number": 1,
+          "chunk_id": "chunk_1",
+          "source_text": "mizes downtime through parallel run strategy and automated rollback capabilities.\nPost-migration optimization will focus on containerization, auto-scaling, and serverless architecture\nwhere applicable..."
+        },
+        {
+          "head": "Kubernetes",
+          "relation": "use",
+          "tail": "container orchestration",
+          "project": "gamma_analytics_platform",
+          "source_pdf": "analytics_specifications.pdf",
+          "page_number": 2,
+          "chunk_id": "chunk_4",
+          "source_text": "Scikit-learn, MLflow for experiment tracking\nOrchestration: Apache Airflow for batch jobs, Kubernetes for container orchestration\nVisualization: React-based custom dashboards, D3.js for interactive ch..."
+        }
+      ]
+    }
+  ],
+  "all_triplets": [
+    {
+      "head": "SAP S/4HANA Enterprise Edition",
+      "relation": "use",
+      "tail": "ERP",
+      "project": "alpha_erp_system",
+      "source_pdf": "commercial_offer.pdf",
+      "page_number": 1,
+      "chunk_id": "chunk_0",
+      "source_text": "ERP Implementation - Commercial\nProposal\nDate: October 29, 2025\nDocument Type: Commercial Offer\n1. Pricing Structure\nSoftware Licenses: SAP S/4HANA Enterprise Edition - $450,000 (one-time)\nImplementat..."
+    },
+    {
+      "head": "Deliverables",
+      "relation": "part of",
+      "tail": "Payment Terms",
+      "project": "alpha_erp_system",
+      "source_pdf": "commercial_offer.pdf",
+      "page_number": 1,
+      "chunk_id": "chunk_1",
+      "source_text": "sive user training program - $85,000\nAnnual Support and Maintenance: 22% of license cost - $99,000/year (starting Year 2)\n2. Payment Terms\n30% upon contract signing and project kickoff\n40% upon succes..."
+    },
+    {
+      "head": "invoice",
+      "relation": "facet of",
+      "tail": "Deliverables",
+      "project": "alpha_erp_system",
+      "source_pdf": "commercial_offer.pdf",
+      "page_number": 1,
+      "chunk_id": "chunk_2",
+      "source_text": "ys from invoice date\n3. Deliverables..."
+    },
+    {
+      "head": "S/4HANA",
+      "relation": "developer",
+      "tail": "SAP",
+      "project": "alpha_erp_system",
+      "source_pdf": "commercial_offer.pdf",
+      "page_number": 2,
+      "chunk_id": "chunk_3",
+      "source_text": "Fully configured SAP S/4HANA system with all specified modules\nCustom integrations with existing legacy systems\nComprehensive documentation including technical design, user manuals, and operational pr..."
+    },
+    {
+      "head": "Contract",
+      "relation": "has part",
+      "tail": "Terms and Conditions",
+      "project": "alpha_erp_system",
+      "source_pdf": "commercial_offer.pdf",
+      "page_number": 2,
+      "chunk_id": "chunk_4",
+      "source_text": "warranty on all implementation work\n4. Terms and Conditions\nProposal validity: 60 days from date of submission\nProject duration: 12 months from contract signing\nTravel and expenses will be billed at c..."
+    },
+    {
+      "head": "perts",
+      "relation": "has part",
+      "tail": "perts",
+      "project": "alpha_erp_system",
+      "source_pdf": "commercial_offer.pdf",
+      "page_number": 2,
+      "chunk_id": "chunk_5",
+      "source_text": "perts..."
+    },
+    {
+      "head": "Response to RFQ",
+      "relation": "use",
+      "tail": "ERP",
+      "project": "alpha_erp_system",
+      "source_pdf": "rfq_response.pdf",
+      "page_number": 1,
+      "chunk_id": "chunk_0",
+      "source_text": "Response to RFQ - ERP System\nDate: October 29, 2025\nDocument Type: Rfq Response\n1. Company Overview\nOur company has 15+ years of experience implementing ERP solutions for manufacturing enterprises.\nWe..."
+    },
+    {
+      "head": "SAP",
+      "relation": "product or material produced",
+      "tail": "ERP",
+      "project": "alpha_erp_system",
+      "source_pdf": "rfq_response.pdf",
+      "page_number": 1,
+      "chunk_id": "chunk_1",
+      "source_text": "in expertise.\nWe maintain SAP Gold Partner status and have received multiple implementation excellence awards.\n2. Understanding of Requirements\nABC Corporation requires an integrated ERP system to rep..."
+    },
+    {
+      "head": "SAP",
+      "relation": "product or material produced",
+      "tail": "S/4HANA",
+      "project": "alpha_erp_system",
+      "source_pdf": "rfq_response.pdf",
+      "page_number": 1,
+      "chunk_id": "chunk_2",
+      "source_text": "ing.\nExpected benefits: 30% reduction in inventory carrying costs, 25% improvement in on-time delivery,\nreal-time financial visibility.\nCritical success factors: minimal business disruption, comprehen..."
+    },
+    {
+      "head": "S/4HANA",
+      "relation": "developer",
+      "tail": "SAP",
+      "project": "alpha_erp_system",
+      "source_pdf": "rfq_response.pdf",
+      "page_number": 1,
+      "chunk_id": "chunk_2",
+      "source_text": "ing.\nExpected benefits: 30% reduction in inventory carrying costs, 25% improvement in on-time delivery,\nreal-time financial visibility.\nCritical success factors: minimal business disruption, comprehen..."
+    },
+    {
+      "head": "demand forecasting",
+      "relation": "subclass of",
+      "tail": "analytics",
+      "project": "alpha_erp_system",
+      "source_pdf": "rfq_response.pdf",
+      "page_number": 2,
+      "chunk_id": "chunk_4",
+      "source_text": "Pre-configured industry templates for discrete manufacturing to accelerate implementation.\nMobile-enabled interfaces for shop floor workers and warehouse staff.\nAdvanced analytics with embedded AI for..."
+    },
+    {
+      "head": "modules",
+      "relation": "subclass of",
+      "tail": "modules",
+      "project": "alpha_erp_system",
+      "source_pdf": "rfq_response.pdf",
+      "page_number": 2,
+      "chunk_id": "chunk_5",
+      "source_text": "ystem) and quality management\ntools.\n4. Team Composition\nProject Manager: PMP certified with 10+ years SAP implementation experience\nSolution Architect: SAP Certified with expertise in manufacturing i..."
+    },
+    {
+      "head": "SAP S/4HANA",
+      "relation": "use",
+      "tail": "ERP",
+      "project": "alpha_erp_system",
+      "source_pdf": "technical_offer.pdf",
+      "page_number": 1,
+      "chunk_id": "chunk_0",
+      "source_text": "ERP Implementation - Technical\nProposal\nDate: October 29, 2025\nDocument Type: Technical Offer\n1. Executive Summary\nWe propose a comprehensive ERP solution for ABC Corporation to streamline manufacturi..."
+    },
+    {
+      "head": "SAP Fiori",
+      "relation": "developer",
+      "tail": "SAP",
+      "project": "alpha_erp_system",
+      "source_pdf": "technical_offer.pdf",
+      "page_number": 1,
+      "chunk_id": "chunk_1",
+      "source_text": "and real-time\nanalytics.\nThe implementation will be phased over 12 months with minimal disruption to ongoing operations.\n2. Technical Architecture\nThe proposed architecture consists of three tiers: pr..."
+    },
+    {
+      "head": "PI/PO",
+      "relation": "subclass of",
+      "tail": "middleware",
+      "project": "alpha_erp_system",
+      "source_pdf": "technical_offer.pdf",
+      "page_number": 1,
+      "chunk_id": "chunk_2",
+      "source_text": "APIs and SAP PI/PO middleware.\nHigh availability will be ensured through active-active clustering across two data centers.\nSecurity measures include role-based access control, data encryption at rest ..."
+    },
+    {
+      "head": "Purchase order management",
+      "relation": "facet of",
+      "tail": "Procurement",
+      "project": "alpha_erp_system",
+      "source_pdf": "technical_offer.pdf",
+      "page_number": 2,
+      "chunk_id": "chunk_3",
+      "source_text": "Material Management (MM): Purchase order management, inventory tracking, vendor management,\nand procurement workflows.\nProduction Planning (PP): Master production scheduling, capacity planning, shop f..."
+    },
+    {
+      "head": "accounts payable",
+      "relation": "part of",
+      "tail": "General ledger",
+      "project": "alpha_erp_system",
+      "source_pdf": "technical_offer.pdf",
+      "page_number": 2,
+      "chunk_id": "chunk_4",
+      "source_text": "ing (FICO): General ledger, accounts payable/receivable, asset accounting, and\ncost center accounting.\nWarehouse Management (WM): Bin management, picking strategies, goods receipt/issue, and\ninventory..."
+    },
+    {
+      "head": "Core module",
+      "relation": "part of",
+      "tail": "system design",
+      "project": "alpha_erp_system",
+      "source_pdf": "technical_offer.pdf",
+      "page_number": 2,
+      "chunk_id": "chunk_5",
+      "source_text": "s 1-3): Requirements gathering, system design, and infrastructure setup.\nPhase 2 (Months 4-7): Core module configuration, custom development, and integration.\nPhase 3 (Months 8-10): User acceptance te..."
+    },
+    {
+      "head": "SAP HANA",
+      "relation": "platform",
+      "tail": "SPS06",
+      "project": "alpha_erp_system",
+      "source_pdf": "technical_specifications.pdf",
+      "page_number": 1,
+      "chunk_id": "chunk_0",
+      "source_text": "ERP System - Technical Specifications\nDate: October 29, 2025\nDocument Type: Technical Specifications\n1. System Requirements\nApplication Server: SUSE Linux Enterprise Server 15, 32 vCPU, 256GB RAM, 2TB..."
+    },
+    {
+      "head": "SFTP",
+      "relation": "use",
+      "tail": "Backup Infrastructure",
+      "project": "alpha_erp_system",
+      "source_pdf": "technical_specifications.pdf",
+      "page_number": 1,
+      "chunk_id": "chunk_1",
+      "source_text": "load balancing\nBackup Infrastructure: Daily incremental, weekly full backups with 30-day retention\nNetwork: 10 Gbps internal network, 1 Gbps internet connectivity, redundant firewalls\n2. Integration S..."
+    },
+    {
+      "head": "HANA",
+      "relation": "use",
+      "tail": "Analytics",
+      "project": "alpha_erp_system",
+      "source_pdf": "technical_specifications.pdf",
+      "page_number": 1,
+      "chunk_id": "chunk_2",
+      "source_text": "ocol\nQuality Management: API-based integration for inspection results and non-conformance reports\nBI/Analytics: Direct HANA connectivity for reporting and analytics tools\nEmail System: SMTP integratio..."
+    },
+    {
+      "head": "encryption",
+      "relation": "use",
+      "tail": "Data Protection",
+      "project": "alpha_erp_system",
+      "source_pdf": "technical_specifications.pdf",
+      "page_number": 2,
+      "chunk_id": "chunk_3",
+      "source_text": "Authentication: Single Sign-On (SSO) with Active Directory integration\nAuthorization: Role-based access control (RBAC) with segregation of duties enforcement\nData Protection: AES-256 encryption for da..."
+    },
+    {
+      "head": "Performance Requirements",
+      "relation": "facet of",
+      "tail": "System Availability",
+      "project": "alpha_erp_system",
+      "source_pdf": "technical_specifications.pdf",
+      "page_number": 2,
+      "chunk_id": "chunk_4",
+      "source_text": "27001, and GDPR compliance requirements\n4. Performance Requirements\nSystem Availability: 99.9% uptime during business hours (6 AM - 10 PM)\nResponse Time: <2 seconds for 95% of transactions, <5 seconds..."
+    },
+    {
+      "head": "2 AM",
+      "relation": "followed by",
+      "tail": "6 AM",
+      "project": "alpha_erp_system",
+      "source_pdf": "technical_specifications.pdf",
+      "page_number": 2,
+      "chunk_id": "chunk_5",
+      "source_text": "hour window (2 AM - 6 AM)\nData Volume: Initial data load of 5 million material records, 2 million customer records, 10 years of\ntransaction history..."
+    },
+    {
+      "head": "Cloud Migration - Commercial Proposal",
+      "relation": "publication date",
+      "tail": "October 29, 2025",
+      "project": "beta_cloud_migration",
+      "source_pdf": "cloud_migration_commercial.pdf",
+      "page_number": 1,
+      "chunk_id": "chunk_0",
+      "source_text": "Cloud Migration - Commercial Proposal\nDate: October 29, 2025\nDocument Type: Cloud Migration Commercial\n1. Professional Services\nMigration Planning and Assessment: $95,000\nInfrastructure Setup and Conf..."
+    },
+    {
+      "head": "EKS",
+      "relation": "use",
+      "tail": "Kubernetes",
+      "project": "beta_cloud_migration",
+      "source_pdf": "cloud_migration_commercial.pdf",
+      "page_number": 1,
+      "chunk_id": "chunk_1",
+      "source_text": "e Transfer: $45,000\nTotal Professional Services: $770,000\n2. Cloud Infrastructure Costs (Monthly Estimates)\nCompute (EC2 instances): $15,000/month\nManaged Kubernetes (EKS): $8,000/month\nDatabase Servi..."
+    },
+    {
+      "head": "Backup and Disaster Recovery Management",
+      "relation": "subclass of",
+      "tail": "Infrastructure Management",
+      "project": "beta_cloud_migration",
+      "source_pdf": "cloud_migration_commercial.pdf",
+      "page_number": 2,
+      "chunk_id": "chunk_2",
+      "source_text": "Estimated Monthly Infrastructure Cost: $47,000\nNote: Actual costs may vary based on usage patterns and will be optimized post-migration.\n3. Managed Services (Optional)\n24/7 Infrastructure Management: ..."
+    },
+    {
+      "head": "Cost Optimization Services",
+      "relation": "use",
+      "tail": "Optimization",
+      "project": "beta_cloud_migration",
+      "source_pdf": "cloud_migration_commercial.pdf",
+      "page_number": 2,
+      "chunk_id": "chunk_3",
+      "source_text": ",000/month\nCost Optimization Services: $5,000/month..."
+    },
+    {
+      "head": "AWS",
+      "relation": "instance of",
+      "tail": "cloud provider",
+      "project": "beta_cloud_migration",
+      "source_pdf": "cloud_migration_proposal.pdf",
+      "page_number": 1,
+      "chunk_id": "chunk_0",
+      "source_text": "Cloud Migration - Technical Proposal\nDate: October 29, 2025\nDocument Type: Cloud Migration Proposal\n1. Migration Strategy\nWe propose a phased lift-and-shift migration followed by cloud-native optimiza..."
+    },
+    {
+      "head": "Kubernetes",
+      "relation": "use",
+      "tail": "containerization",
+      "project": "beta_cloud_migration",
+      "source_pdf": "cloud_migration_proposal.pdf",
+      "page_number": 1,
+      "chunk_id": "chunk_1",
+      "source_text": "mizes downtime through parallel run strategy and automated rollback capabilities.\nPost-migration optimization will focus on containerization, auto-scaling, and serverless architecture\nwhere applicable..."
+    },
+    {
+      "head": "Amazon RDS",
+      "relation": "use",
+      "tail": "relational database",
+      "project": "beta_cloud_migration",
+      "source_pdf": "cloud_migration_proposal.pdf",
+      "page_number": 1,
+      "chunk_id": "chunk_2",
+      "source_text": "(EKS) for containerized microservices with auto-scaling.\nData layer: Amazon RDS for relational databases, DynamoDB for NoSQL, S3 for object storage.\nNetworking: AWS Transit Gateway for inter-VPC conne..."
+    },
+    {
+      "head": "John F. Kennedy School of Government",
+      "relation": "part of",
+      "tail": "Harvard University",
+      "project": "beta_cloud_migration",
+      "source_pdf": "cloud_migration_proposal.pdf",
+      "page_number": 1,
+      "chunk_id": "chunk_3",
+      "source_text": "...."
+    },
+    {
+      "head": "Database migration",
+      "relation": "subclass of",
+      "tail": "Migration",
+      "project": "beta_cloud_migration",
+      "source_pdf": "cloud_migration_proposal.pdf",
+      "page_number": 2,
+      "chunk_id": "chunk_4",
+      "source_text": "3. Migration Phases\nPhase 1: Assessment and Planning (Weeks 1-4) - Infrastructure inventory, dependency mapping,\nmigration wave planning.\nPhase 2: Foundation Setup (Weeks 5-8) - Landing zone creation,..."
+    },
+    {
+      "head": "Cost optimization",
+      "relation": "subclass of",
+      "tail": "Performance tuning",
+      "project": "beta_cloud_migration",
+      "source_pdf": "cloud_migration_proposal.pdf",
+      "page_number": 2,
+      "chunk_id": "chunk_5",
+      "source_text": "Phase 4: Optimization (Weeks 21-24) - Performance tuning, cost optimization, automation\nimplementation.\nPhase 5: Cutover and Stabilization (Weeks 25-28) - Final migration, DNS cutover, hypercare suppo..."
+    },
+    {
+      "head": "VMware",
+      "relation": "product or material produced",
+      "tail": "vSphere",
+      "project": "beta_cloud_migration",
+      "source_pdf": "migration_specifications.pdf",
+      "page_number": 1,
+      "chunk_id": "chunk_0",
+      "source_text": "Cloud Migration - Technical\nSpecifications\nDate: October 29, 2025\nDocument Type: Migration Specifications\n1. Current Infrastructure Inventory\nPhysical Servers: 45 servers (mix of application, database..."
+    },
+    {
+      "head": "vSphere",
+      "relation": "developer",
+      "tail": "VMware",
+      "project": "beta_cloud_migration",
+      "source_pdf": "migration_specifications.pdf",
+      "page_number": 1,
+      "chunk_id": "chunk_0",
+      "source_text": "Cloud Migration - Technical\nSpecifications\nDate: October 29, 2025\nDocument Type: Migration Specifications\n1. Current Infrastructure Inventory\nPhysical Servers: 45 servers (mix of application, database..."
+    },
+    {
+      "head": "EC2",
+      "relation": "use",
+      "tail": "Compute",
+      "project": "beta_cloud_migration",
+      "source_pdf": "migration_specifications.pdf",
+      "page_number": 1,
+      "chunk_id": "chunk_1",
+      "source_text": "e: 85TB total storage across SAN and NAS systems\nApplications: 35 business applications including custom-developed and COTS\n2. Target Cloud Architecture\nRegions: Primary in us-east-1, DR in us-west-2 ..."
+    },
+    {
+      "head": "HTTP",
+      "relation": "different from",
+      "tail": "HTTPS",
+      "project": "beta_cloud_migration",
+      "source_pdf": "migration_specifications.pdf",
+      "page_number": 1,
+      "chunk_id": "chunk_2",
+      "source_text": "abase subnets\nLoad Balancing: Application Load Balancers for HTTP/HTTPS, Network Load Balancers for TCP\nAuto-scaling: Configured based on CPU, memory, and custom application metrics\n3. Migration Metho..."
+    },
+    {
+      "head": "HTTPS",
+      "relation": "different from",
+      "tail": "HTTP",
+      "project": "beta_cloud_migration",
+      "source_pdf": "migration_specifications.pdf",
+      "page_number": 1,
+      "chunk_id": "chunk_2",
+      "source_text": "abase subnets\nLoad Balancing: Application Load Balancers for HTTP/HTTPS, Network Load Balancers for TCP\nAuto-scaling: Configured based on CPU, memory, and custom application metrics\n3. Migration Metho..."
+    },
+    {
+      "head": "AWS Database Migration Service",
+      "relation": "use",
+      "tail": "Data Migration",
+      "project": "beta_cloud_migration",
+      "source_pdf": "migration_specifications.pdf",
+      "page_number": 2,
+      "chunk_id": "chunk_3",
+      "source_text": "Discovery: Automated discovery using AWS Application Discovery Service and CloudEndure\nAssessment: 7Rs framework (Retain, Rehost, Replatform, Refactor, Repurchase, Retire, Relocate)\nData Migration: AW..."
+    },
+    {
+      "head": "Comprehensive testing",
+      "relation": "subclass of",
+      "tail": "test",
+      "project": "beta_cloud_migration",
+      "source_pdf": "migration_specifications.pdf",
+      "page_number": 2,
+      "chunk_id": "chunk_4",
+      "source_text": "d-native\nTesting: Comprehensive testing including functional, performance, security, and disaster recovery tests..."
+    },
+    {
+      "head": "Apache Kafka",
+      "relation": "use",
+      "tail": "data ingestion",
+      "project": "gamma_analytics_platform",
+      "source_pdf": "analytics_platform_proposal.pdf",
+      "page_number": 1,
+      "chunk_id": "chunk_0",
+      "source_text": "Data Analytics Platform - Technical\nProposal\nDate: October 29, 2025\nDocument Type: Analytics Platform Proposal\n1. Platform Overview\nWe propose a real-time data analytics platform for Data Insights Inc..."
+    },
+    {
+      "head": "TensorFlow",
+      "relation": "use",
+      "tail": "Machine learning",
+      "project": "gamma_analytics_platform",
+      "source_pdf": "analytics_platform_proposal.pdf",
+      "page_number": 1,
+      "chunk_id": "chunk_1",
+      "source_text": "d analytics.\nMachine learning models built with TensorFlow will provide predictive analytics and anomaly detection.\nInteractive dashboards powered by custom visualization framework will deliver action..."
+    },
+    {
+      "head": "S3",
+      "relation": "instance of",
+      "tail": "Data Lake",
+      "project": "gamma_analytics_platform",
+      "source_pdf": "analytics_platform_proposal.pdf",
+      "page_number": 1,
+      "chunk_id": "chunk_2",
+      "source_text": "a\nfeeds\nStream Processing: Spark Structured Streaming for real-time transformations and aggregations\nBatch Processing: Spark batch jobs for historical analysis and model training\nStorage Layer: Data L..."
+    },
+    {
+      "head": "FastAPI",
+      "relation": "use",
+      "tail": "RESTful",
+      "project": "gamma_analytics_platform",
+      "source_pdf": "analytics_platform_proposal.pdf",
+      "page_number": 1,
+      "chunk_id": "chunk_3",
+      "source_text": "esting capabilities\nAPI Layer: FastAPI for RESTful services, WebSocket for real-time data streaming to clients..."
+    },
+    {
+      "head": "unsupervised learning",
+      "relation": "use",
+      "tail": "Anomaly detection",
+      "project": "gamma_analytics_platform",
+      "source_pdf": "analytics_platform_proposal.pdf",
+      "page_number": 2,
+      "chunk_id": "chunk_4",
+      "source_text": "3. Key Features\nReal-time market data processing with sub-100ms latency\nAnomaly detection using unsupervised learning algorithms\nPredictive models for price forecasting and trend analysis\nNatural lang..."
+    },
+    {
+      "head": "audit logging",
+      "relation": "facet of",
+      "tail": "access control",
+      "project": "gamma_analytics_platform",
+      "source_pdf": "analytics_platform_proposal.pdf",
+      "page_number": 2,
+      "chunk_id": "chunk_5",
+      "source_text": "ategies\nRole-based access control with audit logging for compliance..."
+    },
+    {
+      "head": "Data Insights Inc",
+      "relation": "inception",
+      "tail": "October 29, 2025",
+      "project": "gamma_analytics_platform",
+      "source_pdf": "analytics_rfq_response.pdf",
+      "page_number": 1,
+      "chunk_id": "chunk_0",
+      "source_text": "Response to RFQ - Data Analytics\nPlatform\nDate: October 29, 2025\nDocument Type: Analytics Rfq Response\n1. Understanding of Requirements\nData Insights Inc requires a scalable platform to ingest, proces..."
+    },
+    {
+      "head": "Microservices",
+      "relation": "part of",
+      "tail": "Cloud",
+      "project": "gamma_analytics_platform",
+      "source_pdf": "analytics_rfq_response.pdf",
+      "page_number": 1,
+      "chunk_id": "chunk_1",
+      "source_text": "h existing: Bloomberg terminals, internal risk systems, trading platforms.\nCompliance: Must meet financial regulations including data retention, audit trails, and access controls.\nScalability: Platfor..."
+    },
+    {
+      "head": "Kafka",
+      "relation": "instance of",
+      "tail": "Event-driven architecture",
+      "project": "gamma_analytics_platform",
+      "source_pdf": "analytics_rfq_response.pdf",
+      "page_number": 1,
+      "chunk_id": "chunk_2",
+      "source_text": "ces-based design for independent scaling and deployment of components.\nEvent-driven architecture using Kafka for loose coupling and replay capability.\nMulti-layer caching strategy for frequently acces..."
+    },
+    {
+      "head": "ELK stack",
+      "relation": "has part",
+      "tail": "Prometheus",
+      "project": "gamma_analytics_platform",
+      "source_pdf": "analytics_rfq_response.pdf",
+      "page_number": 1,
+      "chunk_id": "chunk_3",
+      "source_text": "Prometheus, Grafana, and ELK stack...."
+    },
+    {
+      "head": "ELK stack",
+      "relation": "has part",
+      "tail": "Grafana",
+      "project": "gamma_analytics_platform",
+      "source_pdf": "analytics_rfq_response.pdf",
+      "page_number": 1,
+      "chunk_id": "chunk_3",
+      "source_text": "Prometheus, Grafana, and ELK stack...."
+    },
+    {
+      "head": "sprints",
+      "relation": "part of",
+      "tail": "Agile development",
+      "project": "gamma_analytics_platform",
+      "source_pdf": "analytics_rfq_response.pdf",
+      "page_number": 2,
+      "chunk_id": "chunk_4",
+      "source_text": "3. Implementation Approach\nAgile development with 2-week sprints and continuous integration/deployment.\nMVP delivery in 12 weeks with core ingestion, processing, and visualization capabilities.\nIterat..."
+    },
+    {
+      "head": "Data Analytics Platform",
+      "relation": "inception",
+      "tail": "October 29, 2025",
+      "project": "gamma_analytics_platform",
+      "source_pdf": "analytics_specifications.pdf",
+      "page_number": 1,
+      "chunk_id": "chunk_0",
+      "source_text": "Data Analytics Platform - System\nSpecifications\nDate: October 29, 2025\nDocument Type: Analytics Specifications\n1. Performance Requirements\nData Ingestion: 500,000 events/second sustained, 1,000,000 ev..."
+    },
+    {
+      "head": "Bloomberg",
+      "relation": "subsidiary",
+      "tail": "Reuters",
+      "project": "gamma_analytics_platform",
+      "source_pdf": "analytics_specifications.pdf",
+      "page_number": 1,
+      "chunk_id": "chunk_1",
+      "source_text": "egations\nDashboard Load Time: <2 seconds for initial load, <500ms for updates\nConcurrent Users: Support 200+ concurrent analysts and traders\nData Retention: 7 years hot storage, infinite cold storage ..."
+    },
+    {
+      "head": "Twitter",
+      "relation": "instance of",
+      "tail": "Social Media",
+      "project": "gamma_analytics_platform",
+      "source_pdf": "analytics_specifications.pdf",
+      "page_number": 1,
+      "chunk_id": "chunk_2",
+      "source_text": "stems\nNews and Social Media: Financial news APIs, Twitter streams for sentiment analysis\nReference Data: Security master, exchange calendars, corporate actions\nAlternative Data: Satellite imagery, web..."
+    },
+    {
+      "head": "Apache Spark",
+      "relation": "has part",
+      "tail": "Apache Flink",
+      "project": "gamma_analytics_platform",
+      "source_pdf": "analytics_specifications.pdf",
+      "page_number": 2,
+      "chunk_id": "chunk_3",
+      "source_text": "3. Technology Stack\nData Ingestion: Apache Kafka 3.x, Kafka Connect for source connectors\nStream Processing: Apache Spark 3.x Structured Streaming, Apache Flink (backup option)\nBatch Processing: Apach..."
+    },
+    {
+      "head": "Kubernetes",
+      "relation": "use",
+      "tail": "container orchestration",
+      "project": "gamma_analytics_platform",
+      "source_pdf": "analytics_specifications.pdf",
+      "page_number": 2,
+      "chunk_id": "chunk_4",
+      "source_text": "Scikit-learn, MLflow for experiment tracking\nOrchestration: Apache Airflow for batch jobs, Kubernetes for container orchestration\nVisualization: React-based custom dashboards, D3.js for interactive ch..."
+    },
+    {
+      "head": "AES-256",
+      "relation": "use",
+      "tail": "Encryption",
+      "project": "gamma_analytics_platform",
+      "source_pdf": "analytics_specifications.pdf",
+      "page_number": 2,
+      "chunk_id": "chunk_5",
+      "source_text": "ntrol for sensitive data\nEncryption: TLS 1.3 for data in transit, AES-256 for data at rest\nAudit Logging: Comprehensive logging of all data access and system changes\nCompliance: SOC 2 Type II, SOX com..."
+    }
+  ]
+}
