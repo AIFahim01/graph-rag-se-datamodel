@@ -3,31 +3,29 @@ from typing import List
 #--- docling imports starts
 from docling_core.types.doc import ImageRefMode
 from docling.datamodel.base_models import InputFormat
-from docling.datamodel.pipeline_options import PdfPipelineOptions
+from docling.datamodel.pipeline_options import PdfPipelineOptions, granite_picture_description
 from docling.document_converter import DocumentConverter, PdfFormatOption
 from docling.datamodel.accelerator_options import AcceleratorDevice, AcceleratorOptions
 from docling.backend.pypdfium2_backend import PyPdfiumDocumentBackend
 #--- docling imports ends
 from PIL import Image
 
+class ImageAnnotationData:
+    ref: str
+    uri: str
+    caption: str
+    annotation_prov: List[str] = []
+    annotation_text: List[str] = []
+
 class DocumentExtractedResponse:
     file_path: Path
     success: bool
     full_content: str
-    content_pages: List[str]
-    pages: List[Image]
-    pictures: List[Image]
-    tables: List[Image]
-
-    def __init__(self, file_path: Path, success: bool, full_content: str, content_pages: List[str] = [], pages: List[Image] = [], pictures: List[Image] = [], tables: List[Image] = []):
-        self.file_path = file_path
-        self.success = success
-        if self.success == True:
-            self.full_content = full_content
-            self.content_pages = content_pages
-            self.pages = pages
-            self.pictures = pictures
-            self.tables = tables
+    content_pages: List[str] = []
+    pages: List[Image] = []
+    pictures: List[Image] = []
+    tables: List[Image] = []
+    image_contents: List[ImageAnnotationData] = []
 
 class DocumentProcessor:
     def __init__(self, ocr: str):
@@ -38,16 +36,25 @@ class DocumentProcessor:
 
             pipeline_options.do_code_enrichment = True
             pipeline_options.do_formula_enrichment = True
+            pipeline_options.do_picture_description = True
+
+            pipeline_options.picture_description_options = (
+                granite_picture_description
+            )
+
+            pipeline_options.picture_description_options.prompt = (
+                "You are an image captioning model. "
+                "Describe exactly what appears in the figure in 2–4 sentences. "
+                "Focus on structure (axes, labels, blocks, arrows, relationships), "
+                "not decorative aspects. Do not hallucinate text that is not visible."
+            )
 
             pipeline_options.accelerator_options = AcceleratorOptions(
-                device=AcceleratorDevice.CUDA,
-                cuda_use_flash_attention2 = True
+                device=AcceleratorDevice.CUDA
             )
-            # pipeline_options.images_scale = 2.0
-            # pipeline_options.generate_page_images = True
-            # pipeline_options.generate_picture_images = True
-
-            # pipeline_options.do_ocr = False
+            pipeline_options.images_scale = 2.0
+            pipeline_options.generate_page_images = True
+            pipeline_options.generate_picture_images = True
 
             self.docling_pdf_converter = DocumentConverter(
                 format_options={
@@ -122,20 +129,41 @@ class DocumentProcessor:
                         image_mode=ImageRefMode.PLACEHOLDER,
                     )
                     content_pages.append(page_content)
-                    # pages.append(page.image.pil_image)
+                    pages.append(page.image.pil_image)
 
                     full_content += f"\n<!-- page {page_no} -->\n"
                     full_content += f"{page_content}"
 
+
                 pictures = []
-                # for picture in doc.pictures:
-                #     pictures.append(picture.get_image(doc))
+                all_imagedata = []
+                for picture in doc.pictures:
+                    pictures.append(picture.get_image(doc))
+                    imagedata = ImageAnnotationData()
+                    imagedata.ref = picture.self_ref
+                    imagedata.uri = str(picture.image.uri)
+                    imagedata.caption = picture.caption_text(doc=doc)
+
+                    for ann in picture.annotations:
+                        imagedata.annotation_text.append(ann.text)
+                        imagedata.annotation_prov.append(ann.provenance)
+                    all_imagedata.append(imagedata)
 
                 tables = []
-                # for table in doc.tables:
-                #     tables.append(table.get_image(doc))
+                for table in doc.tables:
+                    tables.append(table.get_image(doc))
                 
-                contents.append(DocumentExtractedResponse(fp, True, full_content, content_pages, pages, pictures, tables))
+                extracted_response = DocumentExtractedResponse()
+                extracted_response.file_path = fp
+                extracted_response.success = True
+                extracted_response.full_content = full_content
+                extracted_response.content_pages = content_pages
+                extracted_response.pages = pages
+                extracted_response.pictures = pictures
+                extracted_response.tables = tables
+                extracted_response.image_contents = all_imagedata
+
+                contents.append(extracted_response)
 
             print(f"====> Finished Extracting Content from PDFs with Docling: {len(contents)} files")
             return contents

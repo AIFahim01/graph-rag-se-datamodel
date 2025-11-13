@@ -43,9 +43,11 @@ class OutputManager:
 
                 self._save_pages(output_file_dir, fc.file_path, fc.content_pages)
 
-                # self._save_images(output_file_dir, fc.file_path, "page", fc.pages)
-                # self._save_images(output_file_dir, fc.file_path, "picture", fc.pictures)
-                # self._save_images(output_file_dir, fc.file_path, "table", fc.tables)
+                self._save_images(output_file_dir, fc.file_path, "page", fc.pages)
+                self._save_images(output_file_dir, fc.file_path, "picture", fc.pictures)
+                self._save_images(output_file_dir, fc.file_path, "table", fc.tables)
+
+                self._save_image_data(output_file_dir, fc)
 
                 relative_file_parents = relative_parents.copy()
                 relative_file_parents.append(offer_name)
@@ -128,3 +130,18 @@ class OutputManager:
         }
         with metadata_file.open("w", encoding="utf-8") as f:
             json.dump(payload, f, indent=2)
+
+    def _save_image_data(self, output_file_dir: Path, file_content: DocumentExtractedResponse):
+        idx = 1
+        for image_data in file_content.image_contents:
+            file_path = output_file_dir / "image_contents" / f"{file_content.file_path.stem} - image {idx}.json"
+            file_path.parent.mkdir(parents=True, exist_ok=True)
+            payload = {
+                "ref": image_data.ref,
+                "uri": image_data.uri,
+                "caption": image_data.caption,
+                "annotation_prov": image_data.annotation_prov,
+                "annotations_text": image_data.annotation_text
+            }
+            with file_path.open("w", encoding="utf-8") as f:
+                json.dump(payload, f, indent=2)
