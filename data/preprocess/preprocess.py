@@ -4,6 +4,7 @@ import argparse
 import datetime
 import logging
 import os
+import time
 
 from console_watcher import TqdmLoggingHandler
 
@@ -54,11 +55,17 @@ def main() -> int:
     if not os.path.isdir(input_folder):
         logger.error("Input folder does not exist or is not a directory: %s", input_folder)
         return 1
+    
+    start_time = time.perf_counter()
 
     from orchestrator import DataPreprocessingOrchestrator
 
     orchestrator = DataPreprocessingOrchestrator(input_folder, output_folder)
     success = orchestrator.run()
+
+    end_time = time.perf_counter()
+    logger.info("Preprocessing completed in %.2f seconds", end_time - start_time)
+    
     return 0 if success else 1
 
 

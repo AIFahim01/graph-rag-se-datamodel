@@ -1,7 +1,5 @@
 docling==2.61.2
-hf-xet==1.2.0
-httpx==0.28.1
-multiprocess==0.70.18
-pip==25.3
-semchunk==2.2.2
-typer-slim==0.20.0
+tqdm>=4.62.0
+Pillow>=9.0.0
+cupy-cuda12x
+vllm

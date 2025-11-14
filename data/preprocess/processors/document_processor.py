@@ -6,7 +6,7 @@ from docling_core.types.doc.base import ImageRefMode
 from docling.datamodel.base_models import InputFormat
 from docling.datamodel.pipeline_options import PdfPipelineOptions, smolvlm_picture_description
 from docling.document_converter import DocumentConverter, PdfFormatOption
-from docling.datamodel.accelerator_options import AcceleratorDevice, AcceleratorOptions
+from docling.datamodel.accelerator_options import AcceleratorOptions
 from docling.backend.pypdfium2_backend import PyPdfiumDocumentBackend
 from docling_core.types.doc.document import PictureDescriptionData
 #--- docling imports ends
@@ -46,8 +46,9 @@ class DocumentProcessor:
                 "Describe the image in three sentences. Be consise and accurate."
             )
 
+            device = 'cuda:0' # You can modify this based on your setup
             pipeline_options.accelerator_options = AcceleratorOptions(
-                device=AcceleratorDevice.CUDA
+                device=device
             )
             pipeline_options.images_scale = 2.0
             pipeline_options.generate_page_images = True
@@ -113,7 +114,7 @@ class DocumentProcessor:
                     for ann in picture.annotations:
                         if not isinstance(ann, PictureDescriptionData):
                             continue
-                        annot += ann.provenance + ": " + ann.text + "\n"
+                        annot += ann.text + "\n"
                     all_annotation.append(annot)
                 
                 logging.info(f"Extracted {len(doc.pages)} pages, {len(doc.pictures)} pictures, and {len(doc.tables)} tables from '{file_path.name}'.")
@@ -142,6 +143,7 @@ class DocumentProcessor:
                 extracted_response.pages = pages
                 extracted_response.pictures = pictures
                 extracted_response.tables = tables
+                extracted_response.caption_texts = all_captions
                 extracted_response.annotation_texts = all_annotation
                 
                 return True, "Successfully Extracted", extracted_response

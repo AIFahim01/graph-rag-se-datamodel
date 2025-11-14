@@ -33,6 +33,8 @@ class OutputManager:
             self._save_images(output_file_dir, file_content.file_path, "page", file_content.pages)
             self._save_images(output_file_dir, file_content.file_path, "picture", file_content.pictures)
             self._save_images(output_file_dir, file_content.file_path, "table", file_content.tables)
+            
+            self._save_picture_annotations(output_file_dir, file_content.file_path, file_content)
 
             self._save_file_metadata(output_file_dir, relative_parents, file_content)
 
@@ -70,9 +72,18 @@ class OutputManager:
             "pages": len(file_content.content_pages),
             "images": len(file_content.pictures),
             "tables": len(file_content.tables),
-            "relative_parents": relative_parents,
+            "relative_parents": relative_parents
+        }
+        with metadata_file.open("w", encoding="utf-8") as f:
+            json.dump(payload, f, indent=2)
+
+    def _save_picture_annotations(self, output_file_dir: Path, file_path: Path, file_content: DocumentExtractedResponse):
+        annotation_file = output_file_dir / "pictures" / f"{file_content.file_path.stem} - picture_annotations.json"
+        annotation_file.parent.mkdir(parents=True, exist_ok=True)
+
+        payload = {
             "caption_texts": file_content.caption_texts,
             "annotation_texts": file_content.annotation_texts
         }
-        with metadata_file.open("w", encoding="utf-8") as f:
+        with annotation_file.open("w", encoding="utf-8") as f:
             json.dump(payload, f, indent=2)

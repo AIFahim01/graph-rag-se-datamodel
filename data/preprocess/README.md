@@ -6,27 +6,31 @@ Simple preprocessing pipeline for converting offer documents to Markdown format.
 
 ```
 data/preprocess/
-├── preprocess.py           # Main orchestrator
+├── preprocess.py             # Entry point, handles CLI arguments
+├── orchestrator.py           # Main orchestrator
+├── console_watcher.py        # Console progress and logging
+├── requirements.txt          # Python dependencies
+├── logs/                     # Log files
 └── processors/
     ├── __init__.py
-    ├── file_filter.py      # File filtering
-    ├── document_processor.py  # Document processing
-    └── output_manager.py   # Output management
+    ├── file_filter.py        # File filtering
+    ├── document_processor.py # Document processing
+    └── output_manager.py     # Output management
 ```
 
 ## Components
 
 ### FileFilter
-- Scans folders for supported files (.pdf, .docx, .png, .jpg, .jpeg)
-- Returns file lists and offer folders
+- Scans folders recursively for supported files (.pdf)
+- Returns a list of file paths
 
 ### DocumentProcessor
-- Processes individual files to Markdown
-- Placeholder implementations for Docling (PDF/DOCX) and DeepSeek-OCR (images)
+- Processes individual PDF files to Markdown using the `docling` library
+- Extracts text, images, and tables from documents
 
 ### OutputManager
-- Saves processed files with simple folder structure
-- Tracks processed offers to avoid duplicates
+- Saves processed files, including Markdown content, images, and metadata
+- Tracks processed files to avoid duplicates
 
 ## Usage
 
@@ -43,28 +47,18 @@ cd data/preprocess
   pip install -r requirements.txt
   ```
 
-  Optional (CUDA GPU):
-  ```bash
-  pip3 install -U torch torchvision --index-url https://download.pytorch.org/whl/cu128
-  ```
-  By default, torch installs CPU builds. Use the above only if you have a CUDA supported GPU.
-  Check this page to get the desired url for pytorch with CUDA 12.8 https://pytorch.org/get-started/locally/
-
 - Run preprocessing:
   ```bash
-  python preprocess.py <input_folder> <output_folder>
+  python preprocess.py -i <input_folder> -o <output_folder>
   ```
-  *Paths can be relative or absolute and work across OSes.*
+  *Paths can be relative or absolute.*
 
 ## Dependency Management
 
 This section is for contributors who need to add or update dependencies.
 
 -   **Add Pip Package:**
-    ```bash
-    pip install <package>
-    pip list --not-required --format=freeze > requirements.txt
-    ```
+    Manually add the new dependency to `requirements.txt`.
 
 -   **Sync Environment:**
     ```bash
@@ -79,12 +73,15 @@ This section is for contributors who need to add or update dependencies.
 
 ```
 output_folder/
-├── offer1/
-│   ├── document1.md
-│   └── document2.md
-├── offer2/
-│   └── document3.md
-└── processed_offers.json
+├── document1/
+│   ├── document1 - full_content.md
+│   ├── document1 - metadata.json
+│   ├── document1 - page 1.md
+│   ├── pictures/
+│   │   └── document1 - picture 1.png
+│   └── tables/
+│       └── document1 - table 1.png
+└── processed_files.json
 ```
 
 ## Features
@@ -92,6 +89,7 @@ output_folder/
 - Memory efficient processing
 - Simple error handling
 - Duplicate detection
+- Configurable logging
 - Minimal dependencies
 - Self-explanatory code
 
