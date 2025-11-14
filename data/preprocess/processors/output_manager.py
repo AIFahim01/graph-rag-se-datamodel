@@ -1,100 +1,48 @@
 import json
-import time
 from datetime import datetime
 from pathlib import Path
-from typing import List, Dict, Any
+from typing import List
 from .document_processor import DocumentExtractedResponse
-from PIL import Image
+from PIL.Image import Image
+import logging
 
 class OutputManager:
-    def __init__(self, output_base_path: Path):
+    def __init__(self, output_base_path: Path, input_base_path: Path):
         self.output_base_path = Path(output_base_path)
-        self.processed_offers_file = self.output_base_path / "processed_offers.json"
-        self.processed_offers = self._load_processed_offers()
+        self.input_base_path = Path(input_base_path)
     
-    def is_offer_processed(self, offer_name: str) -> bool:
-        return offer_name in self.processed_offers
-    
-    def save_offer_documents(self, start_time: float, offer_name: str, relative_parents: List[str], files_contents: List[DocumentExtractedResponse]) -> bool:
-        """Save documents for an offer. Returns success status."""
-        offer_folder = self.output_base_path
-        relative_offer_name = ''
-        for p in relative_parents:
-            offer_folder /= p
-            relative_offer_name += f"{p} / "
-
-        offer_folder = offer_folder / offer_name
-        relative_offer_name += offer_name
-        offer_folder.mkdir(parents=True, exist_ok=True)
-        
-        success_count = 0
-        processed_files: List[str] = []
-
-        for fc in files_contents:
-            if not (fc.success and fc.full_content):
-                continue
-
-            try:
-                subdir = self._relative_subdir(offer_name, fc.file_path)
-                output_file_dir = offer_folder / subdir / f"{fc.file_path.stem}"
-                output_full_file = output_file_dir / f"{fc.file_path.stem} - full_content.md"
-                output_full_file.parent.mkdir(parents=True, exist_ok=True)
-                output_full_file.write_text(fc.full_content, encoding='utf-8')
-
-                self._save_pages(output_file_dir, fc.file_path, fc.content_pages)
-
-                # self._save_images(output_file_dir, fc.file_path, "page", fc.pages)
-                # self._save_images(output_file_dir, fc.file_path, "picture", fc.pictures)
-                # self._save_images(output_file_dir, fc.file_path, "table", fc.tables)
-
-                relative_file_parents = relative_parents.copy()
-                relative_file_parents.append(offer_name)
-                relative_file_parents.extend(list(subdir.parts))
-
-                self._save_metadata(output_file_dir, offer_name, relative_file_parents, fc)
-                
-                success_count += 1
-                processed_files.append(fc.file_path.name)
-            except Exception as e:
-                print(f"Error processing {fc.file_path}: {e}")
-        
-        if success_count > 0:
-            duration = time.perf_counter() - start_time
-            self.processed_offers[relative_offer_name] = {
-                "last_processed": datetime.now().isoformat(),
-                "duration_seconds": round(duration, 3),
-                "file_count": success_count,
-                "files": processed_files,
-                "relative_parents": relative_parents
-            }
-            self._save_processed_offers()
-            return True
-        
-        return False
-    
-    def _load_processed_offers(self) -> Dict[str, Any]:
-        if self.processed_offers_file.exists():
-            try:
-                with open(self.processed_offers_file, 'r') as f:
-                    data = json.load(f)
-                    return data
-            except Exception:
-                pass
-        return {}
-    
-    def _save_processed_offers(self):
+    def save_processed_file(self, file_content: DocumentExtractedResponse) -> tuple[bool, str]:
+        """Save a single processed file. Returns success status."""
         try:
-            self.output_base_path.mkdir(parents=True, exist_ok=True)
-            with open(self.processed_offers_file, 'w') as f:
-                json.dump(self.processed_offers, f, indent=2)
-        except Exception:
-            pass
+            relative_path = file_content.file_path.relative_to(self.input_base_path)
 
-    def _relative_subdir(self, offer_name: str, file_path: Path) -> Path:
-        for parent in file_path.parents:
-            if parent.name == offer_name:
-                return file_path.parent.relative_to(parent)
-        return Path()
+            relative_parents = list(relative_path.parts[:-1])
+
+            output_file_dir = self.output_base_path
+            for parent in relative_parents:
+                output_file_dir /= parent
+
+            output_file_dir /= file_content.file_path.stem
+
+            output_full_file = output_file_dir / f"{file_content.file_path.stem} - full_content.md"
+            output_full_file.parent.mkdir(parents=True, exist_ok=True)
+            output_full_file.write_text(file_content.full_content, encoding='utf-8')
+
+            self._save_pages(output_file_dir, file_content.file_path, file_content.content_pages)
+
+            self._save_images(output_file_dir, file_content.file_path, "page", file_content.pages)
+            self._save_images(output_file_dir, file_content.file_path, "picture", file_content.pictures)
+            self._save_images(output_file_dir, file_content.file_path, "table", file_content.tables)
+            
+            self._save_picture_annotations(output_file_dir, file_content.file_path, file_content)
+
+            self._save_file_metadata(output_file_dir, relative_parents, file_content)
+
+            logging.info(f"Saved {len(file_content.content_pages)} pages, {len(file_content.pictures)} pictures, and {len(file_content.tables)} tables for '{file_content.file_path.name}'.")
+            return True, "Successfully saved processed file."
+        except Exception as e:
+            logging.error(f"Error saving processed file '{file_content.file_path.name}': {e}")
+            return False, str(e)
 
     def _save_pages(self, output_file_dir: Path, file_path: Path, pages: List[str]):
         idx = 1
@@ -113,18 +61,29 @@ class OutputManager:
                 pil_image.save(fp, format="PNG")
             idx += 1
 
-    def _save_metadata(self, output_file_dir: Path, offer_name: str, relative_parents: List[str], file_content: DocumentExtractedResponse):
+    def _save_file_metadata(self, output_file_dir: Path, relative_parents: List[str], file_content: DocumentExtractedResponse):
         metadata_file = output_file_dir / f"{file_content.file_path.stem} - metadata.json"
         metadata_file.parent.mkdir(parents=True, exist_ok=True)
         payload = {
-            "project_name": offer_name,
             "file_name": file_content.file_path.name,
-            "relative_path": str(self._relative_subdir(offer_name, file_content.file_path)),
             "file_path": str(file_content.file_path),
             "file_type": file_content.file_path.suffix,
             "extracted_at": datetime.now().isoformat(),
             "pages": len(file_content.content_pages),
-            "relative_parents": relative_parents,
+            "images": len(file_content.pictures),
+            "tables": len(file_content.tables),
+            "relative_parents": relative_parents
         }
         with metadata_file.open("w", encoding="utf-8") as f:
+            json.dump(payload, f, indent=2)
+
+    def _save_picture_annotations(self, output_file_dir: Path, file_path: Path, file_content: DocumentExtractedResponse):
+        annotation_file = output_file_dir / "pictures" / f"{file_content.file_path.stem} - picture_annotations.json"
+        annotation_file.parent.mkdir(parents=True, exist_ok=True)
+
+        payload = {
+            "caption_texts": file_content.caption_texts,
+            "annotation_texts": file_content.annotation_texts
+        }
+        with annotation_file.open("w", encoding="utf-8") as f:
             json.dump(payload, f, indent=2)
