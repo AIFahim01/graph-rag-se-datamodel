@@ -1,21 +1,17 @@
 from pathlib import Path
 from typing import List
 #--- docling imports starts
-from docling_core.types.doc import ImageRefMode
+from docling_core.types.doc.base import ImageRefMode
 from docling.datamodel.base_models import InputFormat
-from docling.datamodel.pipeline_options import PdfPipelineOptions, granite_picture_description
+from docling.datamodel.pipeline_options import PdfPipelineOptions, smolvlm_picture_description
 from docling.document_converter import DocumentConverter, PdfFormatOption
 from docling.datamodel.accelerator_options import AcceleratorDevice, AcceleratorOptions
 from docling.backend.pypdfium2_backend import PyPdfiumDocumentBackend
+from docling_core.types.doc.document import PictureDescriptionData
 #--- docling imports ends
-from PIL import Image
+from PIL.Image import Image
 
-class ImageAnnotationData:
-    ref: str
-    uri: str
-    caption: str
-    annotation_prov: List[str] = []
-    annotation_text: List[str] = []
+# from .image_processor import VllmImageExtractor
 
 class DocumentExtractedResponse:
     file_path: Path
@@ -25,11 +21,13 @@ class DocumentExtractedResponse:
     pages: List[Image] = []
     pictures: List[Image] = []
     tables: List[Image] = []
-    image_contents: List[ImageAnnotationData] = []
+    annotation_texts: List[str] = []
+    caption_texts: List[str] = []
 
 class DocumentProcessor:
     def __init__(self, ocr: str):
         self.ocr = ocr
+        # self.image_processor = VllmImageExtractor()
 
         if self.ocr == 'docling':
             pipeline_options = PdfPipelineOptions()
@@ -39,14 +37,11 @@ class DocumentProcessor:
             pipeline_options.do_picture_description = True
 
             pipeline_options.picture_description_options = (
-                granite_picture_description
+                smolvlm_picture_description
             )
 
             pipeline_options.picture_description_options.prompt = (
-                "You are an image captioning model. "
-                "Describe exactly what appears in the figure in 2–4 sentences. "
-                "Focus on structure (axes, labels, blocks, arrows, relationships), "
-                "not decorative aspects. Do not hallucinate text that is not visible."
+                "Describe the image in three sentences. Be consise and accurate. Don't return empty description."
             )
 
             pipeline_options.accelerator_options = AcceleratorOptions(
@@ -66,10 +61,10 @@ class DocumentProcessor:
         else:
             raise ValueError(f"Unsupported OCR engine: {self.ocr}")
     
-    def process_file(self, file_path: Path) -> tuple[Path, str, bool]:
+    def process_file(self, file_path: Path) -> tuple[bool, str, DocumentExtractedResponse]:
         """Process file and return (file_path, markdown_content, success)"""
         if not file_path.exists():
-            return file_path, "", False
+            return False, "File doesn't exist to extract", DocumentExtractedResponse()
             
         ext = file_path.suffix.lower()
         
@@ -80,44 +75,13 @@ class DocumentProcessor:
         elif ext in {'.png', '.jpg', '.jpeg'}:
             return self._process_image(file_path)
 
-        return file_path, f"# Unsupported file type: {file_path.name}\n\n[Unsupported file type]", False
+        return False, f"# Unsupported file type: {file_path.name}\n\n[Unsupported file type]", DocumentExtractedResponse()
 
-    def process_files(self, file_paths: List[Path]) -> List[DocumentExtractedResponse]:
-        """Process files and return list of DocumentExtractedResponse object"""
-        pdf_paths = [fp for fp in file_paths if fp.exists() and fp.suffix.lower() == ".pdf"]
-        if not pdf_paths:
-            return []
-        return self._process_pdfs(pdf_paths)
-
-    # private methods
-    def _process_pdf(self, file_path: Path) -> tuple[Path, str, bool]:
-        if self.ocr == "docling":
-            print(f"====> Starting Extracting Content from PDF with Docling: {file_path.name}")
-            doc = self.docling_pdf_converter.convert(file_path).document
-
-            full_content = ''
-            for page in doc.pages.values():
-                page_no = page.page_no
-                full_content += f"\n<!-- page {page_no} -->\n"
-                page_content = doc.export_to_markdown(
-                    page_no=page_no,
-                    image_mode=ImageRefMode.PLACEHOLDER,
-                )
-                full_content += f"{page_content}"
-
-            print(f"====> Finished Extracting Content from PDF with Docling: {file_path.name}")
-            return file_path, full_content, True
-        return file_path, f"# PDF: {file_path.name}\n\n[PDF processing failed]", False
-
-
-    def _process_pdfs(self, file_paths: List[Path]) -> List[DocumentExtractedResponse]:
-        if self.ocr == "docling":
-            print(f"====> Starting Extracting Content from PDFs with Docling: {[fp.name for fp in file_paths]}")
-            results = self.docling_pdf_converter.convert_all(file_paths)
-
-            contents: List[DocumentExtractedResponse] = []
-            for fp, res in zip(file_paths, results):
-                doc = res.document
+    def _process_pdf(self, file_path: Path) -> tuple[bool, str, DocumentExtractedResponse]:
+        try:
+            if self.ocr == "docling":
+                result = self.docling_pdf_converter.convert(file_path)
+                doc = result.document
 
                 full_content = ''
                 pages = []
@@ -129,7 +93,11 @@ class DocumentProcessor:
                         image_mode=ImageRefMode.PLACEHOLDER,
                     )
                     content_pages.append(page_content)
-                    pages.append(page.image.pil_image)
+
+                    page_img = getattr(page.image, "pil_image", None) or getattr(page.image, "image", None)
+
+                    if page_img is not None:
+                        pages.append(page_img)
 
                     full_content += f"\n<!-- page {page_no} -->\n"
                     full_content += f"{page_content}"
@@ -137,42 +105,45 @@ class DocumentProcessor:
 
                 pictures = []
                 all_imagedata = []
+                all_captions = []
                 for picture in doc.pictures:
                     pictures.append(picture.get_image(doc))
-                    imagedata = ImageAnnotationData()
-                    imagedata.ref = picture.self_ref
-                    imagedata.uri = str(picture.image.uri)
-                    imagedata.caption = picture.caption_text(doc=doc)
-
+                    caption: str = picture.caption_text(doc=doc)
+                    all_captions.append(caption)
+                    annot = ''
                     for ann in picture.annotations:
-                        imagedata.annotation_text.append(ann.text)
-                        imagedata.annotation_prov.append(ann.provenance)
-                    all_imagedata.append(imagedata)
+                        if not isinstance(ann, PictureDescriptionData):
+                            continue
+                        annot += ann.provenance + ": " + ann.text + "\n"
+                    all_imagedata.append(annot)
 
+                print(f"====> Extracted picture descriptions: {len(all_imagedata)}")
                 tables = []
                 for table in doc.tables:
                     tables.append(table.get_image(doc))
+
+                # all_imagedata = self.image_processor.extract_images(pictures)
                 
                 extracted_response = DocumentExtractedResponse()
-                extracted_response.file_path = fp
+                extracted_response.file_path = file_path
                 extracted_response.success = True
                 extracted_response.full_content = full_content
                 extracted_response.content_pages = content_pages
                 extracted_response.pages = pages
                 extracted_response.pictures = pictures
                 extracted_response.tables = tables
-                extracted_response.image_contents = all_imagedata
-
-                contents.append(extracted_response)
-
-            print(f"====> Finished Extracting Content from PDFs with Docling: {len(contents)} files")
-            return contents
-        return []
+                extracted_response.annotation_texts = all_imagedata
+                
+                return True, "Successfully Extracted", extracted_response
+            return False, "Ocr library support not found", DocumentExtractedResponse()
+        except Exception as e:
+            print(f"Error processing PDF {file_path}: {e}")
+            return False, str(e), DocumentExtractedResponse()
     
-    def _process_docx(self, file_path: Path) -> tuple[str, bool]:
+    def _process_docx(self, file_path: Path) -> tuple[bool, str, DocumentExtractedResponse]:
         # TODO: Implement Docling integration  
-        return f"# DOCX: {file_path.name}\n\n[DOCX processing placeholder]", True
+        return False, f"# DOCX: {file_path.name}\n\n[DOCX processing placeholder]", DocumentExtractedResponse()
     
-    def _process_image(self, file_path: Path) -> tuple[str, bool]:
+    def _process_image(self, file_path: Path) -> tuple[bool, str, DocumentExtractedResponse]:
         # TODO: Implement DeepSeek-OCR integration
-        return f"# Image: {file_path.name}\n\n[OCR processing placeholder]", True
+        return False, f"# Image: {file_path.name}\n\n[OCR processing placeholder]", DocumentExtractedResponse()
