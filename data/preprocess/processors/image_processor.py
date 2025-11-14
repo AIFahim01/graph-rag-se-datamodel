@@ -66,8 +66,8 @@ class VllmImageExtractor:
 
 
 # Prepare batched input with your image file
-# image_1 = Image.open("/home/erfan/Projects/office/data/Processed-data-4/GC 2025/GC 55 - HDVC/GC 155 - German Electricity Market/RFQ/RFQ-How-to-Guide-Sep-2023/pictures/RFQ-How-to-Guide-Sep-2023 - picture 5.png").convert("RGB")
-# image_2 = Image.open("/home/erfan/Projects/office/data/Processed-data-4/GC 2025/GC 55 - HDVC/GC 155 - German Electricity Market/RFQ/whitepaper-electricity-market/pictures/whitepaper-electricity-market - picture 9.png").convert("RGB")
+# image_1 = Image.open("path_to_your_image_1.png").convert("RGB")
+# image_2 = Image.open("path_to_your_image_2.png").convert("RGB")
 
 # prompt = str(
 #     "<image>\nDescribe the image with technical context."

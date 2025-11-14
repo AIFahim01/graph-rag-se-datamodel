@@ -4,6 +4,7 @@ from pathlib import Path
 from typing import List
 from .document_processor import DocumentExtractedResponse
 from PIL.Image import Image
+import logging
 
 class OutputManager:
     def __init__(self, output_base_path: Path, input_base_path: Path):
@@ -35,9 +36,10 @@ class OutputManager:
 
             self._save_file_metadata(output_file_dir, relative_parents, file_content)
 
+            logging.info(f"Saved {len(file_content.content_pages)} pages, {len(file_content.pictures)} pictures, and {len(file_content.tables)} tables for '{file_content.file_path.name}'.")
             return True, "Successfully saved processed file."
         except Exception as e:
-            print(f"Error saving processed file {file_content.file_path}: {e}")
+            logging.error(f"Error saving processed file '{file_content.file_path.name}': {e}")
             return False, str(e)
 
     def _save_pages(self, output_file_dir: Path, file_path: Path, pages: List[str]):
