@@ -69,6 +69,11 @@ neo4j_data/
 *.sqlite
 *.sqlite3
 
+# Large binary files
+*.npy
+frontend_viewer/backup/
+frontend_viewer/data/*.json
+
 # Logs
 logs/
 *.log
