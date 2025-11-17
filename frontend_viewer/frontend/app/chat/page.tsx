@@ -73,9 +73,10 @@ export default function ChatPage() {
     setIsLoading(true)
 
     const timestamp = new Date().toISOString()
+    const uniqueId = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
 
     const userMessage: ChatMessage = {
-      id: "",
+      id: `user-${uniqueId}`,
       role: "user",
       content: query,
       createdAt: timestamp,
@@ -83,7 +84,7 @@ export default function ChatPage() {
     }
 
     const assistantMessage: ChatMessage = {
-      id: "",
+      id: `assistant-${uniqueId}`,
       role: "assistant",
       content: "",
       createdAt: timestamp,
@@ -96,10 +97,16 @@ export default function ChatPage() {
     try {
       await defaultChatHistoryStore.saveMessage(CONVERSATION_ID, userMessage)
 
+      // Build conversation history for context
+      const historyForApi = messages.map(m => ({
+        role: m.role,
+        content: m.content
+      }))
+
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ query }),
+        body: JSON.stringify({ query, history: historyForApi, topK: 10 }),
       })
 
       if (!res.ok) {

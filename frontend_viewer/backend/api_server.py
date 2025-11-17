@@ -35,7 +35,10 @@ neo4j_store = Neo4jVectorStore(uri="bolt://localhost:7687", auth=None)
 query_enhancer = QueryEnhancer()
 
 @app.get("/api/search")
-async def search(q: str = Query(..., description="Search query")):
+async def search(
+    q: str = Query(..., description="Search query"),
+    top_k: int = Query(default=10, ge=1, le=50, description="Number of results to return")
+):
     """Enhanced vector similarity search with query expansion"""
 
     # Extract intent and apply filters
@@ -50,7 +53,7 @@ async def search(q: str = Query(..., description="Search query")):
         query_embedding = embedding_model.encode([query_var])[0]
         results = neo4j_store.vector_search(
             query_embedding,
-            top_k=20,
+            top_k=max(20, top_k * 2),  # Fetch more to allow for deduplication
             filters=intent.get('filters', {})
         )
 
@@ -60,8 +63,8 @@ async def search(q: str = Query(..., description="Search query")):
             if chunk_id not in all_results or result['score'] > all_results[chunk_id]['score']:
                 all_results[chunk_id] = result
 
-    # Sort by score and take top 10
-    results = sorted(all_results.values(), key=lambda x: x['score'], reverse=True)[:10]
+    # Sort by score and take top_k results
+    results = sorted(all_results.values(), key=lambda x: x['score'], reverse=True)[:top_k]
 
     # Format for frontend
     formatted_results = []
@@ -93,6 +96,64 @@ async def search(q: str = Query(..., description="Search query")):
 @app.get("/api/health")
 async def health():
     return {"status": "ok", "database": "neo4j", "chunks": 18437, "pdfs": 1082, "projects": 61}
+
+@app.get("/api/stats")
+async def stats():
+    """Get database statistics including project counts by category"""
+    # Query Neo4j for actual stats
+    try:
+        with neo4j_store.driver.session() as session:
+            # Count unique projects by category
+            result = session.run("""
+                MATCH (c:Chunk)
+                WITH DISTINCT c.project_id as project, c.category as category
+                RETURN category, count(project) as count
+                ORDER BY count DESC
+            """)
+            categories = {record["category"]: record["count"] for record in result}
+
+            # Get total unique projects
+            result = session.run("""
+                MATCH (c:Chunk)
+                RETURN count(DISTINCT c.project_id) as total
+            """)
+            total_projects = result.single()["total"]
+
+            # Get list of HVDC projects
+            result = session.run("""
+                MATCH (c:Chunk)
+                WHERE c.category = 'hvdc'
+                RETURN DISTINCT c.project_id as project
+                ORDER BY project
+            """)
+            hvdc_projects = [record["project"] for record in result]
+
+            # Get list of SynCon projects
+            result = session.run("""
+                MATCH (c:Chunk)
+                WHERE c.category = 'syncon'
+                RETURN DISTINCT c.project_id as project
+                ORDER BY project
+            """)
+            syncon_projects = [record["project"] for record in result]
+
+        return {
+            "total_projects": total_projects,
+            "total_chunks": 18437,
+            "total_pdfs": 1082,
+            "projects_by_category": categories,
+            "hvdc_projects": hvdc_projects,
+            "hvdc_count": len(hvdc_projects),
+            "syncon_projects": syncon_projects,
+            "syncon_count": len(syncon_projects)
+        }
+    except Exception as e:
+        return {
+            "error": str(e),
+            "total_projects": 61,
+            "hvdc_count": "unknown",
+            "syncon_count": "unknown"
+        }
 
 if __name__ == "__main__":
     import uvicorn
