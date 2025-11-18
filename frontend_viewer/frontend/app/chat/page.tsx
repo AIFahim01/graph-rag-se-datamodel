@@ -41,6 +41,7 @@ export default function ChatPage() {
   const [referenceChunks, setReferenceChunks] = useState<ReferenceChunk[]>([])
   const [showReferences, setShowReferences] = useState(true)
   const [selectedMessageKey, setSelectedMessageKey] = useState<string | null>(null)
+  const [topK, setTopK] = useState(10)
   const bottomRef = useRef<HTMLDivElement | null>(null)
   const referencePanelRef = useRef<HTMLDivElement | null>(null)
   const router = useRouter()
@@ -106,7 +107,7 @@ export default function ChatPage() {
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ query, history: historyForApi, topK: 10 }),
+        body: JSON.stringify({ query, history: historyForApi, topK }),
       })
 
       if (!res.ok) {
@@ -382,6 +383,23 @@ export default function ChatPage() {
               {error}
             </div>
           )}
+
+          <div className="flex items-center gap-4 px-1">
+            <label htmlFor="topK-slider" className="text-xs text-slate-400 whitespace-nowrap">
+              Chunks: <span className="text-emerald-400 font-semibold">{topK}</span>
+            </label>
+            <input
+              id="topK-slider"
+              type="range"
+              min="5"
+              max="20"
+              step="1"
+              value={topK}
+              onChange={(e) => setTopK(parseInt(e.target.value))}
+              className="flex-1 h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-emerald-600"
+              disabled={isLoading}
+            />
+          </div>
 
           <form onSubmit={handleSubmit} className="flex items-center gap-3">
             <Input
