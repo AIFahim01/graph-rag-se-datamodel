@@ -3,7 +3,7 @@
 import { useParams, useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
-import { ArrowLeft, Loader, Copy, Check } from "lucide-react"
+import { ArrowLeft, Loader, Copy, Check, ChevronDown, ChevronUp } from "lucide-react"
 
 interface ResultDetail {
   id: string
@@ -26,6 +26,7 @@ export default function ResultDetailPage() {
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [copied, setCopied] = useState(false)
+  const [showPictures, setShowPictures] = useState(true)  // Auto-expand pictures
 
   useEffect(() => {
     const loadResult = async () => {
@@ -163,6 +164,50 @@ export default function ResultDetailPage() {
                     <span>📊 {result.metadata.total_tables} tables in document</span>
                   )}
                 </div>
+              </div>
+            )}
+
+            {/* Extracted Pictures Gallery */}
+            {result.metadata?.pictures && result.metadata.pictures.length > 0 && (
+              <div className="bg-slate-800 border border-slate-700 rounded-lg p-6">
+                <button
+                  onClick={() => setShowPictures(!showPictures)}
+                  className="w-full flex items-center justify-between text-white hover:text-emerald-400 transition"
+                >
+                  <h2 className="text-xl font-semibold flex items-center gap-2">
+                    🖼️ Pictures from this document ({result.metadata.pictures.length})
+                  </h2>
+                  {showPictures ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
+                </button>
+
+                {showPictures && (
+                  <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {result.metadata.pictures.map((picture: any) => (
+                      <div key={picture.number} className="bg-slate-950 rounded border border-slate-700 overflow-hidden hover:border-emerald-500 transition">
+                        <div
+                          className="cursor-pointer"
+                          onClick={() => window.open(`http://localhost:8001${picture.url}`, '_blank')}
+                        >
+                          <img
+                            src={`http://localhost:8001${picture.url}`}
+                            alt={`Picture ${picture.number}`}
+                            className="w-full h-auto object-contain"
+                          />
+                        </div>
+                        <div className="p-3 space-y-1">
+                          <p className="text-xs font-semibold text-emerald-400">
+                            Picture {picture.number}
+                          </p>
+                          {picture.description && (
+                            <p className="text-xs text-slate-400 line-clamp-3">
+                              {picture.description}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             )}
 

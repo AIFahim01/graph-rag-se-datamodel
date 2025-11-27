@@ -6,6 +6,8 @@ Queries new PageChunk nodes with page images support
 
 import sys
 import os
+import re
+import json
 from pathlib import Path
 from fastapi import FastAPI, Query
 from fastapi.middleware.cors import CORSMiddleware
@@ -48,6 +50,71 @@ neo4j_store = Neo4jVectorStoreFlexible(
 )
 
 
+def get_extracted_images_for_document(page_image_relative: str, source_file: str):
+    """
+    Get all extracted images and tables for a document (file-based, no regex)
+    Also loads descriptions from picture_annotations.json
+
+    Returns: (pictures_data, tables_data)
+    """
+    if not page_image_relative:
+        return [], []
+
+    doc_dir = BASE_OUTPUT_PATH / Path(page_image_relative).parent.parent
+
+    # Load annotations file for descriptions
+    annotations = {}
+    annotations_file = doc_dir / "pictures" / f"{source_file} - picture_annotations.json"
+    if annotations_file.exists():
+        try:
+            with open(annotations_file, 'r') as f:
+                annotations = json.load(f)
+        except:
+            pass
+
+    # Get pictures with descriptions
+    pictures_data = []
+    pictures_dir = doc_dir / "pictures"
+    if pictures_dir.exists():
+        picture_files = sorted(pictures_dir.glob(f"{source_file} - picture *.png"))
+        for pic_file in picture_files:
+            # Extract picture number from filename
+            match = re.search(r'picture (\d+)\.png', pic_file.name)
+            if match:
+                pic_num = int(match.group(1))
+                relative_path = str(pic_file.relative_to(BASE_OUTPUT_PATH))
+
+                # Get description from annotations (0-indexed array)
+                caption = annotations.get('caption_texts', [])[pic_num - 1] if pic_num <= len(annotations.get('caption_texts', [])) else ""
+                annotation = annotations.get('annotation_texts', [])[pic_num - 1] if pic_num <= len(annotations.get('annotation_texts', [])) else ""
+                description = annotation or caption or ""
+
+                pictures_data.append({
+                    'number': pic_num,
+                    'url': f"/api/document-image/{relative_path}",
+                    'description': description[:300] if description else ""  # Limit to 300 chars
+                })
+
+    # Get tables
+    tables_data = []
+    tables_dir = doc_dir / "tables"
+    if tables_dir.exists():
+        table_files = sorted(tables_dir.glob(f"{source_file} - table *.png"))
+        for tbl_file in table_files:
+            match = re.search(r'table (\d+)\.png', tbl_file.name)
+            if match:
+                tbl_num = int(match.group(1))
+                relative_path = str(tbl_file.relative_to(BASE_OUTPUT_PATH))
+
+                tables_data.append({
+                    'number': tbl_num,
+                    'url': f"/api/document-image/{relative_path}",
+                    'description': ""  # Tables don't have annotations
+                })
+
+    return pictures_data, tables_data
+
+
 @app.get("/api/search")
 async def search(
     q: str = Query(..., description="Search query"),
@@ -68,6 +135,12 @@ async def search(
     # Format for frontend
     formatted_results = []
     for i, chunk in enumerate(results):
+        # Get extracted images/tables using file-based approach (safer than regex)
+        pictures_data, tables_data = get_extracted_images_for_document(
+            chunk.get('page_image_relative', ''),
+            chunk.get('source_file', '')
+        )
+
         formatted_results.append({
             "id": chunk['chunk_id'],
             "title": f"{chunk['project_id']} - {chunk.get('customer', 'Unknown')}",
@@ -89,7 +162,9 @@ async def search(
                 "file_name": chunk.get('file_name', ''),
                 "total_images": chunk.get('total_images', 0),
                 "total_tables": chunk.get('total_tables', 0),
-                "page_image_url": f"/api/page-image/{chunk.get('page_image_relative', '')}" if chunk.get('page_image_relative') else None
+                "page_image_url": f"/api/page-image/{chunk.get('page_image_relative', '')}" if chunk.get('page_image_relative') else None,
+                "pictures": pictures_data,  # [{number, url, description}, ...]
+                "tables": tables_data       # [{number, url, description}, ...]
             },
             "source": chunk.get('file_name', 'Unknown'),
             "createdAt": chunk.get('extracted_at', '2025-11-14')[:10]
@@ -127,6 +202,12 @@ async def get_result_by_id(chunk_id: str):
 
             chunk = record['c']
 
+            # Get extracted images/tables using file-based approach (safer)
+            pictures_data, tables_data = get_extracted_images_for_document(
+                chunk.get('page_image_relative', ''),
+                chunk.get('source_file', '')
+            )
+
             # Format response
             formatted = {
                 "id": chunk['chunk_id'],
@@ -145,7 +226,9 @@ async def get_result_by_id(chunk_id: str):
                     "file_name": chunk.get('file_name', ''),
                     "total_images": chunk.get('total_images', 0),
                     "total_tables": chunk.get('total_tables', 0),
-                    "page_image_url": f"/api/page-image/{chunk.get('page_image_relative', '')}" if chunk.get('page_image_relative') else None
+                    "page_image_url": f"/api/page-image/{chunk.get('page_image_relative', '')}" if chunk.get('page_image_relative') else None,
+                    "pictures": pictures_data,  # [{number, url, description}, ...]
+                    "tables": tables_data       # [{number, url, description}, ...]
                 },
                 "source": chunk.get('file_name', 'Unknown'),
                 "createdAt": chunk.get('extracted_at', '2025-11-14')[:10]
@@ -161,6 +244,17 @@ async def get_result_by_id(chunk_id: str):
 @app.get("/api/page-image/{image_path:path}")
 async def get_page_image(image_path: str):
     """Serve page PNG images"""
+    full_path = BASE_OUTPUT_PATH / image_path
+
+    if not full_path.exists():
+        return {"error": "Image not found", "path": str(image_path)}
+
+    return FileResponse(full_path)
+
+
+@app.get("/api/document-image/{image_path:path}")
+async def get_document_image(image_path: str):
+    """Serve extracted document images (pictures/*.png, tables/*.png)"""
     full_path = BASE_OUTPUT_PATH / image_path
 
     if not full_path.exists():
