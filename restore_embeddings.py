@@ -111,7 +111,7 @@ with driver.session() as session:
                 project_name=chunk['project_name'],
                 year=chunk['year'],
                 customer=chunk['customer'],
-                customer_normalized=chunk['customer_normalized'],
+                customer_normalized=chunk.get('customer_normalized', ''),
                 category=chunk['category'],
                 technology=chunk['technology'],
                 document_type=chunk.get('document_type', 'other'),

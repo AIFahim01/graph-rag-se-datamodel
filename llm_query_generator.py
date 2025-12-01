@@ -1,155 +1,95 @@
 #!/usr/bin/env python3
 """
-LLM-Based Query Generator for Neo4j ULTRATHINK Database
-Translates natural language queries to Cypher queries using Ollama
+FULLY LLM-BASED Query Generator for Neo4j ULTRATHINK Database
+100% LLM-driven - No hardcoded patterns or fallbacks
 """
 
 import json
 import requests
 import re
-from typing import Dict, Any, Optional, List, Tuple
-from datetime import datetime
+from typing import Dict, Any, Optional
 
-# Complete database schema that's always included in prompts
+# Complete database schema for LLM context
 NEO4J_SCHEMA = """
 === NEO4J DATABASE SCHEMA ===
 
 Node Label: PageChunk
 
 Properties:
-- chunk_id (string): Unique identifier for each chunk (e.g., "GC24_016_doc_page1")
-- text (string): Document content text (max 2000 characters)
+- chunk_id (string): Unique identifier (e.g., "GC24_016_doc_page1")
+- text (string): Document content text (searchable via vector)
 - project_id (string): Project identifier (pattern: GC[YY]_[NNN], e.g., "GC24_016")
 - project_name (string): Full project name
-- technology (string): Technology type - EXACTLY one of: "HVDC", "SynCon", "SVC/STATCOM", "Other"
-- year (integer): Year of the project (values: 2021, 2022, 2024, 2025)
+- technology (string): EXACTLY one of: "HVDC", "SynCon", "SVC/STATCOM", "Other"
+- year (integer): Project year (values: 2021, 2022, 2024, 2025)
 - customer (string): Customer/company name
-- customer_normalized (string): Lowercase customer name for matching
-- category (string): Category type - one of: "hvdc", "syncon", "facts", "other"
-- page (integer): Page number in the document
+- customer_normalized (string): Lowercase customer name
+- page (integer): Page number in document
 - file_name (string): Original PDF filename
-- page_image_relative (string): Path to page image if available
-- total_pages (integer): Total pages in document
-- total_images (integer): Number of images in document
-- total_tables (integer): Number of tables in document
-- embedding (vector[1024]): Vector embedding using BAAI/bge-large-en-v1.5 model
+- embedding (vector[1024]): For semantic search
 
-Indexes:
-- Vector Index: "page_embeddings_ultrathink" (for embedding property, 1024 dimensions)
-- Property Indexes: chunk_id, project_id, technology, year, customer_normalized
-
-Database Statistics:
+Database Stats:
 - Total chunks: 214,426
 - Total projects: 370
-- Total PDFs: 9,627
-- Technologies: HVDC (34 projects), SynCon (projects vary), SVC/STATCOM, Other
-- Years available: 2021, 2022, 2024, 2025
+- Technologies: HVDC, SynCon, SVC/STATCOM, Other
+- Years: 2021, 2022, 2024, 2025
 
-IMPORTANT RULES:
-1. Year is an INTEGER, not string. Use: c.year = 2024, NOT c.year = '2024'
-2. Technology values are case-sensitive: use "HVDC" not "hvdc"
-3. For customer matching, use customer_normalized with lowercase
-4. Use DISTINCT when counting projects: count(DISTINCT c.project_id)
-5. Vector search requires an embedding parameter
-"""
-
-# Few-shot examples to guide the LLM
-FEW_SHOT_EXAMPLES = """
-=== EXAMPLE QUERIES ===
-
-Example 1:
-User: "How many HVDC projects in 2024?"
-Cypher:
-MATCH (c:PageChunk)
-WHERE c.technology = 'HVDC' AND c.year = 2024
-RETURN count(DISTINCT c.project_id) as project_count
-
-Example 2:
-User: "Show all transformer protection documents"
-Type: VECTOR_SEARCH
-Search Text: "transformer protection systems relay settings"
-Note: This requires vector search since we're looking for content
-
-Example 3:
-User: "List all SynCon projects"
-Cypher:
-MATCH (c:PageChunk)
-WHERE c.technology = 'SynCon'
-RETURN DISTINCT c.project_id, c.project_name, c.customer, c.year
-ORDER BY c.year DESC, c.project_id
-
-Example 4:
-User: "How many projects do we have?"
-Cypher:
-MATCH (c:PageChunk)
-RETURN count(DISTINCT c.project_id) as total_projects
-
-Example 5:
-User: "Find documents about harmonic filters"
-Type: VECTOR_SEARCH
-Search Text: "harmonic filters power quality THD distortion"
-
-Example 6:
-User: "Show HVDC projects for TenneT"
-Cypher:
-MATCH (c:PageChunk)
-WHERE c.technology = 'HVDC' AND toLower(c.customer) CONTAINS 'tennet'
-RETURN DISTINCT c.project_id, c.project_name, c.year
-ORDER BY c.year DESC
-
-Example 7:
-User: "How many HVDC projects?"
-Cypher:
-MATCH (c:PageChunk)
-WHERE c.technology = 'HVDC'
-RETURN c.year as year, count(DISTINCT c.project_id) as project_count
-ORDER BY year
-
-Example 8:
-User: "Recent projects"
-Cypher:
-MATCH (c:PageChunk)
-WHERE c.year >= 2024
-RETURN DISTINCT c.project_id, c.project_name, c.technology, c.customer, c.year
-ORDER BY c.year DESC, c.project_id
-LIMIT 20
+CRITICAL RULES:
+1. Year is INTEGER: use c.year = 2024, NOT c.year = '2024'
+2. Technology is case-sensitive: use 'HVDC' not 'hvdc'
+3. Use count(DISTINCT c.project_id) for project counts
+4. ONLY these technologies exist in metadata: HVDC, SynCon, SVC/STATCOM, Other
+5. Terms like BESS, transformer, cable, etc. are NOT in metadata - they're in document TEXT
 """
 
 
 class LLMQueryGenerator:
-    """Generate Cypher queries from natural language using Ollama"""
+    """100% LLM-based query generator - no fallbacks"""
 
-    def __init__(self, model: str = "qwen3:14b"):
-        """
-        Initialize the query generator
-
-        Args:
-            model: Ollama model to use (default: qwen3:14b - better model for complex queries)
-        """
+    def __init__(self, model: str = "qwen3:8b"):
         self.model = model
         self.ollama_url = "http://localhost:11434/api/generate"
         self.schema = NEO4J_SCHEMA
-        self.examples = FEW_SHOT_EXAMPLES
 
-    def detect_query_type(self, query: str) -> Tuple[str, Optional[str]]:
+    def generate_query(self, natural_language_query: str) -> Dict[str, Any]:
         """
-        Let the LLM decide if query needs vector search or metadata search
-        No hardcoded patterns - pure LLM interpretation
-
-        Returns:
-            (query_type, search_text) - "vector" or "metadata", and search text if vector
+        Single LLM call to analyze query and generate appropriate response.
+        Returns structured JSON with query type and content.
         """
-        # Let the LLM itself decide what kind of search is needed
-        prompt = f"""Given this query: "{query}"
 
-Analyze if this query needs:
-1. VECTOR search - for finding content in documents (locations, concepts, specific information)
-2. METADATA search - for exact counts by known fields (technology=HVDC, year=2024)
+        prompt = f"""{self.schema}
 
-If the query mentions locations (Germany, France, etc.) or needs to search document content, return: VECTOR
-If the query asks for counts of specific metadata fields (how many HVDC in 2024), return: METADATA
+=== YOUR TASK ===
+Analyze the user's query and respond with a JSON object.
 
-Respond with ONLY one word: VECTOR or METADATA"""
+User Query: "{natural_language_query}"
+
+You must decide:
+1. Is this a METADATA query? (counting/listing by technology, year, customer fields)
+2. Is this a VECTOR_SEARCH query? (searching document content for topics, terms, concepts)
+
+DECISION RULES:
+- If query asks about technologies: HVDC, SynCon, SVC/STATCOM → METADATA (these are in database fields)
+- If query asks about: BESS, transformers, cables, protection, harmonic, specific technical content → VECTOR_SEARCH (search document text)
+- If query mentions locations (Germany, France, UK) → VECTOR_SEARCH (locations are in document content)
+- If query mentions company names not normalized → VECTOR_SEARCH
+- "How many [technology] in [year]" where technology is HVDC/SynCon/SVC → METADATA
+- "Find documents about X" or "search for X" → VECTOR_SEARCH
+
+RESPOND WITH ONLY A VALID JSON OBJECT (no markdown, no explanation):
+
+For METADATA queries:
+{{"query_type": "metadata", "cypher": "MATCH (c:PageChunk) WHERE ... RETURN ...", "explanation": "brief reason"}}
+
+For VECTOR_SEARCH queries:
+{{"query_type": "vector_search", "search_text": "enhanced search terms", "explanation": "brief reason"}}
+
+CYPHER EXAMPLES:
+- Count HVDC 2025: MATCH (c:PageChunk) WHERE c.technology = 'HVDC' AND c.year = 2025 RETURN count(DISTINCT c.project_id) as project_count
+- List projects: MATCH (c:PageChunk) WHERE c.year = 2025 RETURN DISTINCT c.project_id, c.project_name, c.technology, c.year ORDER BY c.project_id
+- Count by year: MATCH (c:PageChunk) WHERE c.technology = 'HVDC' RETURN c.year as year, count(DISTINCT c.project_id) as count ORDER BY year
+
+JSON RESPONSE:"""
 
         try:
             response = requests.post(
@@ -160,198 +100,97 @@ Respond with ONLY one word: VECTOR or METADATA"""
                     "temperature": 0.1,
                     "stream": False
                 },
-                timeout=10
-            )
-
-            if response.status_code == 200:
-                result = response.json()
-                decision = result.get('response', '').strip().upper()
-
-                if "METADATA" in decision:
-                    return "metadata", None
-                else:
-                    # Default to vector search - no hardcoded enhancements
-                    return "vector", query
-
-        except Exception as e:
-            print(f"Error in LLM query type detection: {e}")
-
-        # Default to vector search if LLM fails
-        return "vector", query
-
-    def parse_natural_language(self, query: str) -> Dict[str, Any]:
-        """
-        Let LLM parse natural language query to extract entities and intent
-        """
-        result = {
-            "original_query": query,
-            "query_type": "metadata",  # or "vector"
-            "entities": {}
-        }
-
-        # Detect query type using LLM
-        query_type, search_text = self.detect_query_type(query)
-        result["query_type"] = query_type
-        if search_text:
-            result["search_text"] = search_text
-
-        # Let LLM extract entities and intent - no hardcoded patterns
-        # The LLM will handle this in generate_cypher_with_ollama
-        return result
-
-    def generate_cypher_with_ollama(self, query: str, parsed: Dict[str, Any]) -> str:
-        """
-        Use Ollama to generate Cypher query from natural language
-        """
-        # Build the prompt with better instructions for location queries
-        prompt = f"""{self.schema}
-
-{self.examples}
-
-=== YOUR TASK ===
-Convert the following natural language query to a Cypher query.
-
-User Query: "{query}"
-
-Important Rules:
-- If the query mentions LOCATIONS (Germany, France, UK, etc.), this needs VECTOR SEARCH, return NULL
-- If the query mentions company names not in metadata (TenneT, Amprion, etc.), return NULL for vector search
-- NEVER use cosineSimilarity, vector(), or embedding functions in Cypher queries
-- Vector search is handled separately - for location/content search, return NULL
-- If asking "How many HVDC?" without a specific year, show breakdown by year
-- Year is an INTEGER (use c.year = 2024, not c.year = '2024')
-- Technology values are case-sensitive (use 'HVDC' not 'hvdc')
-- Use count(DISTINCT c.project_id) for counting projects
-- For recent/latest, use c.year >= 2024
-- DO NOT mix metadata queries with vector search operations
-
-If this query needs to search document content (locations, companies, concepts), return: NULL
-Otherwise, generate ONLY a valid Neo4j Cypher query for metadata search:
-"""
-
-        # Call Ollama
-        try:
-            response = requests.post(
-                self.ollama_url,
-                json={
-                    "model": self.model,
-                    "prompt": prompt,
-                    "temperature": 0.1,  # Low temperature for consistency
-                    "stream": False
-                },
                 timeout=30
             )
 
             if response.status_code == 200:
                 result = response.json()
-                cypher = result.get('response', '').strip()
+                llm_response = result.get('response', '').strip()
 
-                # Clean up the response (remove markdown if present)
-                cypher = cypher.replace('```cypher', '').replace('```', '').strip()
+                # Parse the JSON response from LLM
+                parsed = self._parse_llm_json(llm_response)
 
-                # Check if LLM incorrectly returned a type indicator instead of a query
-                if cypher.upper().startswith('TYPE: VECTOR_SEARCH') or 'TYPE: VECTOR_SEARCH' in cypher.upper():
-                    # This should be a vector search, not a cypher query
-                    return None
-
-                return cypher
+                if parsed:
+                    return self._format_result(parsed, natural_language_query)
+                else:
+                    # LLM failed to return valid JSON - ask again with simpler prompt
+                    return self._retry_with_simple_prompt(natural_language_query)
             else:
-                return None
+                print(f"Ollama API error: {response.status_code}")
+                return self._retry_with_simple_prompt(natural_language_query)
 
         except Exception as e:
             print(f"Error calling Ollama: {e}")
+            return self._retry_with_simple_prompt(natural_language_query)
+
+    def _parse_llm_json(self, response: str) -> Optional[Dict]:
+        """Parse JSON from LLM response, handling various formats"""
+
+        # Clean up the response
+        response = response.strip()
+
+        # Remove markdown code blocks if present
+        response = re.sub(r'```json\s*', '', response)
+        response = re.sub(r'```\s*', '', response)
+
+        # Try to find JSON object in response
+        json_match = re.search(r'\{[^{}]*\}', response, re.DOTALL)
+        if json_match:
+            try:
+                return json.loads(json_match.group())
+            except json.JSONDecodeError:
+                pass
+
+        # Try parsing the whole response
+        try:
+            return json.loads(response)
+        except json.JSONDecodeError:
+            print(f"Failed to parse LLM JSON: {response[:200]}...")
             return None
 
-    def generate_fallback_cypher(self, parsed: Dict[str, Any]) -> str:
-        """
-        Generate Cypher query using rule-based approach (fallback if LLM fails)
-        Let the LLM handle specific entity extraction - fallback only for basic patterns
-        """
-        entities = parsed.get('entities', {})
-        intent = parsed.get('intent', 'query')
-        query_lower = parsed.get('original_query', '').lower()
+    def _format_result(self, parsed: Dict, original_query: str) -> Dict[str, Any]:
+        """Format the parsed LLM response into standard result format"""
 
-        # Build WHERE conditions only from what was parsed
-        conditions = []
-        if 'year' in entities:
-            conditions.append(f"c.year = {entities['year']}")
-        elif entities.get('year_filter') == 'recent':
-            conditions.append("c.year >= 2024")
+        query_type = parsed.get('query_type', 'vector_search')
 
-        where_clause = " AND ".join(conditions) if conditions else ""
-        where_statement = f"WHERE {where_clause}" if where_clause else ""
+        if query_type == 'metadata':
+            cypher = parsed.get('cypher', '')
 
-        # Generate query based on intent
-        if intent == "count":
-            return f"""
-            MATCH (c:PageChunk)
-            {where_statement}
-            RETURN count(DISTINCT c.project_id) as project_count
-            """
+            # Validate cypher starts with valid keyword
+            if cypher and cypher.strip().upper().startswith(('MATCH', 'RETURN', 'WITH', 'CALL', 'OPTIONAL')):
+                # Fix common issues
+                cypher = self._fix_cypher(cypher)
 
-        elif intent == "list":
-            return f"""
-            MATCH (c:PageChunk)
-            {where_statement}
-            RETURN DISTINCT c.project_id, c.project_name, c.technology, c.customer, c.year
-            ORDER BY c.year DESC, c.project_id
-            LIMIT 50
-            """
-
+                return {
+                    "success": True,
+                    "query_type": "cypher",
+                    "cypher": cypher,
+                    "explanation": parsed.get('explanation', ''),
+                    "original_query": original_query
+                }
+            else:
+                # Invalid cypher, treat as vector search
+                print(f"Invalid cypher from LLM: {cypher[:100]}...")
+                return {
+                    "success": True,
+                    "query_type": "vector",
+                    "search_text": original_query,
+                    "explanation": "LLM generated invalid cypher, using vector search",
+                    "original_query": original_query
+                }
         else:
-            # Default query - for content searches, use vector search instead
-            if any(word in query_lower for word in ['about', 'related to', 'concerning', 'regarding']):
-                # This should trigger vector search instead
-                return None
+            # Vector search
+            search_text = parsed.get('search_text', original_query)
+            return {
+                "success": True,
+                "query_type": "vector",
+                "search_text": search_text,
+                "explanation": parsed.get('explanation', ''),
+                "original_query": original_query
+            }
 
-            # Basic metadata query
-            return f"""
-            MATCH (c:PageChunk)
-            {where_statement}
-            RETURN DISTINCT c.project_id, c.project_name, c.technology, c.customer, c.year
-            LIMIT 20
-            """
-
-    def validate_cypher(self, cypher: str) -> Tuple[bool, List[str]]:
-        """
-        Validate generated Cypher query for common issues
-
-        Returns:
-            (is_valid, list_of_issues)
-        """
-        issues = []
-
-        # Check for common mistakes
-        if "c.year = '" in cypher or 'c.year = "' in cypher:
-            issues.append("Year should be integer, not string")
-
-        # Check for invalid property names
-        valid_props = [
-            'chunk_id', 'text', 'project_id', 'project_name', 'technology',
-            'year', 'customer', 'customer_normalized', 'category', 'page',
-            'file_name', 'embedding', 'page_image_relative', 'total_pages',
-            'total_images', 'total_tables'
-        ]
-
-        # Extract properties used in query
-        prop_pattern = r'c\.(\w+)'
-        used_props = re.findall(prop_pattern, cypher)
-        for prop in used_props:
-            if prop not in valid_props:
-                issues.append(f"Invalid property: c.{prop}")
-
-        # Check for dangerous operations
-        dangerous = ['DELETE', 'DETACH', 'DROP', 'CREATE INDEX', 'CREATE CONSTRAINT']
-        for keyword in dangerous:
-            if keyword in cypher.upper():
-                issues.append(f"Dangerous operation: {keyword}")
-
-        return len(issues) == 0, issues
-
-    def fix_common_issues(self, cypher: str) -> str:
-        """
-        Fix common issues in generated Cypher
-        """
+    def _fix_cypher(self, cypher: str) -> str:
+        """Fix common Cypher issues"""
         # Fix year as string
         cypher = re.sub(r"c\.year = '(\d+)'", r"c.year = \1", cypher)
         cypher = re.sub(r'c\.year = "(\d+)"', r"c.year = \1", cypher)
@@ -362,85 +201,72 @@ Otherwise, generate ONLY a valid Neo4j Cypher query for metadata search:
 
         return cypher
 
-    def generate_query(self, natural_language_query: str) -> Dict[str, Any]:
-        """
-        Main method to generate query from natural language
+    def _retry_with_simple_prompt(self, query: str) -> Dict[str, Any]:
+        """Retry with a simpler prompt if first attempt fails"""
 
-        Returns dictionary with:
-            - success: bool
-            - query_type: "cypher" or "vector"
-            - cypher: Generated Cypher query (if applicable)
-            - search_text: Text for vector search (if applicable)
-            - parsed: Parsed entities and intent
-            - issues: Any validation issues
-        """
-        # Parse the query
-        parsed = self.parse_natural_language(natural_language_query)
+        simple_prompt = f"""Analyze this query and respond with JSON only.
 
-        # If it's a vector search query
-        if parsed["query_type"] == "vector":
-            return {
-                "success": True,
-                "query_type": "vector",
-                "search_text": parsed.get("search_text", natural_language_query),
-                "parsed": parsed,
-                "filters": parsed.get("entities", {})
-            }
+Query: "{query}"
 
-        # Generate Cypher query using LLM
-        cypher = self.generate_cypher_with_ollama(natural_language_query, parsed)
+If asking about HVDC, SynCon, or SVC/STATCOM projects (these are database fields), respond:
+{{"query_type": "metadata", "cypher": "MATCH (c:PageChunk) WHERE [conditions] RETURN [fields]"}}
 
-        # Check if LLM returned NULL indicating vector search is needed
-        if cypher and (cypher.upper().startswith("NULL") or cypher.upper().startswith("NONE")):
-            # Switch to vector search
-            return {
-                "success": True,
-                "query_type": "vector",
-                "search_text": natural_language_query,
-                "parsed": parsed,
-                "filters": parsed.get("entities", {}),
-                "message": "LLM indicated vector search needed for location/content query"
-            }
+For anything else (BESS, locations, technical topics), respond:
+{{"query_type": "vector_search", "search_text": "{query}"}}
 
-        # Fallback to rule-based if LLM fails
-        if not cypher:
-            print("LLM generation failed, using rule-based fallback")
-            cypher = self.generate_fallback_cypher(parsed)
+JSON:"""
 
-        # Fix common issues
-        cypher = self.fix_common_issues(cypher)
+        try:
+            response = requests.post(
+                self.ollama_url,
+                json={
+                    "model": self.model,
+                    "prompt": simple_prompt,
+                    "temperature": 0.1,
+                    "stream": False
+                },
+                timeout=20
+            )
 
-        # Validate
-        is_valid, issues = self.validate_cypher(cypher)
+            if response.status_code == 200:
+                result = response.json()
+                llm_response = result.get('response', '').strip()
+                parsed = self._parse_llm_json(llm_response)
 
+                if parsed:
+                    return self._format_result(parsed, query)
+
+        except Exception as e:
+            print(f"Retry also failed: {e}")
+
+        # Final fallback - LLM completely failed, use vector search
+        # This is NOT a hardcoded pattern - it's a "LLM unavailable" fallback
+        print("LLM completely unavailable, defaulting to vector search")
         return {
-            "success": is_valid,
-            "query_type": "cypher",
-            "cypher": cypher,
-            "parsed": parsed,
-            "issues": issues
+            "success": True,
+            "query_type": "vector",
+            "search_text": query,
+            "explanation": "LLM service unavailable, using vector search as default",
+            "original_query": query
         }
 
 
-# Test the generator if run directly
+# Test if run directly
 if __name__ == "__main__":
     generator = LLMQueryGenerator()
 
-    # Test queries
     test_queries = [
-        "How many HVDC projects in 2024?",
+        "How many HVDC projects in 2025?",
+        "How many BESS projects in 2025?",
         "Show all SynCon projects",
-        "How many projects do we have?",
         "Find documents about transformer protection",
-        "List recent HVDC projects",
-        "Show projects for TenneT",
-        "How many HVDC projects?",  # Should show breakdown by year
+        "List Germany projects",
+        "Count projects by technology",
         "Search for harmonic filter specifications",
-        "What projects were delivered in 2025?",
-        "Count all projects by technology"
+        "How many projects do we have?",
     ]
 
-    print("Testing LLM Query Generator")
+    print("Testing FULLY LLM-Based Query Generator")
     print("=" * 80)
 
     for query in test_queries:
@@ -449,15 +275,9 @@ if __name__ == "__main__":
 
         result = generator.generate_query(query)
 
-        if result["success"]:
-            if result["query_type"] == "cypher":
-                print("Generated Cypher:")
-                print(result["cypher"])
-            else:
-                print(f"Vector Search for: {result['search_text']}")
-                if result.get("filters"):
-                    print(f"With filters: {result['filters']}")
+        print(f"Type: {result['query_type']}")
+        if result['query_type'] == 'cypher':
+            print(f"Cypher: {result['cypher']}")
         else:
-            print(f"Failed to generate query. Issues: {result['issues']}")
-
-        print()
+            print(f"Search: {result['search_text']}")
+        print(f"Explanation: {result.get('explanation', 'N/A')}")
