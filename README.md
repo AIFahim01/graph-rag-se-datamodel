@@ -39,8 +39,7 @@ python -m venv venv
 source venv/bin/activate
 
 # Install dependencies
-pip install fastapi uvicorn neo4j chromadb
-pip install sentence-transformers ollama numpy pandas
+pip install -r requirements.txt
 ```
 
 ### Environment Setup
@@ -52,26 +51,83 @@ NEO4J_PASSWORD=password
 OLLAMA_BASE_URL=http://localhost:11434
 ```
 
-### Run the System
+## Running the System
 
-1. **Start Neo4j Database**
+### Required Services (Must be running)
+
+#### 1. Neo4j Database
 ```bash
+# Check status
+neo4j status
+
+# Start Neo4j
 neo4j start
+
+# Verify (should see Neo4j browser)
+curl -s http://localhost:7474
 ```
 
-2. **Start Ollama (LLM)**
+#### 2. Ollama (LLM Service)
 ```bash
-ollama serve
+# Check if running
+ps aux | grep ollama
+
+# Start Ollama
+ollama serve &
+
+# Pull required models
+ollama pull qwen3:14b
+ollama pull mistral
+
+# Verify
+curl http://localhost:11434/api/tags
 ```
 
-3. **Start Main API Server**
+#### 3. Main Backend API Server
 ```bash
+# Activate virtual environment
+source venv/bin/activate
+
+# Start the server
 python integrated_api_server.py
+
+# Verify (should see {"message": "API is running"} or similar)
+curl http://localhost:8001
 ```
 
-4. **Access API**
-- API: http://localhost:8001
-- Docs: http://localhost:8001/docs
+#### 4. Frontend Application
+```bash
+# In a new terminal
+cd frontend
+
+# Install dependencies (first time only)
+npm install
+
+# Start development server
+npm run dev
+
+# Verify (should see the UI)
+curl http://localhost:3000
+```
+
+## Verify All Services
+
+Run this command to check all services at once:
+```bash
+echo "=== Service Status ===" && \
+curl -s http://localhost:7474 >/dev/null 2>&1 && echo "✓ Neo4j: Running" || echo "✗ Neo4j: Not running" && \
+curl -s http://localhost:11434 >/dev/null 2>&1 && echo "✓ Ollama: Running" || echo "✗ Ollama: Not running" && \
+curl -s http://localhost:8001 >/dev/null 2>&1 && echo "✓ Backend API: Running" || echo "✗ Backend API: Not running" && \
+curl -s http://localhost:3000 >/dev/null 2>&1 && echo "✓ Frontend: Running" || echo "✗ Frontend: Not running"
+```
+
+## Access Points
+
+Once all services are running:
+- **Frontend UI**: http://localhost:3000
+- **Chat Interface**: http://localhost:3000/chat
+- **API Documentation**: http://localhost:8001/docs
+- **Neo4j Browser**: http://localhost:7474
 
 ## Key Features
 
@@ -84,32 +140,107 @@ python integrated_api_server.py
 ## API Endpoints
 
 ### Search
-```
-GET /api/llm-search?q=your_query
+```bash
+curl "http://localhost:8001/api/llm-search?q=your_query"
 ```
 
 ### Count
-```
-GET /api/count?year=2021&technology=HVDC
+```bash
+curl "http://localhost:8001/api/count?year=2021&technology=HVDC"
 ```
 
 ### Chat
-```
-POST /api/chat
+```bash
+curl -X POST "http://localhost:8001/api/chat" \
+  -H "Content-Type: application/json" \
+  -d '{"message": "your question"}'
 ```
 
 ## Project Structure
 ```
 .
-├── integrated_api_server.py      # Main API
-├── llm_query_generator.py        # LLM processing
-├── three_llm_judge_system.py     # Decision system
-├── build_vectordb_*.py           # Vector DB builders
-├── graph_check/                  # Graph validation
+├── frontend/                      # Next.js frontend application
+│   ├── app/                      # Application routes and pages
+│   ├── components/               # React components
+│   └── package.json             # Frontend dependencies
+├── backend/                      # Backend API servers
+│   ├── api_server.py            # FastAPI server
+│   └── query_enhancer.py        # Query processing
+├── src/                         # Core modules
+│   ├── storage/                 # Neo4j, Chroma, vector stores
+│   ├── processing/              # Document processing
+│   ├── embeddings/              # Vector generation
+│   └── retrieval/               # Hybrid retrieval
+├── graph_check/                 # Graph validation
 │   ├── main.py
 │   └── services/
-└── test_*.py                     # Test files
+├── integrated_api_server.py     # Main API server
+├── llm_query_generator.py       # LLM processing
+├── three_llm_judge_system.py    # Decision system
+└── requirements.txt             # Python dependencies
 ```
+
+## Troubleshooting
+
+### Common Issues
+
+1. **Port Already in Use**
+```bash
+# Find process using port
+lsof -i :8001  # or :3000, :7474, :11434
+
+# Kill process
+kill -9 <PID>
+```
+
+2. **Neo4j Connection Failed**
+```bash
+# Check Neo4j logs
+neo4j console
+
+# Reset password if needed
+neo4j-admin set-initial-password newpassword
+```
+
+3. **Ollama Not Responding**
+```bash
+# Restart Ollama
+killall ollama
+ollama serve &
+
+# Check models
+ollama list
+```
+
+4. **Frontend Build Issues**
+```bash
+# Clear cache and reinstall
+cd frontend
+rm -rf node_modules .next
+npm install
+npm run dev
+```
+
+## Production Deployment
+
+For production, use process managers:
+
+```bash
+# Backend with PM2
+pm2 start integrated_api_server.py --interpreter python3
+
+# Frontend production build
+cd frontend
+npm run build
+npm start
+
+# Or with PM2
+pm2 start npm --name "frontend" -- start
+```
+
+## Fresh Installation
+
+For complete setup from scratch, see `FRESH_SETUP_GUIDE.md`
 
 ## License
 Proprietary - Contact repository owner for usage rights.
