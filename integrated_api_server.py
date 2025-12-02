@@ -776,6 +776,355 @@ async def get_document_details(chunk_id: str):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+
+# ============================================================================
+# STREAMING ITERATIVE SEARCH ENDPOINT
+# Pipeline: Metadata -> Graph Context -> Vector Search -> Answer Generation
+# ============================================================================
+
+from fastapi.responses import StreamingResponse
+import requests
+
+@app.get("/api/iterative-search-stream")
+async def iterative_search_stream(
+    q: str = Query(..., description="Natural language query"),
+    top_k: int = Query(default=10, description="Number of results")
+):
+    """
+    Streaming Iterative Search - sends results step by step as SSE events
+
+    Pipeline:
+    1. Metadata Filter (LLM-generated Cypher)
+    2. Graph Context (Entity/Relationship search)
+    3. Vector Search (semantic similarity with page images)
+    4. Answer Generation (LLM with retry mechanism)
+    """
+
+    async def generate_stream():
+        try:
+            project_ids = []
+            projects_data = []
+            graph_entities = []
+            graph_relationships = []
+            graph_context = ""
+            vector_results = []
+
+            # ===== STEP 1: METADATA FILTER =====
+            yield f"data: {json.dumps({'step': 'metadata_filter', 'status': 'started', 'message': 'Searching metadata...'})}\n\n"
+
+            llm_result = llm_generator.generate_query(q)
+
+            if llm_result.get("success") and llm_result.get("cypher"):
+                cypher = llm_result["cypher"]
+                try:
+                    with driver.session() as session:
+                        result = session.run(cypher)
+                        records = list(result)
+
+                        for r in records:
+                            rd = dict(r)
+                            pid = rd.get("project_id") or rd.get("c.project_id")
+                            pname = rd.get("project_name") or rd.get("c.project_name")
+                            if pid and pid not in project_ids:
+                                project_ids.append(pid)
+                                projects_data.append({
+                                    "project_id": pid,
+                                    "project_name": pname,
+                                    "technology": rd.get("technology") or rd.get("c.technology"),
+                                    "year": rd.get("year") or rd.get("c.year")
+                                })
+
+                    yield f"data: {json.dumps({'step': 'metadata_filter', 'status': 'complete', 'projects_found': len(project_ids), 'projects': projects_data[:20], 'cypher': cypher[:100]})}\n\n"
+                except Exception as e:
+                    yield f"data: {json.dumps({'step': 'metadata_filter', 'status': 'complete', 'projects_found': 0, 'message': f'Query error: {str(e)[:50]}'})}\n\n"
+            else:
+                yield f"data: {json.dumps({'step': 'metadata_filter', 'status': 'complete', 'projects_found': 0, 'message': 'No metadata query generated'})}\n\n"
+
+            # ===== STEP 2: GRAPH CONTEXT =====
+            yield f"data: {json.dumps({'step': 'graph_context', 'status': 'started', 'message': 'Searching knowledge graph...'})}\n\n"
+
+            try:
+                with driver.session() as session:
+                    # Extract key terms from query for graph search
+                    query_terms = [w for w in q.split() if len(w) > 2]
+
+                    # Search for entities matching query terms
+                    for term in query_terms[:5]:
+                        entity_query = """
+                        MATCH (e:Entity)
+                        WHERE toLower(e.name) CONTAINS toLower($term)
+                        RETURN e.name as name
+                        LIMIT 10
+                        """
+                        result = session.run(entity_query, term=term)
+                        for r in result:
+                            if r["name"] and r["name"] not in graph_entities:
+                                graph_entities.append(r["name"])
+
+                    # Get relationships for found entities
+                    if graph_entities:
+                        rel_query = """
+                        MATCH (e1:Entity)-[r:RELATES_TO]->(e2:Entity)
+                        WHERE e1.name IN $entities OR e2.name IN $entities
+                        RETURN e1.name as source, r.relation_type as rel, e2.name as target
+                        LIMIT 20
+                        """
+                        result = session.run(rel_query, entities=graph_entities[:20])
+                        for r in result:
+                            rel_str = f"{r['source']} {r['rel'] or 'related_to'} {r['target']}"
+                            if rel_str not in graph_relationships:
+                                graph_relationships.append(rel_str)
+
+                    # Build graph context string
+                    if graph_entities or graph_relationships:
+                        graph_context = f"Related entities: {', '.join(graph_entities[:10])}. "
+                        if graph_relationships:
+                            graph_context += f"Knowledge: {'; '.join(graph_relationships[:10])}."
+            except Exception as e:
+                pass  # Graph search is optional, continue without it
+
+            yield f"data: {json.dumps({'step': 'graph_context', 'status': 'complete', 'entities_found': len(graph_entities), 'relationships_found': len(graph_relationships), 'entities': graph_entities[:10], 'relationships': graph_relationships[:5]})}\n\n"
+
+            # ===== STEP 3: VECTOR SEARCH =====
+            search_mode = "scoped" if project_ids else "full"
+            yield f"data: {json.dumps({'step': 'vector_search', 'status': 'started', 'message': f'Searching {search_mode} ({len(project_ids)} projects)...'})}\n\n"
+
+            query_embedding = embedding_model.encode([q])[0].tolist()
+
+            with driver.session() as session:
+                if project_ids:
+                    # Scoped search within metadata-filtered projects
+                    vector_query = """
+                    CALL db.index.vector.queryNodes($index_name, $top_k * 3, $query_embedding)
+                    YIELD node, score
+                    WHERE node.project_id IN $project_ids
+                    RETURN node.chunk_id as chunk_id,
+                           node.project_id as project_id,
+                           node.project_name as project_name,
+                           node.technology as technology,
+                           node.year as year,
+                           node.customer as customer,
+                           node.text as text,
+                           node.page as page,
+                           node.file_name as file_name,
+                           node.page_image_relative as page_image,
+                           score
+                    ORDER BY score DESC
+                    LIMIT $top_k
+                    """
+                    result = session.run(
+                        vector_query,
+                        index_name=INDEX_NAME,
+                        top_k=top_k,
+                        query_embedding=query_embedding,
+                        project_ids=project_ids[:100]
+                    )
+                else:
+                    # Full vector search - first try text search for keywords
+                    key_terms = [w for w in q.split() if len(w) > 3 and w[0].isupper()]
+                    text_results = []
+
+                    if key_terms:
+                        for term in key_terms[:3]:
+                            text_query = """
+                            MATCH (c:PageChunk)
+                            WHERE c.text CONTAINS $term
+                            RETURN DISTINCT c.project_id as project_id,
+                                   c.project_name as project_name,
+                                   c.technology as technology,
+                                   c.year as year,
+                                   c.customer as customer
+                            LIMIT 50
+                            """
+                            text_result = session.run(text_query, term=term)
+                            for r in text_result:
+                                pid = r["project_id"]
+                                if pid and pid not in [t.get("project_id") for t in text_results]:
+                                    text_results.append({
+                                        "project_id": pid,
+                                        "project_name": r["project_name"],
+                                        "technology": r["technology"],
+                                        "year": r["year"],
+                                        "customer": r["customer"],
+                                        "matched_term": term
+                                    })
+
+                    if text_results:
+                        project_ids = [t["project_id"] for t in text_results]
+                        projects_data = text_results
+                        yield f"data: {json.dumps({'step': 'text_search', 'status': 'complete', 'projects_found': len(text_results), 'matched_terms': key_terms})}\n\n"
+
+                        vector_query = """
+                        CALL db.index.vector.queryNodes($index_name, $top_k * 2, $query_embedding)
+                        YIELD node, score
+                        WHERE node.project_id IN $project_ids
+                        RETURN node.chunk_id as chunk_id,
+                               node.project_id as project_id,
+                               node.project_name as project_name,
+                               node.technology as technology,
+                               node.year as year,
+                               node.customer as customer,
+                               node.text as text,
+                               node.page as page,
+                               node.file_name as file_name,
+                               node.page_image_relative as page_image,
+                               score
+                        ORDER BY score DESC
+                        LIMIT $top_k
+                        """
+                        result = session.run(
+                            vector_query,
+                            index_name=INDEX_NAME,
+                            top_k=top_k,
+                            query_embedding=query_embedding,
+                            project_ids=project_ids[:100]
+                        )
+                    else:
+                        # Fallback to pure vector search
+                        vector_query = """
+                        CALL db.index.vector.queryNodes($index_name, $top_k * 2, $query_embedding)
+                        YIELD node, score
+                        WHERE score > 0.6
+                        RETURN node.chunk_id as chunk_id,
+                               node.project_id as project_id,
+                               node.project_name as project_name,
+                               node.technology as technology,
+                               node.year as year,
+                               node.customer as customer,
+                               node.text as text,
+                               node.page as page,
+                               node.file_name as file_name,
+                               node.page_image_relative as page_image,
+                               score
+                        ORDER BY score DESC
+                        LIMIT $top_k
+                        """
+                        result = session.run(
+                            vector_query,
+                            index_name=INDEX_NAME,
+                            top_k=top_k,
+                            query_embedding=query_embedding
+                        )
+
+                for r in result:
+                    vector_results.append({
+                        "chunk_id": r["chunk_id"],
+                        "project_id": r["project_id"],
+                        "project_name": r["project_name"],
+                        "technology": r["technology"],
+                        "year": r["year"],
+                        "customer": r["customer"],
+                        "content": (r["text"] or "")[:500],
+                        "page": r["page"],
+                        "file_name": r["file_name"],
+                        "page_image": r["page_image"],
+                        "score": float(r["score"])
+                    })
+
+                # Extract unique projects from vector results if needed
+                if not project_ids and vector_results:
+                    seen_pids = set()
+                    for vr in vector_results:
+                        pid = vr.get("project_id")
+                        if pid and pid not in seen_pids:
+                            seen_pids.add(pid)
+                            project_ids.append(pid)
+                            projects_data.append({
+                                "project_id": pid,
+                                "project_name": vr.get("project_name"),
+                                "technology": vr.get("technology"),
+                                "year": vr.get("year")
+                            })
+
+            yield f"data: {json.dumps({'step': 'vector_search', 'status': 'complete', 'chunks_found': len(vector_results), 'projects_from_vector': len(projects_data) if search_mode == 'full' else 0, 'top_chunks': vector_results[:5]})}\n\n"
+
+            # ===== STEP 4: GENERATE ANSWER =====
+            yield f"data: {json.dumps({'step': 'answer_generation', 'status': 'started', 'message': 'Generating answer...'})}\n\n"
+
+            # Build context with graph knowledge
+            context_parts = []
+            if graph_context:
+                context_parts.append(f"KNOWLEDGE GRAPH: {graph_context}")
+
+            for i, chunk in enumerate(vector_results[:5]):
+                context_parts.append(f"Source {i+1} (Page {chunk.get('page', '?')}, {chunk.get('project_name', 'Unknown')}): {chunk.get('content', '')[:400]}")
+
+            context = "\n\n".join(context_parts)
+
+            answer_prompt = f"""Based on the following context, answer the user's question.
+
+CONTEXT:
+{context}
+
+QUESTION: {q}
+
+INSTRUCTIONS:
+- Answer based on the provided context
+- Be specific and cite sources when possible
+- If the context mentions project counts or lists, use that information
+- Keep the answer concise but complete
+
+Answer:"""
+
+            # LLM call with retry mechanism
+            max_retries = 3
+            final_answer = None
+            last_error = None
+
+            for attempt in range(max_retries):
+                try:
+                    timeout_seconds = 30 + (attempt * 15)  # 30s, 45s, 60s
+                    yield f"data: {json.dumps({'step': 'answer_generation', 'status': 'retry', 'attempt': attempt + 1, 'max_retries': max_retries, 'timeout': timeout_seconds})}\n\n"
+
+                    answer_response = requests.post(
+                        "http://localhost:11434/api/generate",
+                        json={
+                            "model": "qwen3:8b",
+                            "prompt": answer_prompt,
+                            "stream": False,
+                            "options": {"temperature": 0.3}
+                        },
+                        timeout=timeout_seconds
+                    )
+                    if answer_response.status_code == 200:
+                        final_answer = answer_response.json().get("response", "").strip()
+                        # Remove thinking tags if present
+                        if "<think>" in final_answer:
+                            import re
+                            final_answer = re.sub(r'<think>.*?</think>', '', final_answer, flags=re.DOTALL).strip()
+                        break
+                except requests.exceptions.Timeout:
+                    last_error = f"Timeout after {timeout_seconds}s"
+                    if attempt < max_retries - 1:
+                        yield f"data: {json.dumps({'step': 'answer_generation', 'status': 'timeout', 'message': f'Retrying... ({attempt + 2}/{max_retries})'})}\n\n"
+                except Exception as e:
+                    last_error = str(e)
+                    break
+
+            if not final_answer:
+                final_answer = f"Found {len(projects_data)} projects. Top results from: {', '.join([p.get('project_name', p.get('project_id', 'Unknown'))[:30] for p in projects_data[:5]])}."
+                if last_error:
+                    final_answer += f" (Note: LLM answer generation failed: {last_error})"
+
+            yield f"data: {json.dumps({'step': 'answer_generation', 'status': 'complete', 'answer': final_answer})}\n\n"
+
+            # ===== COMPLETE =====
+            yield f"data: {json.dumps({'step': 'complete', 'summary': {'projects': len(projects_data), 'chunks': len(vector_results)}, 'all_projects': projects_data})}\n\n"
+
+        except Exception as e:
+            yield f"data: {json.dumps({'step': 'error', 'message': str(e)})}\n\n"
+
+    return StreamingResponse(
+        generate_stream(),
+        media_type="text/event-stream",
+        headers={
+            "Cache-Control": "no-cache",
+            "Connection": "keep-alive",
+            "X-Accel-Buffering": "no"
+        }
+    )
+
+
 if __name__ == "__main__":
     import uvicorn
     print("=" * 80)
