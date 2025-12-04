@@ -29,15 +29,16 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Configuration
-NEO4J_URI = "bolt://localhost:7687"
-NEO4J_USER = "neo4j"
-NEO4J_PASSWORD = "siemensenergy"
+# Configuration (from environment variables with fallbacks)
+NEO4J_URI = os.environ.get("NEO4J_URI", "bolt://localhost:7687")
+NEO4J_USER = os.environ.get("NEO4J_USER", "neo4j")
+NEO4J_PASSWORD = os.environ.get("NEO4J_PASSWORD", "siemensenergy")
+OLLAMA_HOST = os.environ.get("OLLAMA_HOST", "http://localhost:11434")
 NODE_LABEL = "PageChunk"
 INDEX_NAME = "page_embeddings_ultrathink"
 
-# Paths
-OUTPUT_DIR = Path("/home/ib3/Documents/test_bp/knowledge_graph_vector_GC_Data/output")
+# Paths (from environment variables with fallbacks)
+OUTPUT_DIR = Path(os.environ.get("OUTPUT_DIR", "/home/ib3/Documents/test_bp/knowledge_graph_vector_GC_Data/output"))
 OUTPUT_COPY_DIR = Path("/home/ib3/Documents/test_bp/knowledge_graph_vector_GC_Data/output_copy_test")
 
 # Load embedding model (once at startup)
@@ -49,7 +50,7 @@ print("Model loaded!")
 driver = GraphDatabase.driver(NEO4J_URI, auth=(NEO4J_USER, NEO4J_PASSWORD))
 
 # Initialize LLM Query Generator
-llm_generator = LLMQueryGenerator(model="qwen3:8b")
+llm_generator = LLMQueryGenerator(model="qwen3-coder:latest")
 
 # Mount static files for images
 if OUTPUT_DIR.exists():
@@ -1073,13 +1074,13 @@ Answer:"""
 
             for attempt in range(max_retries):
                 try:
-                    timeout_seconds = 30 + (attempt * 15)  # 30s, 45s, 60s
+                    timeout_seconds = 120 + (attempt * 60)  # 120s, 180s, 240s (2-4 min)
                     yield f"data: {json.dumps({'step': 'answer_generation', 'status': 'retry', 'attempt': attempt + 1, 'max_retries': max_retries, 'timeout': timeout_seconds})}\n\n"
 
                     answer_response = requests.post(
-                        "http://localhost:11434/api/generate",
+                        f"{OLLAMA_HOST}/api/generate",
                         json={
-                            "model": "qwen3:8b",
+                            "model": "gpt-oss:120b",
                             "prompt": answer_prompt,
                             "stream": False,
                             "options": {"temperature": 0.3}
@@ -1125,6 +1126,532 @@ Answer:"""
     )
 
 
+# ==================== GRAPH VISUALIZATION ENDPOINTS ====================
+
+@app.get("/api/graph-viz")
+async def graph_visualization(
+    q: str = Query(default="", description="Search query for entities"),
+    entity: str = Query(default="", description="Specific entity to center on"),
+    depth: int = Query(default=1, description="Depth of relationships to explore"),
+    limit: int = Query(default=50, description="Maximum nodes to return")
+):
+    """
+    Get graph data for visualization.
+    Returns nodes and links in a format suitable for force-graph visualization.
+    """
+    try:
+        with driver.session() as session:
+            nodes = []
+            links = []
+            node_ids = set()
+
+            if entity:
+                # Get neighborhood of specific entity
+                result = session.run("""
+                    MATCH (center:Entity {name: $entity})
+                    OPTIONAL MATCH (center)-[r:RELATES_TO]-(neighbor:Entity)
+                    WITH center, collect(DISTINCT {
+                        node: neighbor,
+                        rel: r,
+                        direction: CASE WHEN startNode(r) = center THEN 'out' ELSE 'in' END
+                    })[0..$limit] as neighbors
+                    RETURN center, neighbors
+                """, entity=entity, limit=limit)
+
+                record = result.single()
+                if record:
+                    center = record["center"]
+                    if center:
+                        node_ids.add(center["name"])
+                        nodes.append({
+                            "id": center["name"],
+                            "name": center["name"],
+                            "group": "center",
+                            "size": 20
+                        })
+
+                        for neighbor_data in record["neighbors"]:
+                            if neighbor_data["node"]:
+                                neighbor = neighbor_data["node"]
+                                if neighbor["name"] not in node_ids:
+                                    node_ids.add(neighbor["name"])
+                                    nodes.append({
+                                        "id": neighbor["name"],
+                                        "name": neighbor["name"],
+                                        "group": "neighbor",
+                                        "size": 10
+                                    })
+
+                                # Add link
+                                if neighbor_data["direction"] == "out":
+                                    links.append({
+                                        "source": center["name"],
+                                        "target": neighbor["name"]
+                                    })
+                                else:
+                                    links.append({
+                                        "source": neighbor["name"],
+                                        "target": center["name"]
+                                    })
+
+            elif q:
+                # Search for entities matching query
+                result = session.run("""
+                    MATCH (e:Entity)
+                    WHERE toLower(e.name) CONTAINS toLower($search_term)
+                    WITH e LIMIT 10
+                    OPTIONAL MATCH (e)-[r:RELATES_TO]-(neighbor:Entity)
+                    WITH e, collect(DISTINCT neighbor)[0..5] as neighbors
+                    RETURN e as entity, neighbors
+                """, search_term=q)
+
+                for record in result:
+                    entity_node = record["entity"]
+                    if entity_node and entity_node["name"] not in node_ids:
+                        node_ids.add(entity_node["name"])
+                        nodes.append({
+                            "id": entity_node["name"],
+                            "name": entity_node["name"],
+                            "group": "match",
+                            "size": 15
+                        })
+
+                        for neighbor in record["neighbors"]:
+                            if neighbor and neighbor["name"] not in node_ids:
+                                node_ids.add(neighbor["name"])
+                                nodes.append({
+                                    "id": neighbor["name"],
+                                    "name": neighbor["name"],
+                                    "group": "neighbor",
+                                    "size": 8
+                                })
+
+                            if neighbor:
+                                links.append({
+                                    "source": entity_node["name"],
+                                    "target": neighbor["name"]
+                                })
+
+            else:
+                # Default: show some interesting entities
+                result = session.run("""
+                    MATCH (e:Entity)-[r:RELATES_TO]->(e2:Entity)
+                    WITH e, count(r) as degree
+                    ORDER BY degree DESC
+                    LIMIT 10
+                    MATCH (e)-[r:RELATES_TO]-(neighbor:Entity)
+                    WITH e, collect(DISTINCT neighbor)[0..5] as neighbors
+                    RETURN e as entity, neighbors
+                """)
+
+                for record in result:
+                    entity_node = record["entity"]
+                    if entity_node and entity_node["name"] not in node_ids:
+                        node_ids.add(entity_node["name"])
+                        nodes.append({
+                            "id": entity_node["name"],
+                            "name": entity_node["name"],
+                            "group": "hub",
+                            "size": 15
+                        })
+
+                        for neighbor in record["neighbors"]:
+                            if neighbor and neighbor["name"] not in node_ids:
+                                node_ids.add(neighbor["name"])
+                                nodes.append({
+                                    "id": neighbor["name"],
+                                    "name": neighbor["name"],
+                                    "group": "neighbor",
+                                    "size": 8
+                                })
+
+                            if neighbor:
+                                links.append({
+                                    "source": entity_node["name"],
+                                    "target": neighbor["name"]
+                                })
+
+            return {
+                "nodes": nodes,
+                "links": links,
+                "stats": {
+                    "node_count": len(nodes),
+                    "link_count": len(links)
+                }
+            }
+
+    except Exception as e:
+        return {"error": str(e), "nodes": [], "links": []}
+
+
+@app.get("/api/graph-stats")
+async def graph_stats():
+    """Get knowledge graph statistics"""
+    try:
+        with driver.session() as session:
+            entities = session.run("MATCH (e:Entity) RETURN count(e) as c").single()["c"]
+            relationships = session.run("MATCH ()-[r:RELATES_TO]->() RETURN count(r) as c").single()["c"]
+
+            # Top entities by connections
+            top_entities = session.run("""
+                MATCH (e:Entity)-[r:RELATES_TO]-()
+                WITH e.name as name, count(r) as connections
+                ORDER BY connections DESC
+                LIMIT 10
+                RETURN name, connections
+            """).data()
+
+            return {
+                "entities": entities,
+                "relationships": relationships,
+                "top_entities": top_entities
+            }
+    except Exception as e:
+        return {"error": str(e)}
+
+
+@app.get("/api/entity-search")
+async def entity_search(q: str = Query(..., description="Entity name to search")):
+    """Search for entities by name"""
+    try:
+        with driver.session() as session:
+            result = session.run("""
+                MATCH (e:Entity)
+                WHERE toLower(e.name) CONTAINS toLower($search_term)
+                RETURN e.name as name
+                ORDER BY size(e.name)
+                LIMIT 20
+            """, search_term=q)
+
+            return {"entities": [r["name"] for r in result]}
+    except Exception as e:
+        return {"error": str(e), "entities": []}
+
+
+# ============================================================================
+# AGENTIC QUERY ENDPOINT (NEW)
+# Uses gpt-oss:120b for intelligent query planning and execution
+# ============================================================================
+
+from test_agentic_query import AgenticQuerySystem
+
+# Initialize agentic system (lazy loading)
+_agentic_system = None
+
+def get_agentic_system():
+    global _agentic_system
+    if _agentic_system is None:
+        print("Initializing Agentic Query System...")
+        _agentic_system = AgenticQuerySystem()
+        print("Agentic Query System ready!")
+    return _agentic_system
+
+
+@app.get("/api/agentic-search")
+async def agentic_search(
+    q: str = Query(..., description="Natural language query"),
+    debug: bool = Query(default=False, description="Return debug information")
+):
+    """
+    Agentic Search - LLM-powered intelligent query planning
+
+    Uses gpt-oss:120b to:
+    1. Analyze query intent (count, list, search)
+    2. Select appropriate tools (neo4j_count, text_search, vector_search)
+    3. Execute multi-step queries if needed
+    4. Generate comprehensive answer
+
+    Handles:
+    - Metadata queries: "How many HVDC projects in 2024?"
+    - Location queries: "Projects in Germany?"
+    - Technical queries: "BESS projects?"
+    - Combined queries: "HVDC projects in Germany?"
+    - Semantic queries: "Grid stability solutions?"
+    """
+    try:
+        system = get_agentic_system()
+        result = system.query(q)
+
+        # Format response
+        response = {
+            "success": True,
+            "query": q,
+            "total_projects": len(result.get("execution_results", {}).get("all_projects_collected", [])),
+            "answer": result.get("answer", ""),
+            "query_type": result.get("plan", {}).get("query_type", "unknown"),
+            "tools_used": [s.get("tool") for s in result.get("plan", {}).get("execution_steps", [])],
+        }
+
+        # Add project list
+        projects = result.get("execution_results", {}).get("all_projects_collected", [])
+
+        # Deduplicate by project_id
+        seen_pids = set()
+        unique_projects = []
+        for p in projects:
+            pid = p.get("project_id")
+            if pid and pid not in seen_pids:
+                seen_pids.add(pid)
+                unique_projects.append({
+                    "project_id": pid,
+                    "project_name": p.get("project_name"),
+                    "technology": p.get("technology"),
+                    "year": p.get("year"),
+                    "customer": p.get("customer")
+                })
+
+        response["projects"] = unique_projects[:100]  # Limit to 100 for response size
+        response["total_projects"] = len(unique_projects)
+
+        # Technology breakdown
+        tech_breakdown = {}
+        year_breakdown = {}
+        for p in unique_projects:
+            tech = p.get("technology") or "Unknown"
+            tech_breakdown[tech] = tech_breakdown.get(tech, 0) + 1
+            year = str(p.get("year") or "Unknown")
+            year_breakdown[year] = year_breakdown.get(year, 0) + 1
+
+        response["by_technology"] = tech_breakdown
+        response["by_year"] = year_breakdown
+
+        if debug:
+            response["debug"] = {
+                "plan": result.get("plan"),
+                "step_results": result.get("execution_results", {}).get("step_results", [])
+            }
+
+        return response
+
+    except Exception as e:
+        import traceback
+        return {
+            "success": False,
+            "error": str(e),
+            "query": q,
+            "traceback": traceback.format_exc() if debug else None
+        }
+
+
+@app.get("/api/agentic-search-stream")
+async def agentic_search_stream(
+    q: str = Query(..., description="Natural language query"),
+    top_k: int = Query(default=30, description="Number of results for answer context")
+):
+    """
+    Streaming Agentic Search - sends results step by step as SSE events
+
+    Pipeline:
+    1. Planning (LLM decides tools)
+    2. Tool Execution (text_search, vector_search, neo4j_count, etc.)
+    3. Answer Generation
+    """
+
+    async def generate_stream():
+        try:
+            system = get_agentic_system()
+
+            # ===== STEP 1: PLANNING =====
+            yield f"data: {json.dumps({'step': 'planning', 'status': 'started', 'message': 'Analyzing query...'})}\n\n"
+
+            plan = system.plan_execution(q)
+            tools_planned = [s.get("tool") for s in plan.get("execution_steps", [])]
+
+            yield f"data: {json.dumps({'step': 'planning', 'status': 'complete', 'query_type': plan.get('query_type'), 'tools': tools_planned, 'reasoning': plan.get('reasoning', '')[:100]})}\n\n"
+
+            # ===== STEP 2: EXECUTION =====
+            yield f"data: {json.dumps({'step': 'execution', 'status': 'started', 'message': f'Executing {len(tools_planned)} tools...'})}\n\n"
+
+            execution_results = system.execute_plan(plan)
+            all_projects = execution_results.get("all_projects_collected", [])
+
+            # Deduplicate
+            seen_pids = set()
+            unique_projects = []
+            for p in all_projects:
+                pid = p.get("project_id")
+                if pid and pid not in seen_pids:
+                    seen_pids.add(pid)
+                    unique_projects.append({
+                        "project_id": pid,
+                        "project_name": p.get("project_name"),
+                        "technology": p.get("technology"),
+                        "year": p.get("year")
+                    })
+
+            yield f"data: {json.dumps({'step': 'execution', 'status': 'complete', 'projects_found': len(unique_projects), 'projects': unique_projects[:20]})}\n\n"
+
+            # ===== STEP 2.5: FETCH DETAILED CHUNKS WITH IMAGES =====
+            yield f"data: {json.dumps({'step': 'vector_search', 'status': 'started', 'message': 'Fetching document details...'})}\n\n"
+
+            # Do a vector search to get detailed chunks with images for the reference panel
+            # Uses same BAAI/bge-large-en-v1.5 model as the index (1024 dimensions)
+            top_chunks = []
+            try:
+                query_embedding = embedding_model.encode([q])[0].tolist()
+
+                # If we have specific projects, search within those using vector index
+                if unique_projects:
+                    project_ids = [p["project_id"] for p in unique_projects[:50]]
+                    # Use db.index.vector.queryNodes procedure with post-filtering
+                    # Need large search_k since we filter after vector search
+                    vector_query = """
+                    CALL db.index.vector.queryNodes($index_name, $search_k, $query_embedding)
+                    YIELD node, score
+                    WHERE node.project_id IN $project_ids
+                    RETURN node.chunk_id as chunk_id, node.project_id as project_id, node.project_name as project_name,
+                           node.technology as technology, node.year as year, node.customer as customer,
+                           node.page as page, node.file_name as file_name, node.text as content,
+                           node.page_image_relative as page_image, score
+                    ORDER BY score DESC
+                    LIMIT $top_k
+                    """
+                    with driver.session() as session:
+                        # Search 500 candidates to find results from specific projects
+                        result = session.run(vector_query,
+                                           index_name=INDEX_NAME,
+                                           search_k=500,
+                                           query_embedding=query_embedding,
+                                           project_ids=project_ids,
+                                           top_k=top_k)
+                        for record in result:
+                            top_chunks.append({
+                                "chunk_id": record["chunk_id"],
+                                "project_id": record["project_id"],
+                                "project_name": record["project_name"],
+                                "technology": record["technology"],
+                                "year": record["year"],
+                                "customer": record["customer"],
+                                "page": record["page"],
+                                "file_name": record["file_name"],
+                                "content": record["content"][:500] if record["content"] else "",
+                                "page_image": record["page_image"],
+                                "score": record["score"]
+                            })
+                else:
+                    # Full vector search using the index
+                    vector_query = """
+                    CALL db.index.vector.queryNodes($index_name, $top_k, $query_embedding)
+                    YIELD node, score
+                    RETURN node.chunk_id as chunk_id, node.project_id as project_id, node.project_name as project_name,
+                           node.technology as technology, node.year as year, node.customer as customer,
+                           node.page as page, node.file_name as file_name, node.text as content,
+                           node.page_image_relative as page_image, score
+                    """
+                    with driver.session() as session:
+                        result = session.run(vector_query,
+                                           index_name=INDEX_NAME,
+                                           query_embedding=query_embedding,
+                                           top_k=top_k)
+                        for record in result:
+                            top_chunks.append({
+                                "chunk_id": record["chunk_id"],
+                                "project_id": record["project_id"],
+                                "project_name": record["project_name"],
+                                "technology": record["technology"],
+                                "year": record["year"],
+                                "customer": record["customer"],
+                                "page": record["page"],
+                                "file_name": record["file_name"],
+                                "content": record["content"][:500] if record["content"] else "",
+                                "page_image": record["page_image"],
+                                "score": record["score"]
+                            })
+            except Exception as e:
+                print(f"Vector search for chunks failed: {e}")
+
+            yield f"data: {json.dumps({'step': 'vector_search', 'status': 'complete', 'chunks_found': len(top_chunks), 'top_chunks': top_chunks})}\n\n"
+
+            # ===== STEP 2.7: GRAPH CONTEXT =====
+            yield f"data: {json.dumps({'step': 'graph_context', 'status': 'started', 'message': 'Fetching graph relationships...'})}\n\n"
+
+            graph_context = {"entities": [], "relationships": []}
+            try:
+                # Get entities mentioned in top chunks (use project names as entity search)
+                entity_names = list(set([p.get("project_name", "") for p in unique_projects[:20] if p.get("project_name")]))
+
+                if entity_names:
+                    with driver.session() as session:
+                        # Find related entities through MENTIONS and RELATES_TO
+                        entity_query = """
+                        MATCH (e:Entity)
+                        WHERE any(name IN $names WHERE toLower(e.name) CONTAINS toLower(name))
+                        WITH e LIMIT 20
+                        OPTIONAL MATCH (e)-[r:RELATES_TO]->(e2:Entity)
+                        RETURN e.name as entity, e.type as entity_type,
+                               collect(DISTINCT {target: e2.name, rel_type: type(r)})[0..5] as relations
+                        LIMIT 10
+                        """
+                        result = session.run(entity_query, names=entity_names)
+                        for record in result:
+                            graph_context["entities"].append({
+                                "name": record["entity"],
+                                "type": record["entity_type"],
+                                "relations": record["relations"]
+                            })
+
+                        # Also get technology/customer relationships
+                        if unique_projects:
+                            tech_query = """
+                            MATCH (p:PageChunk)
+                            WHERE p.project_id IN $project_ids
+                            RETURN DISTINCT p.technology as technology, p.customer as customer,
+                                   count(p) as chunk_count
+                            ORDER BY chunk_count DESC
+                            LIMIT 10
+                            """
+                            project_ids = [p["project_id"] for p in unique_projects[:50]]
+                            result = session.run(tech_query, project_ids=project_ids)
+                            for record in result:
+                                graph_context["relationships"].append({
+                                    "technology": record["technology"],
+                                    "customer": record["customer"],
+                                    "chunk_count": record["chunk_count"]
+                                })
+            except Exception as e:
+                print(f"Graph context failed: {e}")
+
+            yield f"data: {json.dumps({'step': 'graph_context', 'status': 'complete', 'entities_found': len(graph_context['entities']), 'relationships_found': len(graph_context['relationships'])})}\n\n"
+
+            # ===== STEP 3: ANSWER GENERATION =====
+            yield f"data: {json.dumps({'step': 'answer_generation', 'status': 'started', 'message': 'Generating answer...'})}\n\n"
+
+            # Group projects by technology and year for better context
+            by_technology = {}
+            by_year = {}
+            for p in unique_projects:
+                tech = p.get("technology", "Unknown")
+                year = p.get("year", "Unknown")
+                by_technology[tech] = by_technology.get(tech, 0) + 1
+                by_year[year] = by_year.get(year, 0) + 1
+
+            # Use the actual execution_results from execute_plan (has correct tool names)
+            # Just add the additional context (graph_context, breakdowns)
+            execution_results["graph_context"] = graph_context
+            execution_results["by_technology"] = by_technology
+            execution_results["by_year"] = by_year
+
+            answer = system.generate_answer(q, execution_results)
+
+            yield f"data: {json.dumps({'step': 'answer_generation', 'status': 'complete', 'answer': answer})}\n\n"
+
+            # ===== COMPLETE =====
+            yield f"data: {json.dumps({'step': 'complete', 'summary': {'projects': len(unique_projects), 'chunks': len(top_chunks)}, 'all_projects': unique_projects, 'top_chunks': top_chunks})}\n\n"
+
+        except Exception as e:
+            yield f"data: {json.dumps({'step': 'error', 'message': str(e)})}\n\n"
+
+    return StreamingResponse(
+        generate_stream(),
+        media_type="text/event-stream",
+        headers={
+            "Cache-Control": "no-cache",
+            "Connection": "keep-alive",
+            "X-Accel-Buffering": "no"
+        }
+    )
+
+
 if __name__ == "__main__":
     import uvicorn
     print("=" * 80)
@@ -1141,7 +1668,9 @@ if __name__ == "__main__":
     print("  GET  /api/health              - Health check")
     print("  GET  /api/stats               - Database statistics")
     print("  GET  /api/search              - Vector search with filters")
-    print("  GET  /api/llm-search          - Natural language search using LLM")
+    print("  GET  /api/llm-search          - Natural language search using LLM (old)")
+    print("  GET  /api/agentic-search      - NEW: Intelligent query with gpt-oss:120b")
+    print("  GET  /api/agentic-search-stream - NEW: Streaming agentic search")
     print("  GET  /api/count               - Count projects with filters")
     print("  GET  /api/projects            - List all projects")
     print("  GET  /api/document/{id}       - Get document details")

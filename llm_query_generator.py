@@ -5,6 +5,7 @@ FULLY LLM-BASED Query Generator for Neo4j ULTRATHINK Database
 """
 
 import json
+import os
 import requests
 import re
 from typing import Dict, Any, Optional
@@ -48,7 +49,8 @@ class LLMQueryGenerator:
 
     def __init__(self, model: str = "qwen3:8b"):
         self.model = model
-        self.ollama_url = "http://localhost:11434/api/generate"
+        ollama_host = os.environ.get("OLLAMA_HOST", "http://localhost:11434")
+        self.ollama_url = f"{ollama_host}/api/generate"
         self.schema = NEO4J_SCHEMA
 
     def generate_query(self, natural_language_query: str) -> Dict[str, Any]:
@@ -78,16 +80,21 @@ DECISION RULES:
 
 RESPOND WITH ONLY A VALID JSON OBJECT (no markdown, no explanation):
 
-For METADATA queries:
-{{"query_type": "metadata", "cypher": "MATCH (c:PageChunk) WHERE ... RETURN ...", "explanation": "brief reason"}}
+For METADATA queries (return DOCUMENTS, not counts):
+{{"query_type": "metadata", "cypher": "MATCH (c:PageChunk) WHERE ... RETURN c.chunk_id, c.project_id, c.text, ...", "explanation": "brief reason"}}
 
 For VECTOR_SEARCH queries:
 {{"query_type": "vector_search", "search_text": "enhanced search terms", "explanation": "brief reason"}}
 
-CYPHER EXAMPLES:
-- Count HVDC 2025: MATCH (c:PageChunk) WHERE c.technology = 'HVDC' AND c.year = 2025 RETURN count(DISTINCT c.project_id) as project_count
-- List projects: MATCH (c:PageChunk) WHERE c.year = 2025 RETURN DISTINCT c.project_id, c.project_name, c.technology, c.year ORDER BY c.project_id
-- Count by year: MATCH (c:PageChunk) WHERE c.technology = 'HVDC' RETURN c.year as year, count(DISTINCT c.project_id) as count ORDER BY year
+CYPHER EXAMPLES FOR METADATA SEARCH (ALWAYS RETURN DISTINCT PROJECTS):
+- HVDC 2025 projects: MATCH (c:PageChunk) WHERE c.technology = 'HVDC' AND c.year = 2025 RETURN DISTINCT c.project_id, c.project_name, c.technology, c.year, c.customer ORDER BY c.project_id LIMIT 100
+- SynCon projects: MATCH (c:PageChunk) WHERE c.technology = 'SynCon' RETURN DISTINCT c.project_id, c.project_name, c.technology, c.year, c.customer ORDER BY c.project_id LIMIT 100
+- Projects in 2025: MATCH (c:PageChunk) WHERE c.year = 2025 RETURN DISTINCT c.project_id, c.project_name, c.technology, c.year, c.customer ORDER BY c.project_id LIMIT 100
+- "How many HVDC 2024": MATCH (c:PageChunk) WHERE c.technology = 'HVDC' AND c.year = 2024 RETURN DISTINCT c.project_id, c.project_name, c.technology, c.year, c.customer ORDER BY c.project_id LIMIT 100
+- All projects list: MATCH (c:PageChunk) RETURN DISTINCT c.project_id, c.project_name, c.technology, c.year, c.customer ORDER BY c.project_id LIMIT 100
+
+CRITICAL: Use "RETURN DISTINCT c.project_id, ..." to get ONE row per PROJECT (not per chunk).
+NEVER use COUNT() - always return distinct project rows. The count will be derived from number of rows returned.
 
 JSON RESPONSE:"""
 

@@ -7,8 +7,8 @@ const _geist = Geist({ subsets: ["latin"] });
 const _geistMono = Geist_Mono({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: 'SE Graph Database Viewer',
-  description: 'Created by InfinitiBit',
+  title: 'GC Data Grid - Historical Search',
+  description: 'GC Data Grid Historical Search powered by AI',
   generator: 'se.app',
   icons: {
     icon: [

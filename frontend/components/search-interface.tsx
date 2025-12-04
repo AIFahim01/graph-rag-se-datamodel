@@ -5,7 +5,8 @@ import type React from "react"
 import { useState, useEffect, useRef } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
-import { Search, Sparkles } from "lucide-react"
+import { Search, Sparkles, Home } from "lucide-react"
+import Link from "next/link"
 
 export function SearchInterface() {
   const [query, setQuery] = useState("")
@@ -25,19 +26,19 @@ export function SearchInterface() {
     if (!query.trim()) return
 
     setIsLoading(true)
-    router.push(`/results?q=${encodeURIComponent(query)}`)
+    router.push(`/results?q=${encodeURIComponent(query)}&type=vector`)
   }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 flex items-center justify-center p-4">
       <div className="w-full max-w-2xl">
         {/* Header */}
-        <div className="text-center mb-12">
+        <div className="text-center mb-8">
           <div className="flex items-center justify-center gap-2 mb-4">
             <Sparkles className="w-8 h-8 text-blue-400" />
             <h1 className="text-4xl md:text-5xl font-bold text-white">Vector Search</h1>
           </div>
-          <p className="text-lg text-slate-400">Search using sentences, keywords, or natural language</p>
+          <p className="text-lg text-slate-400">Semantic similarity search using embeddings</p>
         </div>
 
         {/* Search Form */}
@@ -52,7 +53,7 @@ export function SearchInterface() {
                   type="text"
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
-                  placeholder="What are you looking for?"
+                  placeholder="Search documents semantically..."
                   className="flex-1 bg-transparent text-white placeholder-slate-500 outline-none text-lg"
                   suppressHydrationWarning
                 />
@@ -61,6 +62,10 @@ export function SearchInterface() {
           </div>
 
           <div className="flex gap-3">
+            <Link href="/" className="flex items-center gap-2 px-4 py-3 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition">
+              <Home className="w-4 h-4" />
+              <span>Home</span>
+            </Link>
             <Button
               type="submit"
               disabled={!query.trim() || isLoading}
@@ -76,10 +81,10 @@ export function SearchInterface() {
           <p className="text-sm text-slate-400 mb-4">Try searching for:</p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {[
-              "machine learning algorithms",
-              "web development best practices",
-              "cloud computing basics",
-              "data science tutorials",
+              "HVDC transmission systems",
+              "SynCon projects",
+              "Grid forming converters",
+              "Wind power integration",
             ].map((example) => (
               <button
                 key={example}

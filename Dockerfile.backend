@@ -1,0 +1,41 @@
+# Backend Dockerfile for ULTRATHINK API Server
+FROM python:3.10-slim
+
+WORKDIR /app
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy requirements first for caching
+COPY requirements.txt .
+
+# Install Python dependencies
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy application code
+COPY integrated_api_server.py .
+COPY llm_query_generator.py .
+COPY test_agentic_query.py .
+
+# Create output directory
+RUN mkdir -p /app/output
+
+# Expose port
+EXPOSE 8001
+
+# Environment variables (can be overridden)
+ENV NEO4J_URI=bolt://host.docker.internal:7687
+ENV NEO4J_USER=neo4j
+ENV NEO4J_PASSWORD=siemensenergy
+ENV OLLAMA_HOST=http://host.docker.internal:11434
+ENV OUTPUT_DIR=/app/output
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
+    CMD curl -f http://localhost:8001/api/health || exit 1
+
+# Run the server
+CMD ["python", "integrated_api_server.py"]

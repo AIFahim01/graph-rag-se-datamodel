@@ -102,10 +102,11 @@ export default function ResultDetailPage() {
   const handleBack = () => {
     const lastQuery = sessionStorage.getItem("lastQuery")
     const currentPage = sessionStorage.getItem("currentPage")
+    const lastSearchType = sessionStorage.getItem("lastSearchType") || "vector"
 
     if (lastQuery) {
-      // Navigate back to results page with the same query and page
-      const url = `/results?q=${encodeURIComponent(lastQuery)}${currentPage ? `&page=${currentPage}` : ""}`
+      // Navigate back to results page with the same query, page, and search type
+      const url = `/results?q=${encodeURIComponent(lastQuery)}&type=${lastSearchType}${currentPage ? `&page=${currentPage}` : ""}`
       router.push(url)
     } else {
       // Fallback to home if no query found

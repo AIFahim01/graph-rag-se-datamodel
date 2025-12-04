@@ -1,0 +1,54 @@
+# Git
+.git
+.gitignore
+
+# Python
+__pycache__
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.env
+*.egg-info/
+
+# Virtual environments
+.venv
+ENV/
+
+# IDE
+.idea
+.vscode
+*.swp
+*.swo
+
+# Logs
+*.log
+logs/
+
+# Test/Dev files
+*.test.py
+tests/
+.pytest_cache/
+
+# Large data directories (mount as volumes instead)
+output/
+output_copy_test/
+relik_checkpoints/
+graph_exports/
+
+# Frontend (separate container)
+frontend/
+
+# Documentation
+*.md
+docs/
+
+# Jupyter
+*.ipynb
+.ipynb_checkpoints/
+
+# Temporary files
+*.tmp
+*.bak

@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useRef, useState } from "react"
-import { Home, Link2, Loader2, MessageCircle, PanelRightClose, PanelRightOpen, Send } from "lucide-react"
+import { Home, Link2, Loader2, MessageCircle, PanelRightClose, PanelRightOpen, Send, Database, Network, Sparkles, Zap, Search } from "lucide-react"
 import { useRouter } from "next/navigation"
 import ReactMarkdown from "react-markdown"
 import remarkGfm from "remark-gfm"
@@ -42,22 +42,16 @@ export default function ChatPage() {
   const [referenceChunks, setReferenceChunks] = useState<ReferenceChunk[]>([])
   const [showReferences, setShowReferences] = useState(true)
   const [selectedMessageKey, setSelectedMessageKey] = useState<string | null>(null)
-  const [topK, setTopK] = useState(10)
+  const [topK, setTopK] = useState(30)
   const bottomRef = useRef<HTMLDivElement | null>(null)
   const referencePanelRef = useRef<HTMLDivElement | null>(null)
   const router = useRouter()
 
+  // Clear history on page load - always start fresh
   useEffect(() => {
-    let active = true
-    ;(async () => {
-      const history = await defaultChatHistoryStore.getHistory(CONVERSATION_ID)
-      if (active && history.length > 0) {
-        setMessages(history)
-      }
-    })()
-    return () => {
-      active = false
-    }
+    setMessages([])
+    setReferenceChunks([])
+    defaultChatHistoryStore.clearHistory(CONVERSATION_ID)
   }, [])
 
   useEffect(() => {
@@ -73,6 +67,7 @@ export default function ChatPage() {
 
     setError(null)
     setIsLoading(true)
+    setSelectedMessageKey(null)  // Clear selection so new results show
 
     const timestamp = new Date().toISOString()
     const uniqueId = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
@@ -108,7 +103,7 @@ export default function ChatPage() {
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ query, history: historyForApi, topK }),
+        body: JSON.stringify({ query, history: historyForApi, topK, useStreaming: true }),
       })
 
       if (!res.ok) {
@@ -116,22 +111,239 @@ export default function ChatPage() {
         throw new Error(text || "Chat API request failed")
       }
 
-      const data = (await res.json()) as ChatApiResponse
-      if (data.error) {
-        throw new Error(data.error)
+      // Handle SSE streaming response
+      const reader = res.body?.getReader()
+      if (!reader) {
+        throw new Error("No response body")
       }
 
-      setReferenceChunks(data.results || [])
+      const decoder = new TextDecoder()
+      let buffer = ''
+      let finalAnswer = ''
+      let allProjects: any[] = []
+      let topChunks: any[] = []
+
+      // Update message with streaming status
+      setMessages((prev) => {
+        const next = [...prev]
+        const index = next.findIndex((m) => m.id === assistantMessage.id)
+        if (index !== -1) {
+          next[index] = { ...next[index], content: "🔍 Searching..." }
+        }
+        return next
+      })
+
+      while (true) {
+        const { done, value } = await reader.read()
+        if (done) break
+
+        buffer += decoder.decode(value, { stream: true })
+        const lines = buffer.split('\n\n')
+        buffer = lines.pop() || ''
+
+        for (const line of lines) {
+          if (line.startsWith('data: ')) {
+            try {
+              const event = JSON.parse(line.slice(6))
+
+              // Update UI based on step - AGENTIC search events
+              if (event.step === 'planning' && event.status === 'started') {
+                setMessages((prev) => {
+                  const next = [...prev]
+                  const index = next.findIndex((m) => m.id === assistantMessage.id)
+                  if (index !== -1) {
+                    next[index] = { ...next[index], content: "🧠 AI is analyzing your query..." }
+                  }
+                  return next
+                })
+              } else if (event.step === 'planning' && event.status === 'complete') {
+                setMessages((prev) => {
+                  const next = [...prev]
+                  const index = next.findIndex((m) => m.id === assistantMessage.id)
+                  if (index !== -1) {
+                    next[index] = { ...next[index], content: `🎯 Query understood, searching...` }
+                  }
+                  return next
+                })
+              } else if (event.step === 'execution' && event.status === 'started') {
+                setMessages((prev) => {
+                  const next = [...prev]
+                  const index = next.findIndex((m) => m.id === assistantMessage.id)
+                  if (index !== -1) {
+                    next[index] = { ...next[index], content: `⚡ ${event.message || 'Executing search...'}` }
+                  }
+                  return next
+                })
+              } else if (event.step === 'execution' && event.status === 'complete') {
+                // Capture projects from execution
+                if (event.projects && event.projects.length > 0) {
+                  topChunks = event.projects
+                }
+                setMessages((prev) => {
+                  const next = [...prev]
+                  const index = next.findIndex((m) => m.id === assistantMessage.id)
+                  if (index !== -1) {
+                    next[index] = { ...next[index], content: `✅ Found ${event.projects_found || 0} projects...` }
+                  }
+                  return next
+                })
+              // Legacy event handling for old pipeline (fallback)
+              } else if (event.step === 'metadata_filter' && event.status === 'started') {
+                setMessages((prev) => {
+                  const next = [...prev]
+                  const index = next.findIndex((m) => m.id === assistantMessage.id)
+                  if (index !== -1) {
+                    next[index] = { ...next[index], content: "📊 Searching project database..." }
+                  }
+                  return next
+                })
+              } else if (event.step === 'metadata_filter' && event.status === 'complete') {
+                setMessages((prev) => {
+                  const next = [...prev]
+                  const index = next.findIndex((m) => m.id === assistantMessage.id)
+                  if (index !== -1) {
+                    next[index] = { ...next[index], content: `📊 Found ${event.projects_found || 0} projects...` }
+                  }
+                  return next
+                })
+              } else if (event.step === 'graph_context' && event.status === 'started') {
+                setMessages((prev) => {
+                  const next = [...prev]
+                  const index = next.findIndex((m) => m.id === assistantMessage.id)
+                  if (index !== -1) {
+                    next[index] = { ...next[index], content: `🕸️ Finding related information...` }
+                  }
+                  return next
+                })
+              } else if (event.step === 'graph_context' && event.status === 'complete') {
+                setMessages((prev) => {
+                  const next = [...prev]
+                  const index = next.findIndex((m) => m.id === assistantMessage.id)
+                  if (index !== -1) {
+                    next[index] = { ...next[index], content: `🕸️ Found ${event.entities_found || 0} entities, ${event.relationships_found || 0} relationships...` }
+                  }
+                  return next
+                })
+              } else if (event.step === 'text_search' && event.status === 'complete') {
+                setMessages((prev) => {
+                  const next = [...prev]
+                  const index = next.findIndex((m) => m.id === assistantMessage.id)
+                  if (index !== -1) {
+                    next[index] = { ...next[index], content: `📝 Found ${event.projects_found || 0} matching projects...` }
+                  }
+                  return next
+                })
+              } else if (event.step === 'vector_search' && event.status === 'started') {
+                setMessages((prev) => {
+                  const next = [...prev]
+                  const index = next.findIndex((m) => m.id === assistantMessage.id)
+                  if (index !== -1) {
+                    next[index] = { ...next[index], content: `🔎 Searching documents...` }
+                  }
+                  return next
+                })
+              } else if (event.step === 'vector_search' && event.status === 'complete') {
+                // Capture top_chunks with full details (images, content, etc.)
+                if (event.top_chunks && event.top_chunks.length > 0) {
+                  topChunks = event.top_chunks
+                }
+                setMessages((prev) => {
+                  const next = [...prev]
+                  const index = next.findIndex((m) => m.id === assistantMessage.id)
+                  if (index !== -1) {
+                    next[index] = { ...next[index], content: `🔎 Found ${event.chunks_found || 0} relevant chunks...` }
+                  }
+                  return next
+                })
+              } else if (event.step === 'answer_generation' && event.status === 'started') {
+                setMessages((prev) => {
+                  const next = [...prev]
+                  const index = next.findIndex((m) => m.id === assistantMessage.id)
+                  if (index !== -1) {
+                    next[index] = { ...next[index], content: "✨ Generating answer..." }
+                  }
+                  return next
+                })
+              } else if (event.step === 'answer_generation' && event.status === 'retry') {
+                setMessages((prev) => {
+                  const next = [...prev]
+                  const index = next.findIndex((m) => m.id === assistantMessage.id)
+                  if (index !== -1) {
+                    next[index] = { ...next[index], content: `✨ Generating answer (attempt ${event.attempt}/${event.max_retries})...` }
+                  }
+                  return next
+                })
+              } else if (event.step === 'answer_generation' && event.status === 'timeout') {
+                setMessages((prev) => {
+                  const next = [...prev]
+                  const index = next.findIndex((m) => m.id === assistantMessage.id)
+                  if (index !== -1) {
+                    next[index] = { ...next[index], content: `⏳ ${event.message}` }
+                  }
+                  return next
+                })
+              } else if (event.step === 'answer_generation' && event.status === 'complete') {
+                finalAnswer = event.answer || ''
+              } else if (event.step === 'complete') {
+                allProjects = event.all_projects || []
+              } else if (event.step === 'error') {
+                throw new Error(event.message || 'Search failed')
+              }
+            } catch (parseErr) {
+              console.warn('Failed to parse SSE event:', line)
+            }
+          }
+        }
+      }
+
+      // Use topChunks if available (has images and content), otherwise fall back to projects
+      let results: ReferenceChunk[] = []
+
+      if (topChunks.length > 0) {
+        // Use detailed chunks with images
+        results = topChunks.map((c: any, idx: number) => ({
+          id: c.chunk_id || `chunk-${idx}`,
+          title: c.project_name || c.project_id,
+          content: c.content || '',
+          description: c.content ? c.content.substring(0, 200) : '',
+          metadata: {
+            technology: c.technology,
+            year: c.year,
+            customer: c.customer,
+            page: c.page,
+            project_id: c.project_id,
+            project_name: c.project_name,
+          },
+          relevance: c.score || 0.8,
+          source: c.file_name,
+          image_url: c.page_image ? `/api/image/${c.project_id}/${c.page_image}` : undefined,
+        }))
+      } else {
+        // Fall back to project-level data
+        results = allProjects.map((p: any, idx: number) => ({
+          id: p.project_id || `project-${idx}`,
+          title: p.project_name || p.project_id,
+          content: `Project: ${p.project_name}\nTechnology: ${p.technology || 'N/A'}\nYear: ${p.year || 'N/A'}`,
+          metadata: {
+            technology: p.technology,
+            year: p.year,
+            project_id: p.project_id,
+          },
+          relevance: 1.0,
+        }))
+      }
+
+      setReferenceChunks(results)
 
       const answerMessage: ChatMessage = {
         ...assistantMessage,
-        content: data.answer,
-        chunks: data.results || [],
+        content: finalAnswer || `Found ${allProjects.length} projects`,
+        chunks: results,
       }
 
       setMessages((prev) => {
         const next = [...prev]
-        const index = next.findIndex((m) => m === assistantMessage)
+        const index = next.findIndex((m) => m.id === assistantMessage.id)
         if (index !== -1) {
           next[index] = { ...answerMessage }
         } else {
@@ -143,8 +355,19 @@ export default function ChatPage() {
       await defaultChatHistoryStore.saveMessage(CONVERSATION_ID, answerMessage)
     } catch (err) {
       console.error("Chat error:", err)
-      setError(err instanceof Error ? err.message : "An unexpected error occurred.")
-      setMessages((prev) => prev.filter((m) => m !== assistantMessage))
+      // Convert technical errors to user-friendly messages
+      let userMessage = "An unexpected error occurred. Please try again."
+      if (err instanceof Error) {
+        if (err.message.includes('NetworkError') || err.message.includes('Failed to fetch')) {
+          userMessage = "Connection lost. Please check your network and try again."
+        } else if (err.message.includes('timeout') || err.message.includes('AbortError')) {
+          userMessage = "Request took too long. Please try a simpler question."
+        } else if (err.message.includes('error')) {
+          userMessage = err.message // Already user-friendly from SSE error event
+        }
+      }
+      setError(userMessage)
+      setMessages((prev) => prev.filter((m) => m.id !== assistantMessage.id))
     } finally {
       setIsLoading(false)
     }
@@ -204,13 +427,23 @@ export default function ChatPage() {
             <MessageCircle className="h-5 w-5" />
           </div>
           <div>
-            <h1 className="text-sm font-semibold text-white">Open Chat</h1>
+            <h1 className="text-sm font-semibold text-white">GC Data Grid - Agentic Search</h1>
             <p className="text-xs text-slate-400">
-              Vector search + Ollama (gpt-oss:20b) with reference chunks on the right.
+              LLM-powered: Plan → Execute → Answer (gpt-oss:120b)
             </p>
           </div>
         </div>
         <div className="flex items-center gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => router.push("/chat2")}
+            className="border-orange-700/50 text-orange-400 hover:bg-orange-900/20"
+          >
+            <Search className="h-4 w-4 mr-1" />
+            <span className="hidden md:inline">Classic Mode</span>
+            <span className="md:hidden">Classic</span>
+          </Button>
           <Button
             variant="outline"
             size="sm"
@@ -384,6 +617,27 @@ export default function ChatPage() {
               {error}
             </div>
           )}
+
+          {/* Pipeline indicator */}
+          <div className="flex items-center gap-1.5 px-1">
+            <span className="text-xs text-slate-500">Agentic Pipeline:</span>
+            <div className="flex items-center gap-1">
+              <div className="flex items-center gap-0.5 px-1.5 py-0.5 rounded bg-purple-600/10 border border-purple-600/30">
+                <Network className="h-3 w-3 text-purple-400" />
+                <span className="text-[10px] text-purple-400">Plan</span>
+              </div>
+              <span className="text-slate-600">→</span>
+              <div className="flex items-center gap-0.5 px-1.5 py-0.5 rounded bg-blue-600/10 border border-blue-600/30">
+                <Database className="h-3 w-3 text-blue-400" />
+                <span className="text-[10px] text-blue-400">Execute</span>
+              </div>
+              <span className="text-slate-600">→</span>
+              <div className="flex items-center gap-0.5 px-1.5 py-0.5 rounded bg-amber-600/10 border border-amber-600/30">
+                <Zap className="h-3 w-3 text-amber-400" />
+                <span className="text-[10px] text-amber-400">Answer</span>
+              </div>
+            </div>
+          </div>
 
           <div className="flex items-center gap-4 px-1">
             <label htmlFor="topK-slider" className="text-xs text-slate-400 whitespace-nowrap">
