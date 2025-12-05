@@ -1,0 +1,67 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.env
+
+# Logs
+logs/
+*.log
+
+# Backups and outputs
+backups/
+output/
+output_copy_test/
+"output copy/"
+
+# Large data files
+*.zip
+*.tar.gz
+*.rar
+
+# Node.js / Next.js
+node_modules/
+.next/
+out/
+build/
+dist/
+*.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+
+# External projects (if not part of main codebase)
+erfan_graph_rag/
+
+# Database files
+*.db
+*.sqlite
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*~
+
+# Jupyter Notebooks
+.ipynb_checkpoints/
+
+# Coverage reports
+htmlcov/
+.coverage
+*.cover
+.pytest_cache/
+
+# Environment variables
+.env.local
+.env.development
+.env.test
+.env.production
