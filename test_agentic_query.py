@@ -39,7 +39,12 @@ Properties:
 - customer, page, file_name
 - embedding (vector for semantic search)
 
-Node: Entity (Knowledge Graph)
+Node: Entity (Knowledge G   
+
+
+
+
+raph)
 - name: entity name (companies, technologies, locations, etc.)
 - Connected via RELATES_TO relationships
 

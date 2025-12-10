@@ -1,0 +1,49 @@
+# Core Web Framework
+fastapi
+uvicorn[standard]
+aiofiles
+python-multipart
+
+# Database
+neo4j
+chromadb
+
+# LLM and Embeddings
+ollama
+sentence-transformers
+transformers
+
+# Data Processing
+numpy
+pandas
+scikit-learn
+
+# Document Processing
+pypdf2
+pdfplumber
+python-docx
+markdown
+
+# Vector Search
+faiss-cpu
+
+# Utilities
+python-dotenv
+pydantic
+httpx
+requests
+
+# Async Support
+aiohttp
+
+# Testing
+pytest
+pytest-asyncio
+
+# Development Tools
+black
+flake8
+ipython
+jupyter
+prometheus-client
+psutil
